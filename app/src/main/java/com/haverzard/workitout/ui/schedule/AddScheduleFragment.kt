@@ -1,0 +1,151 @@
+package com.haverzard.workitout.ui.schedule
+
+import android.content.Context
+import android.icu.text.SimpleDateFormat
+import android.icu.util.Calendar
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.DatePicker
+import android.widget.ImageButton
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.haverzard.workitout.R
+import com.haverzard.workitout.WorkOutApplication
+import com.haverzard.workitout.adapter.ScheduleListAdapter
+import com.haverzard.workitout.entities.ExerciseType
+import com.haverzard.workitout.entities.SingleExerciseSchedule
+import com.haverzard.workitout.viewmodel.ScheduleViewModel
+import com.haverzard.workitout.viewmodel.ScheduleViewModelFactory
+import java.sql.Date
+import java.sql.Time
+
+class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePickerDialogFragmentEvents {
+
+    private lateinit var scheduleViewModel: ScheduleViewModel
+    private val datePicker = DatePickerFragment()
+    private val timePicker = TimePickerFragment()
+
+    private var date: Date? = null
+    private var startTime: Time? = null
+    private var endTime: Time? = null
+    private var exerciseType: ExerciseType? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        scheduleViewModel = ViewModelProviders.of(
+            this, ScheduleViewModelFactory((activity?.application as WorkOutApplication).repository)
+        ).get(ScheduleViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_add_schedule, container, false)
+
+        root.findViewById<TextView>(R.id.pick_date)?.setOnClickListener {
+            datePicker.setObserver(this)
+            datePicker.setCalendar(Calendar.getInstance())
+            if (date != null) {
+                datePicker.setCalendar(date!!.year, date!!.month, date!!.date)
+            }
+            datePicker.show(fragmentManager, "datePicker")
+        }
+
+        root.findViewById<TextView>(R.id.pick_start_time)?.setOnClickListener {
+            timePicker.setObserver(this)
+            timePicker.setCalendar(Calendar.getInstance())
+            timePicker.setArg("start")
+            if (startTime != null) {
+                timePicker.setCalendar(startTime!!.hours, startTime!!.minutes)
+            }
+            timePicker.show(fragmentManager, "timePicker")
+        }
+
+        root.findViewById<TextView>(R.id.pick_end_time)?.setOnClickListener {
+            timePicker.setObserver(this)
+            timePicker.setCalendar(Calendar.getInstance())
+            timePicker.setArg("end")
+            if (endTime != null) {
+                timePicker.setCalendar(endTime!!.hours, endTime!!.minutes)
+            }
+            timePicker.show(fragmentManager, "timePicker")
+        }
+
+        val cyclingButton = root.findViewById<ImageButton>(R.id.exercise_cycling)
+        val walkingButton = root.findViewById<ImageButton>(R.id.exercise_walking)
+        walkingButton?.setOnClickListener {
+            walkingButton
+                .setBackgroundColor(resources.getColor(R.color.selected))
+            cyclingButton
+                .setBackgroundColor(resources.getColor(R.color.colorPrimary))
+            exerciseType = ExerciseType.Walking
+        }
+
+        cyclingButton?.setOnClickListener {
+            cyclingButton
+                .setBackgroundColor(resources.getColor(R.color.selected))
+            walkingButton
+                .setBackgroundColor(resources.getColor(R.color.colorPrimary))
+            exerciseType = ExerciseType.Cycling
+        }
+
+        root.findViewById<TextView>(R.id.button_save)?.setOnClickListener {
+            if (exerciseType == null || date == null || startTime == null || endTime == null) {
+                Toast.makeText(
+                    activity,
+                    R.string.fill_empty_field,
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                scheduleViewModel.insert(
+                    SingleExerciseSchedule(
+                        id = 1,
+                        routine_id = null,
+                        exercise_type = exerciseType!!,
+                        target = 100,
+                        date = date!!,
+                        start_time = startTime!!,
+                        end_time = endTime!!,
+                    )
+                )
+                Toast.makeText(
+                    activity,
+                    R.string.schedule_created,
+                    Toast.LENGTH_LONG
+                ).show()
+                fragmentManager?.popBackStackImmediate()
+            }
+        }
+
+        return root
+    }
+
+    override fun onDateSet(year: Int, month: Int, day: Int) {
+        val dateStr = "%04d-%02d-%02d".format(year, month, day)
+        date = Date(year, month, day)
+        view?.findViewById<TextView>(R.id.pick_date)?.text = dateStr
+    }
+
+    override fun onTimeSet(hour: Int, minute: Int, arg: String) {
+        val timeStr = "%02d:%02d".format(hour, minute)
+        if (arg == "start") {
+            startTime = Time(hour, minute, 0)
+            view?.findViewById<TextView>(R.id.pick_start_time)?.text = timeStr
+        } else {
+            endTime = Time(hour, minute, 0)
+            view?.findViewById<TextView>(R.id.pick_end_time)?.text = timeStr
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
+}

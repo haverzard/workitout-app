@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context=".ui.schedule.AddScheduleFragment">
+
+    <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="75dp"/>
+
+    <TextView
+            android:id="@+id/header_pick_exercise"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/choose_exercise_type"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:layout_margin="@dimen/big_padding"/>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content">
+
+        <ImageButton
+                android:id="@+id/exercise_cycling"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:src="@drawable/ic_directions_bike_white_24dp"
+                android:minHeight="48dp"
+                android:minWidth="48dp"
+                android:layout_margin="@dimen/big_padding"/>
+
+        <ImageButton
+                android:id="@+id/exercise_walking"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:src="@drawable/ic_directions_walk_white_24dp"
+                android:minHeight="48dp"
+                android:minWidth="48dp"
+                android:layout_margin="@dimen/big_padding"/>
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/pick_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/enter_training_date"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:layout_margin="@dimen/big_padding"/>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:id="@+id/pick_start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="100dp"
+                android:minHeight="48dp"
+                android:text="@string/enter_start_time"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:layout_margin="@dimen/big_padding"/>
+
+        <TextView
+                android:text="-"
+                android:minWidth="25dp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView2"/>
+
+        <TextView
+                android:id="@+id/pick_end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="100dp"
+                android:minHeight="48dp"
+                android:text="@string/enter_end_time"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:layout_margin="@dimen/big_padding"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+    </LinearLayout>
+
+    <Button
+            android:id="@+id/button_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="@string/button_save"
+            android:layout_margin="@dimen/big_padding"
+            android:textColor="@color/saveButton"/>
+
+</LinearLayout>
