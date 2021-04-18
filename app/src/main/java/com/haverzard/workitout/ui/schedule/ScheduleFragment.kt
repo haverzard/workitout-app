@@ -18,6 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
 import com.haverzard.workitout.adapter.ScheduleListAdapter
+import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.viewmodel.ScheduleViewModel
 import com.haverzard.workitout.viewmodel.ScheduleViewModelFactory
@@ -44,7 +45,10 @@ class ScheduleFragment : Fragment() {
         val recyclerView = root.findViewById<RecyclerView>(R.id.recyclerview)
         val adapter = ScheduleListAdapter(object:ScheduleListAdapter.ScheduleSelectedListener {
             override fun onScheduleSelected(schedule: SingleExerciseSchedule) {
-                scheduleViewModel.delete(schedule)
+                scheduleViewModel.deleteSingleSchedule(schedule)
+            }
+            override fun onScheduleSelected(schedule: RoutineExerciseSchedule) {
+                scheduleViewModel.deleteRoutineSchedule(schedule)
             }
         })
         recyclerView.adapter = adapter
@@ -58,12 +62,5 @@ class ScheduleFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        view.findViewById<View>(R.id.button_home).setOnClickListener {
-//            val action = HomeFragmentDirections
-//                    .actionHomeFragmentToHomeSecondFragment("From ScheduleFragment")
-//            NavHostFragment.findNavController(this@HomeFragment)
-//                    .navigate(action)
-//        }
     }
 }

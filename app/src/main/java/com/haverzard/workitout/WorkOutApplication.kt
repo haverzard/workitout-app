@@ -10,6 +10,11 @@ class WorkOutApplication : Application() {
 
     val applicationScope = CoroutineScope(SupervisorJob())
     val database by lazy { WorkOutDatabase.getDatabase(this, applicationScope) }
-    val repository by lazy { WorkOutRepository(database.singleExerciseScheduleDao()) }
+    val repository by lazy {
+        WorkOutRepository(
+            database.singleExerciseScheduleDao(),
+            database.routineExerciseScheduleDao(),
+        )
+    }
 
 }

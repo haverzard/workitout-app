@@ -24,6 +24,7 @@ import com.haverzard.workitout.WorkOutApplication
 import com.haverzard.workitout.adapter.ScheduleListAdapter
 import com.haverzard.workitout.entities.Day
 import com.haverzard.workitout.entities.ExerciseType
+import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.viewmodel.ScheduleViewModel
 import com.haverzard.workitout.viewmodel.ScheduleViewModelFactory
@@ -171,17 +172,30 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
                 ).show()
                 return@setOnClickListener
             }
-            scheduleViewModel.insert(
-                SingleExerciseSchedule(
-                    id = 0,
-                    routine_id = null,
-                    exercise_type = exerciseType!!,
-                    target = target,
-                    date = date!!,
-                    start_time = startTime!!,
-                    end_time = endTime!!,
+            if (safeArgs.type == "single") {
+                scheduleViewModel.insertSingleSchedule(
+                    SingleExerciseSchedule(
+                        id = 0,
+                        routine_id = null,
+                        exercise_type = exerciseType!!,
+                        target = target,
+                        date = date!!,
+                        start_time = startTime!!,
+                        end_time = endTime!!,
+                    )
                 )
-            )
+            } else {
+                scheduleViewModel.insertRoutineSchedule(
+                    RoutineExerciseSchedule(
+                        id = 0,
+                        exercise_type = exerciseType!!,
+                        target = target,
+                        days = days.toList().sorted(),
+                        start_time = startTime!!,
+                        end_time = endTime!!,
+                    )
+                )
+            }
             Toast.makeText(
                 activity,
                 R.string.schedule_created,

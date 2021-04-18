@@ -1,23 +1,60 @@
 package com.haverzard.workitout.viewmodel
 
 import androidx.lifecycle.*
+import com.haverzard.workitout.adapter.ScheduleListAdapter
+import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.repository.WorkOutRepository
 import kotlinx.coroutines.launch
-import java.util.*
+
 
 class ScheduleViewModel(private val repository: WorkOutRepository) : ViewModel() {
 
-    val schedules: LiveData<List<SingleExerciseSchedule>> = repository.schedules.asLiveData()
+    var schedules = MediatorLiveData<List<ScheduleListAdapter.Schedule>>()
+    private var singleSchedules = MutableList<ScheduleListAdapter.Schedule>(0) {
+        _ -> ScheduleListAdapter.Schedule(null, null)
+    }
+    private var routineSchedules = MutableList<ScheduleListAdapter.Schedule>(0) {
+        _ -> ScheduleListAdapter.Schedule(null, null)
+    }
+
+    init {
+        schedules.addSource(repository.schedules.asLiveData()) { value ->
+            System.out.println(value)
+            run {
+                singleSchedules.clear()
+                value.forEach {
+                    singleSchedules.add(ScheduleListAdapter.Schedule(it, null))
+                }
+                schedules.setValue(routineSchedules + singleSchedules)
+            }
+        }
+        schedules.addSource(repository.routines.asLiveData()) { value ->
+            System.out.println(value)
+            run {
+                routineSchedules.clear()
+                value.forEach {
+                    routineSchedules.add(ScheduleListAdapter.Schedule(null, it))
+                }
+                schedules.setValue(routineSchedules + singleSchedules)
+            }
+        }
+    }
 
     /**
      * Launching a new coroutine to insert the data in a non-blocking way
      */
-    fun insert(schedule: SingleExerciseSchedule) = viewModelScope.launch {
+    fun insertSingleSchedule(schedule: SingleExerciseSchedule) = viewModelScope.launch {
         repository.insertSingleSchedule(schedule)
     }
-    fun delete(schedule: SingleExerciseSchedule) = viewModelScope.launch {
+    fun insertRoutineSchedule(schedule: RoutineExerciseSchedule) = viewModelScope.launch {
+        repository.insertRoutineSchedule(schedule)
+    }
+    fun deleteSingleSchedule(schedule: SingleExerciseSchedule) = viewModelScope.launch {
         repository.deleteSingleSchedule(schedule)
+    }
+    fun deleteRoutineSchedule(schedule: RoutineExerciseSchedule) = viewModelScope.launch {
+        repository.deleteRoutineSchedule(schedule)
     }
 }
 

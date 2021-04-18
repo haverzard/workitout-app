@@ -10,7 +10,7 @@ import java.sql.Time
 @Entity(tableName = "routine_schedule_table")
 data class RoutineExerciseSchedule(
     @PrimaryKey(autoGenerate = true) val id: Int,
-    val exercise_type: String,
+    val exercise_type: ExerciseType,
     val target: Double,
     val days: List<Day>,
     val start_time: Time,
