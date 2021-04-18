@@ -57,6 +57,11 @@
             android:id="@+id/navigation_add_schedule"
             android:name="com.haverzard.workitout.ui.schedule.AddScheduleFragment"
             android:label="@string/add_schedule"
-            tools:layout="@layout/fragment_add_schedule"/>
+            tools:layout="@layout/fragment_add_schedule">
+
+        <argument
+                android:name="type"
+                app:argType="string"/>
+    </fragment>
 
 </navigation>

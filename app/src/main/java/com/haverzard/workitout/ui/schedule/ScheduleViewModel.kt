@@ -8,7 +8,6 @@ import java.util.*
 
 class ScheduleViewModel(private val repository: WorkOutRepository) : ViewModel() {
 
-    private val mutableSelectedDate = MutableLiveData<Date>()
     val schedules: LiveData<List<SingleExerciseSchedule>> = repository.schedules.asLiveData()
 
     /**
@@ -17,9 +16,8 @@ class ScheduleViewModel(private val repository: WorkOutRepository) : ViewModel()
     fun insert(schedule: SingleExerciseSchedule) = viewModelScope.launch {
         repository.insertSingleSchedule(schedule)
     }
-
-    fun selectDate(date: Date) {
-        mutableSelectedDate.value = date
+    fun delete(schedule: SingleExerciseSchedule) = viewModelScope.launch {
+        repository.deleteSingleSchedule(schedule)
     }
 }
 

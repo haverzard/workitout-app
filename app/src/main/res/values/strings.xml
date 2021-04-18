@@ -8,7 +8,7 @@
     <string name="title_news">News</string>
     <string name="title_tracker">Tracker</string>
     <string name="title_history">History</string>
-    <string name="title_schedule">Scheduler</string>
+    <string name="title_schedule">Schedules</string>
 
     <string name="home_second">Home Second</string>
     <string name="add_schedule">Add Schedule</string>
@@ -20,4 +20,5 @@
     <string name="enter_start_time">Enter Start Time</string>
     <string name="enter_end_time">Enter End Time</string>
     <string name="choose_exercise_type">Choose Exercise Type</string>
+    <string name="enter_correct_time">Make your start time is lower than your end time</string>
 </resources>

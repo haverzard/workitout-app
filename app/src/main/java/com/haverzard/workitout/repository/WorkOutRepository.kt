@@ -16,4 +16,9 @@ class WorkOutRepository(private val singleExerciseScheduleDao: SingleExerciseSch
     suspend fun insertSingleSchedule(schedule: SingleExerciseSchedule) {
         singleExerciseScheduleDao.insert(schedule)
     }
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun deleteSingleSchedule(schedule: SingleExerciseSchedule) {
+        singleExerciseScheduleDao.delete(schedule)
+    }
 }

@@ -11,8 +11,10 @@ import java.sql.Time
 data class RoutineExerciseSchedule(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val exercise_type: String,
-    val target: Int,
-    val days: List<Day>
+    val target: Double,
+    val days: List<Day>,
+    val start_time: Time,
+    val end_time: Time,
 )
 
 @Entity(tableName = "single_exercise_schedule_table",
@@ -26,7 +28,7 @@ data class SingleExerciseSchedule(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val routine_id: Int?,
     val exercise_type: ExerciseType,
-    val target: Int,
+    val target: Double,
     val date: Date,
     val start_time: Time,
     val end_time: Time,

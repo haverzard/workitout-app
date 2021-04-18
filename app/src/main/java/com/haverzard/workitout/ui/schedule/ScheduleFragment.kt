@@ -25,6 +25,7 @@ import com.haverzard.workitout.viewmodel.ScheduleViewModelFactory
 class ScheduleFragment : Fragment() {
 
     private lateinit var scheduleViewModel: ScheduleViewModel
+    private val scheduleTypeDialog = ScheduleTypeDialog()
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -36,9 +37,9 @@ class ScheduleFragment : Fragment() {
         ).get(ScheduleViewModel::class.java)
 
         val root = inflater.inflate(R.layout.fragment_schedule, container, false)
-        root.findViewById<FloatingActionButton>(R.id.fab)?.setOnClickListener(
-            Navigation.createNavigateOnClickListener(R.id.action_add_schedule, null)
-        )
+        root.findViewById<FloatingActionButton>(R.id.fab)?.setOnClickListener {
+            scheduleTypeDialog.show(fragmentManager, "timePicker")
+        }
 
         val recyclerView = root.findViewById<RecyclerView>(R.id.recyclerview)
         val adapter = ScheduleListAdapter(object:ScheduleListAdapter.ScheduleSelectedListener {

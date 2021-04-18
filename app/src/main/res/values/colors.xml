@@ -7,4 +7,5 @@
 
     <color name="selected">#B37DFF</color>
     <color name="saveButton">#55DA03</color>
+    <color name="darkred">#C31C1C</color>
 </resources>

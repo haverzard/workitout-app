@@ -21,7 +21,7 @@ interface RoutineExerciseScheduleDao {
 @Dao
 interface SingleExerciseScheduleDao {
 
-    @Query("SELECT * FROM single_exercise_schedule_table ORDER BY date ASC")
+    @Query("SELECT * FROM single_exercise_schedule_table ORDER BY date, start_time ASC")
     fun getSchedules(): Flow<List<SingleExerciseSchedule>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
