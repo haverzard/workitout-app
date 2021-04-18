@@ -31,9 +31,9 @@
 
     <fragment
             android:id="@+id/navigation_tracker"
-            android:name="com.haverzard.workitout.ui.notifications.NotificationsFragment"
-            android:label="@string/title_history"
-            tools:layout="@layout/fragment_notifications"/>
+            android:name="com.haverzard.workitout.ui.tracker.TrackerFragment"
+            android:label="@string/title_tracker"
+            tools:layout="@layout/fragment_tracker"/>
 
     <fragment
             android:id="@+id/navigation_history"
