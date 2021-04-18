@@ -1,7 +1,5 @@
 package com.haverzard.workitout.ui.schedule
 
-import android.content.Context
-import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.text.InputType
@@ -11,17 +9,10 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
-import com.haverzard.workitout.adapter.ScheduleListAdapter
 import com.haverzard.workitout.entities.Day
 import com.haverzard.workitout.entities.ExerciseType
 import com.haverzard.workitout.entities.RoutineExerciseSchedule

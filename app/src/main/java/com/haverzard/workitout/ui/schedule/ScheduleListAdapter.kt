@@ -1,4 +1,4 @@
-package com.haverzard.workitout.adapter
+package com.haverzard.workitout.ui.schedule
 
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +14,9 @@ import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
 import java.sql.Date
 
-class ScheduleListAdapter(scheduleSelectedListener: ScheduleSelectedListener) : ListAdapter<ScheduleListAdapter.Schedule, ScheduleListAdapter.ScheduleViewHolder>(SchedulesComparator()) {
+class ScheduleListAdapter(scheduleSelectedListener: ScheduleSelectedListener) : ListAdapter<ScheduleListAdapter.Schedule, ScheduleListAdapter.ScheduleViewHolder>(
+    SchedulesComparator()
+) {
 
     private val scheduleSelectedListener: ScheduleSelectedListener = scheduleSelectedListener
 
@@ -24,7 +26,9 @@ class ScheduleListAdapter(scheduleSelectedListener: ScheduleSelectedListener) : 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleViewHolder {
-        return ScheduleViewHolder.create(parent)
+        return ScheduleViewHolder.create(
+            parent
+        )
     }
 
     override fun onBindViewHolder(holder: ScheduleViewHolder, position: Int) {
@@ -104,7 +108,9 @@ class ScheduleListAdapter(scheduleSelectedListener: ScheduleSelectedListener) : 
             fun create(parent: ViewGroup): ScheduleViewHolder {
                 val view: View = LayoutInflater.from(parent.context)
                         .inflate(R.layout.schedule_item, parent, false)
-                return ScheduleViewHolder(view)
+                return ScheduleViewHolder(
+                    view
+                )
             }
         }
     }

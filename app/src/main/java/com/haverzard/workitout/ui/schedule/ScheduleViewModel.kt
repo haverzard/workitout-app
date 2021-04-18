@@ -1,7 +1,7 @@
 package com.haverzard.workitout.viewmodel
 
 import androidx.lifecycle.*
-import com.haverzard.workitout.adapter.ScheduleListAdapter
+import com.haverzard.workitout.ui.schedule.ScheduleListAdapter
 import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.repository.WorkOutRepository
