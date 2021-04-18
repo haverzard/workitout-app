@@ -18,6 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
 import com.haverzard.workitout.adapter.ScheduleListAdapter
+import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.viewmodel.ScheduleViewModel
 import com.haverzard.workitout.viewmodel.ScheduleViewModelFactory
 
@@ -33,22 +34,22 @@ class ScheduleFragment : Fragment() {
         scheduleViewModel = ViewModelProviders.of(
         this, ScheduleViewModelFactory((activity?.application as WorkOutApplication).repository)
         ).get(ScheduleViewModel::class.java)
+
         val root = inflater.inflate(R.layout.fragment_schedule, container, false)
-//        val textView: TextView = root.findViewById(R.id.text_home)
-//        scheduleViewModel.text.observe(viewLifecycleOwner, Observer {
-//            textView.text = it
-//        })
         root.findViewById<FloatingActionButton>(R.id.fab)?.setOnClickListener(
             Navigation.createNavigateOnClickListener(R.id.action_add_schedule, null)
         )
+
         val recyclerView = root.findViewById<RecyclerView>(R.id.recyclerview)
-        val adapter = ScheduleListAdapter()
+        val adapter = ScheduleListAdapter(object:ScheduleListAdapter.ScheduleSelectedListener {
+            override fun onScheduleSelected(schedule: SingleExerciseSchedule) {
+                scheduleViewModel.delete(schedule)
+            }
+        })
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
-
         scheduleViewModel.schedules.observe(owner = this) { schedules ->
-            // Update the cached copy of the words in the adapter.
             schedules.let { adapter.submitList(it) }
         }
         return root
