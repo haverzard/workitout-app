@@ -33,9 +33,6 @@ interface SingleExerciseScheduleDao {
     @Query("SELECT * FROM single_exercise_schedule_table WHERE start_time <= TIME('now') AND end_time >= TIME('now') AND date == DATE('now') LIMIT 1")
     fun getCurrentSchedule(): SingleExerciseSchedule?
 
-    @Query("SELECT DATE('now')")
-    fun getTest(): List<String>
-
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(schedule: SingleExerciseSchedule)
 
