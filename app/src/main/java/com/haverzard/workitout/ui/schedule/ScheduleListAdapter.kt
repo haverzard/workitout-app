@@ -53,8 +53,9 @@ class ScheduleListAdapter(scheduleSelectedListener: ScheduleSelectedListener) : 
             holder.itemView.findViewById<ImageButton>(R.id.schedule_delete).setOnClickListener {
                 scheduleSelectedListener.onScheduleSelected(singleExerciseSchedule)
             }
-            holder.bind(date.substring(0, date.length - 9), time, target)
+            holder.bind(singleExerciseSchedule.exercise_type, date.substring(0, date.length - 9), time, target)
         } else if (routineExerciseSchedule != null) {
+            System.out.println(routineExerciseSchedule)
             val days = routineExerciseSchedule.days.joinToString(separator = "-")
             val time = "%02d:%02d - %02d:%02d".format(
                 routineExerciseSchedule.start_time.hours,
@@ -69,7 +70,7 @@ class ScheduleListAdapter(scheduleSelectedListener: ScheduleSelectedListener) : 
             holder.itemView.findViewById<ImageButton>(R.id.schedule_delete).setOnClickListener {
                 scheduleSelectedListener.onScheduleSelected(routineExerciseSchedule)
             }
-            holder.bind(days, time, target)
+            holder.bind(routineExerciseSchedule.exercise_type, days, time, target)
         }
     }
 
@@ -94,11 +95,17 @@ class ScheduleListAdapter(scheduleSelectedListener: ScheduleSelectedListener) : 
     }
 
     class ScheduleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val imageButton: ImageButton = itemView.findViewById(R.id.schedule_exercise)
         private val dateItemView: TextView = itemView.findViewById(R.id.schedule_date)
         private val timeItemView: TextView = itemView.findViewById(R.id.schedule_time)
         private val targetItemView: TextView = itemView.findViewById(R.id.schedule_target)
 
-        fun bind(date: String?, time: String?, target: String?) {
+        fun bind(type: ExerciseType?, date: String?, time: String?, target: String?) {
+            if (type == ExerciseType.Cycling) {
+                imageButton.setImageResource(R.drawable.ic_directions_bike_white_24dp)
+            } else {
+                imageButton.setImageResource(R.drawable.ic_directions_walk_white_24dp)
+            }
             dateItemView.text = date
             timeItemView.text = time
             targetItemView.text = target

@@ -1,12 +1,13 @@
 package com.haverzard.workitout.repository
 
+import android.icu.util.Calendar
 import androidx.annotation.WorkerThread
 import com.haverzard.workitout.dao.RoutineExerciseScheduleDao
 import com.haverzard.workitout.dao.SingleExerciseScheduleDao
+import com.haverzard.workitout.entities.Day
 import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 
 class WorkOutRepository(
     private val singleExerciseScheduleDao: SingleExerciseScheduleDao,
@@ -14,9 +15,9 @@ class WorkOutRepository(
 ) {
 
     // live data
-    val schedules: Flow<List<SingleExerciseSchedule>> = singleExerciseScheduleDao.getNonRoutineSchedules()
+    val schedules: Flow<List<SingleExerciseSchedule>> = singleExerciseScheduleDao.getCurrentSchedules()
     val routines: Flow<List<RoutineExerciseSchedule>> = routineExerciseScheduleDao.getSchedules()
-
+    
     // run everything on worker thread
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
@@ -38,5 +39,15 @@ class WorkOutRepository(
     @WorkerThread
     suspend fun deleteRoutineSchedule(schedule: RoutineExerciseSchedule) {
         routineExerciseScheduleDao.delete(schedule)
+    }
+
+    fun getCurrentSingleSchedule(): SingleExerciseSchedule? {
+        return singleExerciseScheduleDao.getCurrentSchedule()
+    }
+
+    fun getCurrentRoutineSchedule(): RoutineExerciseSchedule? {
+        val calendar: Calendar = Calendar.getInstance()
+        val day: Int = calendar.get(Calendar.DAY_OF_WEEK)
+        return routineExerciseScheduleDao.getCurrentSchedule(Day.values()[day].name)
     }
 }
