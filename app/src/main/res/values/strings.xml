@@ -21,4 +21,8 @@
     <string name="enter_end_time">Enter End Time</string>
     <string name="choose_exercise_type">Choose Exercise Type</string>
     <string name="enter_correct_time">Make your start time is lower than your end time</string>
+    <string name="stop_tracking">Stop tracking your exercise</string>
+    <string name="launch_activity">Launch Activity</string>
+    <string name="preference_file_key">com.haverzard.workitout.PREFERENCE_FILE_KEY</string>
+    <string name="permission_rationale">Location permission needed for core functionality</string>
 </resources>

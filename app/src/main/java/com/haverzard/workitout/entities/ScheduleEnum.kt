@@ -18,10 +18,13 @@ class ScheduleEnumConverters {
     private val sdf = SimpleDateFormat("yyyy-MM-dd")
 
     @TypeConverter
-    fun fromDate(value: Date) = sdf.format(value)
+    fun fromDate(value: Date) = "%04d-%02d-%02d".format(value.year, value.month, value.date)
 
     @TypeConverter
-    fun toDate(value: String) = Date(sdf.parse(value).time)
+    fun toDate(value: String): Date {
+        val date = value.split("-").map { it.toInt() }
+        return Date(date[0], date[1], date[2])
+    }
 
     @TypeConverter
     fun fromTime(value: Time) = value.toString()
