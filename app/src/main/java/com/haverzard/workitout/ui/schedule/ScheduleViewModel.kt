@@ -39,15 +39,9 @@ class ScheduleViewModel(private val repository: WorkOutRepository) : ViewModel()
         }
     }
 
-    /**
-     * Launching a new coroutine to insert the data in a non-blocking way
-     */
-    fun insertSingleSchedule(schedule: SingleExerciseSchedule) = viewModelScope.launch {
-        repository.insertSingleSchedule(schedule)
-    }
-    fun insertRoutineSchedule(schedule: RoutineExerciseSchedule) = viewModelScope.launch {
-        repository.insertRoutineSchedule(schedule)
-    }
+    fun insertSingleSchedule(schedule: SingleExerciseSchedule) = repository.insertSingleSchedule(schedule)
+    fun insertRoutineSchedule(schedule: RoutineExerciseSchedule) = repository.insertRoutineSchedule(schedule)
+
     fun deleteSingleSchedule(schedule: SingleExerciseSchedule) = viewModelScope.launch {
         repository.deleteSingleSchedule(schedule)
     }

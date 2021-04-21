@@ -11,11 +11,11 @@ interface RoutineExerciseScheduleDao {
     @Query("SELECT * FROM routine_schedule_table")
     fun getSchedules(): Flow<List<RoutineExerciseSchedule>>
 
-    @Query("SELECT * FROM routine_schedule_table WHERE start_time >= TIME('now') AND end_time <= TIME('now') AND instr(days, :day) LIMIT 1")
-    fun getCurrentSchedule(day: String): RoutineExerciseSchedule?
+    @Query("SELECT * FROM routine_schedule_table WHERE id = :id")
+    fun getSchedule(id: Int): RoutineExerciseSchedule
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(schedule: RoutineExerciseSchedule)
+    fun insert(schedule: RoutineExerciseSchedule): Long
 
     @Delete
     suspend fun delete(schedule: RoutineExerciseSchedule)
@@ -30,11 +30,11 @@ interface SingleExerciseScheduleDao {
     @Query("SELECT * FROM single_exercise_schedule_table WHERE (date = DATE('now', 'localtime') AND start_time >= TIME('now', 'localtime')) OR date > DATE('now', 'localtime') ORDER BY date, start_time ASC")
     fun getCurrentSchedules(): Flow<List<SingleExerciseSchedule>>
 
-    @Query("SELECT * FROM single_exercise_schedule_table WHERE start_time <= TIME('now', 'localtime') AND end_time >= TIME('now', 'localtime') AND date == DATE('now', 'localtime') LIMIT 1")
-    fun getCurrentSchedule(): SingleExerciseSchedule?
+    @Query("SELECT * FROM single_exercise_schedule_table WHERE id = :id")
+    fun getSchedule(id: Int): SingleExerciseSchedule
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(schedule: SingleExerciseSchedule)
+    fun insert(schedule: SingleExerciseSchedule): Long
 
     @Delete
     suspend fun delete(schedule: SingleExerciseSchedule)

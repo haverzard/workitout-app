@@ -14,6 +14,7 @@ import android.widget.*
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
@@ -24,6 +25,7 @@ import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.receivers.ScheduleReceiver
 import com.haverzard.workitout.viewmodel.ScheduleViewModel
 import com.haverzard.workitout.viewmodel.ScheduleViewModelFactory
+import kotlinx.coroutines.launch
 import java.sql.Date
 import java.sql.Time
 
@@ -191,51 +193,59 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
                 ).show()
                 return@setOnClickListener
             }
-            if (safeArgs.type == "single") {
-                val schedule = SingleExerciseSchedule(
-                    id = 0,
-                    routine_id = null,
-                    exercise_type = exerciseType!!,
-                    target = target,
-                    date = date!!,
-                    start_time = startTime!!,
-                    end_time = endTime!!,
-                )
-                scheduleViewModel.insertSingleSchedule(schedule)
-                var alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
-                    PendingIntent.getBroadcast(context, schedule.id*8, intent, 0)
-                }
-                alarmManager.setExact(
-                    AlarmManager.RTC,
-                    date!!.time - yearSub + startTime!!.time,
-                    alarmIntent
-                )
-            } else {
-                val schedule = RoutineExerciseSchedule(
-                    id = 0,
-                    exercise_type = exerciseType!!,
-                    target = target,
-                    days = days.toList().sorted(),
-                    start_time = startTime!!,
-                    end_time = endTime!!,
-                )
-                scheduleViewModel.insertRoutineSchedule(schedule)
-                var currentDay = calendar.get(Calendar.DAY_OF_WEEK) - 1
-                schedule.days.forEach {
-                    val day = Day.values().indexOf(it)
+            (context!!.applicationContext as WorkOutApplication).applicationScope.launch {
+                if (safeArgs.type == "single") {
+                    val schedule = SingleExerciseSchedule(
+                        id = 0,
+                        routine_id = null,
+                        exercise_type = exerciseType!!,
+                        target = target,
+                        date = date!!,
+                        start_time = startTime!!,
+                        end_time = endTime!!,
+                    )
+
+                    var id = scheduleViewModel.insertSingleSchedule(schedule)
                     var alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
-                        PendingIntent.getBroadcast(context, (schedule.id+1)*8-day-1, intent, 0)
+                        intent.putExtra("requestCode", id*2);
+                        intent.putExtra("start", true);
+                        PendingIntent.getBroadcast(context, (id*8).toInt(), intent, 0)
                     }
-                    var delta = (day - currentDay)
-                    if (delta < 0) {
-                        delta += 7
-                    }
-                    alarmManager.setRepeating(
+                    alarmManager.setExact(
                         AlarmManager.RTC,
-                        currentDate - timeSub - yearSub + startTime!!.time + AlarmManager.INTERVAL_DAY * delta,
-                        AlarmManager.INTERVAL_DAY * 7,
+                        date!!.time - yearSub + startTime!!.time,
                         alarmIntent
                     )
+                } else {
+                    val schedule = RoutineExerciseSchedule(
+                        id = 0,
+                        exercise_type = exerciseType!!,
+                        target = target,
+                        days = days.toList().sorted(),
+                        start_time = startTime!!,
+                        end_time = endTime!!,
+                    )
+
+                    var id = scheduleViewModel.insertRoutineSchedule(schedule)
+                    var currentDay = calendar.get(Calendar.DAY_OF_WEEK) - 1
+                    schedule.days.forEach {
+                        val day = Day.values().indexOf(it)
+                        var alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
+                            intent.putExtra("requestCode", (id + 1)*2 - 1);
+                            intent.putExtra("start", true);
+                            PendingIntent.getBroadcast(context, ((id+1)*8-day-1).toInt(), intent, 0)
+                        }
+                        var delta = (day - currentDay)
+                        if (delta < 0) {
+                            delta += 7
+                        }
+                        alarmManager.setRepeating(
+                            AlarmManager.RTC,
+                            currentDate - timeSub - yearSub + startTime!!.time + AlarmManager.INTERVAL_DAY * delta,
+                            AlarmManager.INTERVAL_DAY * 7,
+                            alarmIntent
+                        )
+                    }
                 }
             }
             Toast.makeText(

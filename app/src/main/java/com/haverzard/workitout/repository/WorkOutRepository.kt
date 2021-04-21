@@ -21,19 +21,8 @@ class WorkOutRepository(
     // run everything on worker thread
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun insertSingleSchedule(schedule: SingleExerciseSchedule) {
-        singleExerciseScheduleDao.insert(schedule)
-    }
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
     suspend fun deleteSingleSchedule(schedule: SingleExerciseSchedule) {
         singleExerciseScheduleDao.delete(schedule)
-    }
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
-    suspend fun insertRoutineSchedule(schedule: RoutineExerciseSchedule) {
-        routineExerciseScheduleDao.insert(schedule)
-
     }
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
@@ -41,13 +30,14 @@ class WorkOutRepository(
         routineExerciseScheduleDao.delete(schedule)
     }
 
-    fun getCurrentSingleSchedule(): SingleExerciseSchedule? {
-        return singleExerciseScheduleDao.getCurrentSchedule()
+    fun insertRoutineSchedule(schedule: RoutineExerciseSchedule) = routineExerciseScheduleDao.insert(schedule)
+    fun insertSingleSchedule(schedule: SingleExerciseSchedule) = singleExerciseScheduleDao.insert(schedule)
+
+    fun getSingleSchedule(id: Int): SingleExerciseSchedule {
+        return singleExerciseScheduleDao.getSchedule(id)
     }
 
-    fun getCurrentRoutineSchedule(): RoutineExerciseSchedule? {
-        val calendar: Calendar = Calendar.getInstance()
-        val day: Int = calendar.get(Calendar.DAY_OF_WEEK)
-        return routineExerciseScheduleDao.getCurrentSchedule(Day.values()[day].name)
+    fun getRoutineSchedule(id: Int): RoutineExerciseSchedule {
+        return routineExerciseScheduleDao.getSchedule(id)
     }
 }

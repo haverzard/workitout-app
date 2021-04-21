@@ -26,9 +26,7 @@ class ScheduleListAdapter(scheduleSelectedListener: ScheduleSelectedListener) : 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ScheduleViewHolder {
-        return ScheduleViewHolder.create(
-            parent
-        )
+        return ScheduleViewHolder.create(parent)
     }
 
     override fun onBindViewHolder(holder: ScheduleViewHolder, position: Int) {
