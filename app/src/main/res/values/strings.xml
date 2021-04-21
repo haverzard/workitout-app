@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">WorkItOut</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="hello_home_second">Hello HomeSecondFragment. Arg: %1$s</string>
+    <string name="hello_dashboard_second">Hello HomeSecondFragment. Arg: %1$s</string>
+    <string name="hello_notifications_second">Hello HomeSecondFragment. Arg: %1$s</string>
+    <string name="title_news">News</string>
+    <string name="title_tracker">Tracker</string>
+    <string name="title_history">History</string>
+    <string name="title_schedule">Schedules</string>
+
+    <string name="home_second">Home Second</string>
+    <string name="add_schedule">Add Schedule</string>
+    <string name="button_save">Save</string>
+
+    <string name="fill_empty_field">Please enter all the data.</string>
+    <string name="schedule_created">Schedule has been created!</string>
+    <string name="enter_training_date">Enter Training Date</string>
+    <string name="enter_start_time">Enter Start Time</string>
+    <string name="enter_end_time">Enter End Time</string>
+    <string name="choose_exercise_type">Choose Exercise Type</string>
+    <string name="enter_correct_time">Make your start time is lower than your end time</string>
+    <string name="stop_tracking">Stop tracking your exercise</string>
+    <string name="launch_activity">Launch Activity</string>
+    <string name="preference_file_key">com.haverzard.workitout.PREFERENCE_FILE_KEY</string>
+    <string name="permission_rationale">Location permission needed for core functionality</string>
+</resources>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/mobile_navigation"
+            app:startDestination="@+id/navigation_news">
+
+    <fragment
+            android:id="@+id/navigation_news"
+            android:name="com.haverzard.workitout.ui.home.HomeFragment"
+            android:label="@string/title_news"
+            tools:layout="@layout/fragment_home">
+
+        <action
+                android:id="@+id/action_HomeFragment_to_HomeSecondFragment"
+                app:destination="@id/navigation_home_second"/>
+    </fragment>
+    <fragment
+            android:id="@+id/navigation_home_second"
+            android:name="com.haverzard.workitout.ui.home.HomeSecondFragment"
+            android:label="@string/home_second"
+            tools:layout="@layout/fragment_home_second">
+        <action
+                android:id="@+id/action_HomeSecondFragment_to_HomeFragment"
+                app:destination="@id/navigation_news"/>
+
+        <argument
+                android:name="myArg"
+                app:argType="string"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/navigation_tracker"
+            android:name="com.haverzard.workitout.ui.tracker.TrackerFragment"
+            android:label="@string/title_tracker"
+            tools:layout="@layout/fragment_tracker"/>
+
+    <fragment
+            android:id="@+id/navigation_history"
+            android:name="com.haverzard.workitout.ui.notifications.NotificationsFragment"
+            android:label="@string/title_history"
+            tools:layout="@layout/fragment_notifications"/>
+
+    <fragment
+            android:id="@+id/navigation_schedule"
+            android:name="com.haverzard.workitout.ui.schedule.ScheduleFragment"
+            android:label="@string/title_schedule"
+            tools:layout="@layout/fragment_schedule">
+
+            <action
+                    android:id="@+id/action_add_schedule"
+                    app:destination="@id/navigation_add_schedule"/>
+
+    </fragment>
+
+    <fragment
+            android:id="@+id/navigation_add_schedule"
+            android:name="com.haverzard.workitout.ui.schedule.AddScheduleFragment"
+            android:label="@string/add_schedule"
+            tools:layout="@layout/fragment_add_schedule">
+
+        <argument
+                android:name="type"
+                app:argType="string"/>
+    </fragment>
+
+</navigation>

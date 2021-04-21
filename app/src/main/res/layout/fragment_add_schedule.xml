@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".ui.schedule.AddScheduleFragment">
+
+            <TextView
+                    android:id="@+id/header_pick_exercise"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:text="@string/choose_exercise_type"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:layout_margin="@dimen/big_padding"/>
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_height="wrap_content">
+
+                <ImageButton
+                        android:id="@+id/exercise_cycling"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:src="@drawable/ic_directions_bike_white_24dp"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:layout_margin="@dimen/big_padding"/>
+
+                <ImageButton
+                        android:id="@+id/exercise_walking"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:src="@drawable/ic_directions_walk_white_24dp"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:layout_margin="@dimen/big_padding"/>
+            </LinearLayout>
+
+            <TextView
+                    android:id="@+id/pick_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:text="@string/enter_training_date"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:layout_margin="@dimen/big_padding"/>
+
+            <LinearLayout
+                    android:id="@+id/days_holder"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_height="match_parent">
+
+                <Button
+                        android:id="@+id/monday"
+                        android:text="Mon"
+                        android:textColor="@android:color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:layout_margin="4dp"/>
+
+                <Button
+                        android:id="@+id/tuesday"
+                        android:text="Tue"
+                        android:textColor="@android:color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:layout_margin="4dp"/>
+
+                <Button
+                        android:id="@+id/wednesday"
+                        android:text="Wed"
+                        android:textColor="@android:color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:layout_margin="4dp"/>
+
+                <Button
+                        android:id="@+id/thursday"
+                        android:text="Thu"
+                        android:textColor="@android:color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:layout_margin="4dp"/>
+
+                <Button
+                        android:id="@+id/friday"
+                        android:text="Fri"
+                        android:textColor="@android:color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:layout_margin="4dp"/>
+
+                <Button
+                        android:id="@+id/saturday"
+                        android:text="Sat"
+                        android:textColor="@android:color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:layout_margin="4dp"/>
+
+                <Button
+                        android:id="@+id/sunday"
+                        android:text="Sun"
+                        android:textColor="@android:color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorPrimary"
+                        android:minHeight="48dp"
+                        android:minWidth="48dp"
+                        android:layout_margin="4dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <TextView
+                        android:id="@+id/pick_start_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="100dp"
+                        android:minHeight="48dp"
+                        android:text="@string/enter_start_time"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:layout_margin="@dimen/big_padding"/>
+
+                <TextView
+                        android:text="-"
+                        android:minWidth="25dp"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textView2"/>
+
+                <TextView
+                        android:id="@+id/pick_end_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="100dp"
+                        android:minHeight="48dp"
+                        android:text="@string/enter_end_time"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:layout_margin="@dimen/big_padding"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:layout_margin="@dimen/big_padding">
+
+                <TextView
+                        android:id="@+id/target_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="100dp"
+                        android:minHeight="48dp"
+                        android:text="Target :"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:textSize="18sp"/>
+
+                <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:minWidth="48dp"
+                        android:hint="Enter Your Target"
+                        android:ems="10"
+                        android:id="@+id/enter_target"
+                        android:layout_weight="1"/>
+
+                <TextView
+                        android:text="km"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:id="@+id/target_unit"
+                        android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <Button
+                    android:id="@+id/button_save"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:text="@string/button_save"
+                    android:layout_margin="@dimen/big_padding"
+                    android:textColor="@color/saveButton"/>
+
+            <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="100dp"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+</ScrollView>
