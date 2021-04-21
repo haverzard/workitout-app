@@ -21,13 +21,14 @@
 
 
         <LinearLayout
+                android:id="@+id/btn_container"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:gravity="center"
                 android:layout_height="wrap_content">
 
             <ImageButton
-                    android:id="@+id/track_cycling"
+                    android:id="@+id/exercise_cycling"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/colorPrimary"
@@ -37,7 +38,7 @@
                     android:layout_margin="@dimen/big_padding"/>
 
             <ImageButton
-                    android:id="@+id/track_walking"
+                    android:id="@+id/exercise_walking"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/colorPrimary"
