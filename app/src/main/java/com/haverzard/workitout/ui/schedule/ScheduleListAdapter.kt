@@ -55,7 +55,6 @@ class ScheduleListAdapter(scheduleSelectedListener: ScheduleSelectedListener) : 
             }
             holder.bind(singleExerciseSchedule.exercise_type, date.substring(0, date.length - 9), time, target)
         } else if (routineExerciseSchedule != null) {
-            System.out.println(routineExerciseSchedule)
             val days = routineExerciseSchedule.days.joinToString(separator = "-")
             val time = "%02d:%02d - %02d:%02d".format(
                 routineExerciseSchedule.start_time.hours,

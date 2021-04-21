@@ -30,7 +30,7 @@ interface SingleExerciseScheduleDao {
     @Query("SELECT * FROM single_exercise_schedule_table WHERE (date = DATE('now', 'localtime') AND start_time >= TIME('now', 'localtime')) OR date > DATE('now', 'localtime') ORDER BY date, start_time ASC")
     fun getCurrentSchedules(): Flow<List<SingleExerciseSchedule>>
 
-    @Query("SELECT * FROM single_exercise_schedule_table WHERE start_time <= TIME('now') AND end_time >= TIME('now') AND date == DATE('now') LIMIT 1")
+    @Query("SELECT * FROM single_exercise_schedule_table WHERE start_time <= TIME('now', 'localtime') AND end_time >= TIME('now', 'localtime') AND date == DATE('now', 'localtime') LIMIT 1")
     fun getCurrentSchedule(): SingleExerciseSchedule?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

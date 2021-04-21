@@ -1,9 +1,8 @@
 package com.haverzard.workitout
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.ServiceConnection
-import android.content.SharedPreferences
+import android.content.*
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.IBinder
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -13,28 +12,29 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.haverzard.workitout.services.ScheduleService
 import com.haverzard.workitout.services.SharedPreferenceUtil
 import com.haverzard.workitout.services.TrackingService
 
-class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var sharedPreferences: SharedPreferences
+//    private lateinit var sharedPreferences: SharedPreferences
 
-    private var trackingService: TrackingService? = null
-    private var trackingServiceBound = false
+    private var scheduleService: ScheduleService? = null
+    private var scheduleServiceBound = false
 
-    private val trackingServiceConnection = object : ServiceConnection {
+    private val scheduleServiceConnection = object : ServiceConnection {
 
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            val binder = service as TrackingService.LocalBinder
-            trackingService = binder.service
-            trackingServiceBound = true
+            val binder = service as ScheduleService.LocalBinder
+            scheduleService = binder.service
+            scheduleServiceBound = true
         }
 
         override fun onServiceDisconnected(name: ComponentName) {
-            trackingService = null
-            trackingServiceBound = false
+            scheduleService = null
+            scheduleServiceBound = false
         }
     }
 
@@ -43,8 +43,6 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         setContentView(R.layout.activity_main)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
-        sharedPreferences =
-            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -54,20 +52,20 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         navView.setupWithNavController(navController)
     }
 
-    override fun onStop() {
-        if (trackingServiceBound) {
-            unbindService(trackingServiceConnection)
-            trackingServiceBound = false
-        }
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+    override fun onStart() {
+        super.onStart()
 
-        super.onStop()
+        val scheduleIntent = Intent(this, ScheduleService::class.java)
+        bindService(scheduleIntent, scheduleServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        // Updates button states if new while in use location is added to SharedPreferences.
-        if (key == SharedPreferenceUtil.KEY_FOREGROUND_ENABLED) {
+    override fun onStop() {
+        if (scheduleServiceBound) {
+            unbindService(scheduleServiceConnection)
+            scheduleServiceBound = false
         }
+
+        super.onStop()
     }
 
     override fun onSupportNavigateUp(): Boolean {
