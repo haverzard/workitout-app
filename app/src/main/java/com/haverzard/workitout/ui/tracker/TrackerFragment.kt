@@ -16,12 +16,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
-import android.widget.Button
-import android.widget.ImageView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import com.haverzard.workitout.BuildConfig
 import com.haverzard.workitout.R
@@ -46,6 +47,7 @@ class TrackerFragment : Fragment(), SensorEventListener {
     private var trackingServiceBound = false
 
     private var currentDegree = 0f
+    private var exerciseType = ""
 
     private val trackingServiceConnection = object : ServiceConnection {
 
@@ -76,14 +78,70 @@ class TrackerFragment : Fragment(), SensorEventListener {
         sharedPreferences =
             activity!!.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
-        root.findViewById<Button>(R.id.btn_track).setOnClickListener {
+        var cyclingButton = root.findViewById<ImageButton>(R.id.exercise_cycling)
+        var walkingButton = root.findViewById<ImageButton>(R.id.exercise_walking)
+        var trackButton = root.findViewById<MaterialButton>(R.id.btn_track)
+        if (!sharedPreferences.getBoolean(SharedPreferenceUtil.KEY_FOREGROUND_ENABLED, false)) {
+            val editor = sharedPreferences.edit()
+            editor.putString(SharedPreferenceUtil.EXERCISE_TYPE, "")
+            editor.commit()
+        } else {
+            trackButton.text = "Stop Tracking"
+            trackButton.backgroundTintList = ContextCompat.getColorStateList(context!!, android.R.color.holo_red_dark)
+            root.findViewById<LinearLayout>(R.id.btn_container).visibility = View.INVISIBLE
+        }
+        walkingButton.setOnClickListener {
+            val editor = sharedPreferences.edit()
+            editor.putString(SharedPreferenceUtil.EXERCISE_TYPE, "walking")
+            editor.commit()
+            walkingButton.setBackgroundColor(resources.getColor(R.color.selected))
+            cyclingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+        }
+        cyclingButton.setOnClickListener {
+            val editor = sharedPreferences.edit()
+            editor.putString(SharedPreferenceUtil.EXERCISE_TYPE, "cycling")
+            editor.commit()
+            cyclingButton.setBackgroundColor(resources.getColor(R.color.selected))
+            walkingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+        }
+
+        trackButton.setOnClickListener {
             val enabled = sharedPreferences.getBoolean(
                 SharedPreferenceUtil.KEY_FOREGROUND_ENABLED, false)
+            val exerciseType = sharedPreferences.getString(
+                SharedPreferenceUtil.EXERCISE_TYPE, "")
+            if (exerciseType == "") {
+                Toast.makeText(
+                    activity,
+                    "Pick an exercise type!",
+                    Toast.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
             if (enabled) {
-                trackingService?.unsubscribeToLocationUpdates()
+                if (exerciseType == "cycling") {
+                    trackingService?.unsubscribeToLocationUpdates()
+                } else {
+                    trackingService?.unsubscribeToStepCounter()
+                }
+                cyclingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                walkingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                val editor = sharedPreferences.edit()
+                editor.putString(SharedPreferenceUtil.EXERCISE_TYPE, "")
+                editor.commit()
+                root.findViewById<LinearLayout>(R.id.btn_container).visibility = View.VISIBLE
+                (it as MaterialButton).text = "Start Tracking"
+                it.backgroundTintList = ContextCompat.getColorStateList(context!!, android.R.color.holo_green_dark)
             } else {
                 if (permissionApproved()) {
-                    trackingService?.subscribeToLocationUpdates()
+                    if (exerciseType == "cycling") {
+                        trackingService?.subscribeToLocationUpdates()
+                    } else {
+                        trackingService?.subscribeToStepCounter()
+                    }
+                    root.findViewById<LinearLayout>(R.id.btn_container).visibility = View.INVISIBLE
+                    (it as MaterialButton).text = "Stop Tracking"
+                    it.backgroundTintList = ContextCompat.getColorStateList(context!!, android.R.color.holo_red_dark)
                 } else {
                     requestForegroundPermissions()
                 }
@@ -109,7 +167,6 @@ class TrackerFragment : Fragment(), SensorEventListener {
     }
 
     override fun onPause() {
-        System.out.println("oof")
         if (trackingServiceBound) {
             activity!!.unbindService(trackingServiceConnection)
             trackingServiceBound = false
@@ -130,7 +187,6 @@ class TrackerFragment : Fragment(), SensorEventListener {
                     trackingService?.subscribeToLocationUpdates()
                 else -> {
                     // disable button
-
                     Snackbar.make(
                         view!!,
                         "Permission was denied, but app requires it for core functionality",
@@ -177,9 +233,13 @@ class TrackerFragment : Fragment(), SensorEventListener {
 
     private fun permissionApproved(): Boolean {
         return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
-            context!!,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
+                context!!,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            && PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
+                context!!,
+                Manifest.permission.ACTIVITY_RECOGNITION
+            )
     }
 
     private fun requestForegroundPermissions() {
@@ -195,7 +255,7 @@ class TrackerFragment : Fragment(), SensorEventListener {
                     // Request permission
                     ActivityCompat.requestPermissions(
                         activity!!,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACTIVITY_RECOGNITION),
                         REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
                     )
                 }
@@ -203,7 +263,7 @@ class TrackerFragment : Fragment(), SensorEventListener {
         } else {
             ActivityCompat.requestPermissions(
                 activity!!,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACTIVITY_RECOGNITION),
                 REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
             )
         }
@@ -224,7 +284,7 @@ class TrackerFragment : Fragment(), SensorEventListener {
                     // Request permission
                     ActivityCompat.requestPermissions(
                         activity!!,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACTIVITY_RECOGNITION),
                         REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
                     )
                 }
@@ -232,7 +292,7 @@ class TrackerFragment : Fragment(), SensorEventListener {
         } else {
             ActivityCompat.requestPermissions(
                 activity!!,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACTIVITY_RECOGNITION),
                 REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
             )
         }

@@ -3,44 +3,55 @@ package com.haverzard.workitout.services
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.hardware.Sensor
+import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.location.Location
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
+import android.view.animation.Animation
+import android.view.animation.RotateAnimation
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
 import com.haverzard.workitout.MainActivity
 import com.haverzard.workitout.R
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
-class TrackingService: Service() {
+class TrackingService: Service(), SensorEventListener {
     private lateinit var notificationManager: NotificationManager
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var sensorManager: SensorManager
+        private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
 
-    private var serviceRunningInForeground: Boolean = false
+    // test
+    private var steps = 0
+
     private var configurationChange: Boolean = false
     private var currentLocation: Location? = null
     private val localBinder = LocalBinder()
 
     override fun onCreate() {
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         locationRequest = LocationRequest.create().apply {
-            interval = TimeUnit.SECONDS.toMillis(1)
+            interval = TimeUnit.SECONDS.toMillis(2)
             fastestInterval = TimeUnit.SECONDS.toMillis(1)
-            maxWaitTime = TimeUnit.MINUTES.toMillis(2)
+            maxWaitTime = TimeUnit.MINUTES.toMillis(1)
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
+                System.out.println("update")
                 super.onLocationResult(locationResult)
                 currentLocation = locationResult.lastLocation
 
@@ -48,11 +59,9 @@ class TrackingService: Service() {
                 intent.putExtra(EXTRA_LOCATION, currentLocation)
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
 
-                if (serviceRunningInForeground) {
-                    notificationManager.notify(
-                        NOTIFICATION_ID,
-                        generateNotification(currentLocation))
-                }
+                notificationManager.notify(
+                    NOTIFICATION_ID,
+                    generateNotification("${currentLocation!!.latitude} ${currentLocation!!.longitude}"))
             }
         }
     }
@@ -71,39 +80,28 @@ class TrackingService: Service() {
     }
 
     override fun onBind(intent: Intent): IBinder {
-        // MainActivity (client) comes into foreground and binds to service, so the service can
-        // become a background services.
+        // application is on foreground
         stopForeground(true)
-        serviceRunningInForeground = false
         configurationChange = false
         return localBinder
     }
 
     override fun onRebind(intent: Intent) {
-        // MainActivity (client) returns to the foreground and rebinds to service, so the service
-        // can become a background services.
+        // application is on foreground
         stopForeground(true)
-        serviceRunningInForeground = false
         configurationChange = false
         super.onRebind(intent)
     }
 
-    override fun onUnbind(intent: Intent): Boolean {
-        // MainActivity (client) leaves foreground, so service needs to become a foreground service
-        // to maintain the 'while-in-use' label.
-        // NOTE: If this method is called due to a configuration change in MainActivity,
-        // we do nothing.
-        System.out.println("unbind")
-        if (SharedPreferenceUtil.getLocationTrackingPref(this) || true) {
-            System.out.println("nais")
-            val notification = generateNotification(currentLocation)
-            startForeground(NOTIFICATION_ID, notification)
-            serviceRunningInForeground = true
-        }
-
-        // Ensures onRebind() is called if MainActivity (client) rebinds.
-        return true
+    override fun onSensorChanged(event: SensorEvent) {
+        // get angle
+        steps++
+        notificationManager.notify(
+            NOTIFICATION_ID,
+            generateNotification("You have walked ${steps} steps"))
     }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
     override fun onDestroy() {}
 
@@ -113,22 +111,33 @@ class TrackingService: Service() {
         configurationChange = true
     }
 
+    fun subscribeToStepCounter() {
+        SharedPreferenceUtil.saveLocationTrackingPref(this, true)
+        sensorManager.registerListener(
+            this,
+            sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR),
+            SensorManager.SENSOR_DELAY_GAME
+        )
+        steps = 0
+    }
+
+    fun unsubscribeToStepCounter() {
+        SharedPreferenceUtil.saveLocationTrackingPref(this, false)
+        sensorManager.unregisterListener(this)
+        notificationManager.cancel(NOTIFICATION_ID)
+    }
+
     fun subscribeToLocationUpdates() {
-        System.out.println("Hehe")
         SharedPreferenceUtil.saveLocationTrackingPref(this, true)
 
-        // Binding to this service doesn't actually trigger onStartCommand(). That is needed to
-        // ensure this Service can be promoted to a foreground service, i.e., the service needs to
-        // be officially started (which we do here).
+        // start service
         startService(Intent(applicationContext, TrackingService::class.java))
-        System.out.println("Failed")
 
         try {
             fusedLocationProviderClient.requestLocationUpdates(
                 locationRequest, locationCallback, Looper.getMainLooper())
         } catch (unlikely: SecurityException) {
             SharedPreferenceUtil.saveLocationTrackingPref(this, false)
-            System.out.println("Failed")
         }
     }
 
@@ -141,15 +150,13 @@ class TrackingService: Service() {
                 }
             }
             SharedPreferenceUtil.saveLocationTrackingPref(this, false)
+            notificationManager.cancel(NOTIFICATION_ID)
         } catch (unlikely: SecurityException) {
             SharedPreferenceUtil.saveLocationTrackingPref(this, true)
         }
     }
 
-    /*
-     * Generates a BIG_TEXT_STYLE Notification that represent latest location.
-     */
-    private fun generateNotification(location: Location?): Notification {
+    private fun generateNotification(mainNotificationText: String): Notification {
         System.out.println("Generating...")
         // Main steps for building a BIG_TEXT_STYLE notification:
         //      0. Get data
@@ -159,7 +166,6 @@ class TrackingService: Service() {
         //      4. Build and issue the notification
 
         // 0. Get data
-        val mainNotificationText = "Hi"
         val titleText = getString(R.string.app_name)
 
         // 1. Create Notification Channel for O+ and beyond devices (26+).
@@ -237,6 +243,7 @@ class TrackingService: Service() {
 internal object SharedPreferenceUtil {
 
     const val KEY_FOREGROUND_ENABLED = "tracking_foreground_location"
+    const val EXERCISE_TYPE = "exercise_type"
 
     fun getLocationTrackingPref(context: Context): Boolean =
         context.getSharedPreferences(
@@ -244,9 +251,12 @@ internal object SharedPreferenceUtil {
             Context.MODE_PRIVATE,
         ).getBoolean(KEY_FOREGROUND_ENABLED, false)
 
-    fun saveLocationTrackingPref(context: Context, requestingLocationUpdates: Boolean) =
-        context.getSharedPreferences(
+    fun saveLocationTrackingPref(context: Context, requestingLocationUpdates: Boolean) {
+        var editor = context.getSharedPreferences(
             context.getString(R.string.preference_file_key),
             Context.MODE_PRIVATE,
-        ).edit().putBoolean(KEY_FOREGROUND_ENABLED, requestingLocationUpdates).commit()
+        ).edit()
+        editor.putBoolean(KEY_FOREGROUND_ENABLED, requestingLocationUpdates)
+        editor.commit()
+    }
 }
