@@ -227,7 +227,7 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
                     )
 
                     var id = scheduleViewModel.insertRoutineSchedule(schedule)
-                    var currentDay = calendar.get(Calendar.DAY_OF_WEEK) - 1
+                    var currentDay = (calendar.get(Calendar.DAY_OF_WEEK) - 2) % 7
                     schedule.days.forEach {
                         val day = Day.values().indexOf(it)
                         var alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->

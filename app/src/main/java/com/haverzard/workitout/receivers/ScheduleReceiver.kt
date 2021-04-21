@@ -24,6 +24,7 @@ class ScheduleReceiver: BroadcastReceiver() {
         val extras = intent.extras!!
         val start = extras.getBoolean("start", false)
         val id = extras.getLong("requestCode", 0)
+        System.out.println(id)
         var title = "Let's work out!"
         var body = ""
 
@@ -49,7 +50,7 @@ class ScheduleReceiver: BroadcastReceiver() {
                     )
 
                     var alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
-                        intent.putExtra("requestCode", schedule.id*2);
+                        intent.putExtra("requestCode", (schedule.id*2).toLong());
                         intent.putExtra("start", false);
                         PendingIntent.getBroadcast(context, schedule.id*8, intent, PendingIntent.FLAG_UPDATE_CURRENT)
                     }
@@ -69,8 +70,8 @@ class ScheduleReceiver: BroadcastReceiver() {
                         schedule.exercise_type.name.toLowerCase()
                     )
                     var alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
-                        intent.putExtra("requestCode", (schedule.id + 1)*2 - 1);
-                        intent.putExtra("start", true);
+                        intent.putExtra("requestCode", ((schedule.id + 1)*2 - 1).toLong());
+                        intent.putExtra("start", false);
                         PendingIntent.getBroadcast(context, (schedule.id+1)*8-day-1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
                     }
                     alarmManager.setExact(
@@ -83,7 +84,7 @@ class ScheduleReceiver: BroadcastReceiver() {
                     body = "You have completed your work out"
                     Intent(context, ScheduleReceiver::class.java).let { intent ->
                         intent.putExtra("requestCode", (schedule.id + 1)*2 - 1);
-                        intent.putExtra("start", false);
+                        intent.putExtra("start", true);
                         PendingIntent.getBroadcast(context, (schedule.id+1)*8-day-1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
                     }
                 }
