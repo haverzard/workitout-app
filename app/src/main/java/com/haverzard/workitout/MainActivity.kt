@@ -12,31 +12,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.haverzard.workitout.services.ScheduleService
-import com.haverzard.workitout.services.SharedPreferenceUtil
-import com.haverzard.workitout.services.TrackingService
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-//    private lateinit var sharedPreferences: SharedPreferences
-
-    private var scheduleService: ScheduleService? = null
-    private var scheduleServiceBound = false
-
-    private val scheduleServiceConnection = object : ServiceConnection {
-
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            val binder = service as ScheduleService.LocalBinder
-            scheduleService = binder.service
-            scheduleServiceBound = true
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            scheduleService = null
-            scheduleServiceBound = false
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,17 +33,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
-        val scheduleIntent = Intent(this, ScheduleService::class.java)
-        bindService(scheduleIntent, scheduleServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
     override fun onStop() {
-        if (scheduleServiceBound) {
-            unbindService(scheduleServiceConnection)
-            scheduleServiceBound = false
-        }
-
         super.onStop()
     }
 

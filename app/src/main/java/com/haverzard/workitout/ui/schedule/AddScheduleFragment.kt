@@ -1,5 +1,9 @@
 package com.haverzard.workitout.ui.schedule
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.text.InputType
@@ -17,6 +21,7 @@ import com.haverzard.workitout.entities.Day
 import com.haverzard.workitout.entities.ExerciseType
 import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
+import com.haverzard.workitout.receivers.ScheduleReceiver
 import com.haverzard.workitout.viewmodel.ScheduleViewModel
 import com.haverzard.workitout.viewmodel.ScheduleViewModelFactory
 import java.sql.Date
@@ -25,6 +30,7 @@ import java.sql.Time
 class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePickerDialogFragmentEvents {
 
     private lateinit var scheduleViewModel: ScheduleViewModel
+    private lateinit var alarmManager: AlarmManager
     private val datePicker = DatePickerFragment()
     private val timePicker = TimePickerFragment()
     private val safeArgs: AddScheduleFragmentArgs by navArgs()
@@ -43,6 +49,7 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
         scheduleViewModel = ViewModelProviders.of(
             this, ScheduleViewModelFactory((activity?.application as WorkOutApplication).repository)
         ).get(ScheduleViewModel::class.java)
+        alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val root = inflater.inflate(R.layout.fragment_add_schedule, container, false)
 
         when (safeArgs.type) {
@@ -155,6 +162,27 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
                 ).show()
                 return@setOnClickListener
             }
+
+            // setup time
+            var calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minute = calendar.get(Calendar.MINUTE)
+            val second = calendar.get(Calendar.SECOND)
+            val currentDate = Date(year, month, day).time + Time(hour, minute, second).time
+            val yearSub = Date(1970, 0, 0).time
+            val timeSub = Time(hour, minute, second).time
+
+            if (date != null && date!!.time + startTime!!.time <= currentDate) {
+                Toast.makeText(
+                    activity,
+                    "Schedule only for future exercise",
+                    Toast.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
             if (startTime!!.time >= endTime!!.time) {
                 Toast.makeText(
                     activity,
@@ -164,28 +192,51 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
                 return@setOnClickListener
             }
             if (safeArgs.type == "single") {
-                scheduleViewModel.insertSingleSchedule(
-                    SingleExerciseSchedule(
-                        id = 0,
-                        routine_id = null,
-                        exercise_type = exerciseType!!,
-                        target = target,
-                        date = date!!,
-                        start_time = startTime!!,
-                        end_time = endTime!!,
-                    )
+                val schedule = SingleExerciseSchedule(
+                    id = 0,
+                    routine_id = null,
+                    exercise_type = exerciseType!!,
+                    target = target,
+                    date = date!!,
+                    start_time = startTime!!,
+                    end_time = endTime!!,
+                )
+                scheduleViewModel.insertSingleSchedule(schedule)
+                var alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
+                    PendingIntent.getBroadcast(context, schedule.id*8, intent, 0)
+                }
+                alarmManager.setExact(
+                    AlarmManager.RTC,
+                    date!!.time - yearSub + startTime!!.time,
+                    alarmIntent
                 )
             } else {
-                scheduleViewModel.insertRoutineSchedule(
-                    RoutineExerciseSchedule(
-                        id = 0,
-                        exercise_type = exerciseType!!,
-                        target = target,
-                        days = days.toList().sorted(),
-                        start_time = startTime!!,
-                        end_time = endTime!!,
-                    )
+                val schedule = RoutineExerciseSchedule(
+                    id = 0,
+                    exercise_type = exerciseType!!,
+                    target = target,
+                    days = days.toList().sorted(),
+                    start_time = startTime!!,
+                    end_time = endTime!!,
                 )
+                scheduleViewModel.insertRoutineSchedule(schedule)
+                var currentDay = calendar.get(Calendar.DAY_OF_WEEK) - 1
+                schedule.days.forEach {
+                    val day = Day.values().indexOf(it)
+                    var alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
+                        PendingIntent.getBroadcast(context, (schedule.id+1)*8-day-1, intent, 0)
+                    }
+                    var delta = (day - currentDay)
+                    if (delta < 0) {
+                        delta += 7
+                    }
+                    alarmManager.setRepeating(
+                        AlarmManager.RTC,
+                        currentDate - timeSub - yearSub + startTime!!.time + AlarmManager.INTERVAL_DAY * delta,
+                        AlarmManager.INTERVAL_DAY * 7,
+                        alarmIntent
+                    )
+                }
             }
             Toast.makeText(
                 activity,

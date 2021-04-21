@@ -20,7 +20,6 @@ class ScheduleViewModel(private val repository: WorkOutRepository) : ViewModel()
 
     init {
         schedules.addSource(repository.schedules.asLiveData()) { value ->
-            System.out.println(value)
             run {
                 singleSchedules.clear()
                 value.forEach {
@@ -30,7 +29,6 @@ class ScheduleViewModel(private val repository: WorkOutRepository) : ViewModel()
             }
         }
         schedules.addSource(repository.routines.asLiveData()) { value ->
-            System.out.println(value)
             run {
                 routineSchedules.clear()
                 value.forEach {
