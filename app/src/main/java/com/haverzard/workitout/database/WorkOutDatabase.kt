@@ -6,17 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.haverzard.workitout.dao.HistoryDao
 import com.haverzard.workitout.dao.RoutineExerciseScheduleDao
 import com.haverzard.workitout.dao.SingleExerciseScheduleDao
-import com.haverzard.workitout.entities.HistoryConverters
-import com.haverzard.workitout.entities.RoutineExerciseSchedule
-import com.haverzard.workitout.entities.ScheduleEnumConverters
-import com.haverzard.workitout.entities.SingleExerciseSchedule
+import com.haverzard.workitout.entities.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Database(
-        entities = [RoutineExerciseSchedule::class, SingleExerciseSchedule::class],
+        entities = [RoutineExerciseSchedule::class, SingleExerciseSchedule::class, History::class],
         version = 1,
         exportSchema = false)
 @TypeConverters(ScheduleEnumConverters::class, HistoryConverters::class)
@@ -25,6 +23,7 @@ public abstract class WorkOutDatabase : RoomDatabase() {
     // DAOs
     abstract fun singleExerciseScheduleDao(): SingleExerciseScheduleDao
     abstract fun routineExerciseScheduleDao(): RoutineExerciseScheduleDao
+    abstract fun historyDao(): HistoryDao
 
     private class WordDatabaseCallback(
         private val scope: CoroutineScope
