@@ -197,7 +197,6 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
                 if (safeArgs.type == "single") {
                     val schedule = SingleExerciseSchedule(
                         id = 0,
-                        routine_id = null,
                         exercise_type = exerciseType!!,
                         target = target,
                         date = date!!,

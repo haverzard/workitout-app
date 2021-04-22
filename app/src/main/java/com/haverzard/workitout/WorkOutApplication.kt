@@ -14,6 +14,7 @@ class WorkOutApplication : Application() {
         WorkOutRepository(
             database.singleExerciseScheduleDao(),
             database.routineExerciseScheduleDao(),
+            database.historyDao(),
         )
     }
 
