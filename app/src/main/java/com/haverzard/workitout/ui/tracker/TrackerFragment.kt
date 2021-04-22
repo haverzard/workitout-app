@@ -82,25 +82,19 @@ class TrackerFragment : Fragment(), SensorEventListener {
         var walkingButton = root.findViewById<ImageButton>(R.id.exercise_walking)
         var trackButton = root.findViewById<MaterialButton>(R.id.btn_track)
         if (!sharedPreferences.getBoolean(SharedPreferenceUtil.KEY_FOREGROUND_ENABLED, false)) {
-            val editor = sharedPreferences.edit()
-            editor.putString(SharedPreferenceUtil.EXERCISE_TYPE, "")
-            editor.commit()
+            SharedPreferenceUtil.saveExerciseType(activity!!, "")
         } else {
             trackButton.text = "Stop Tracking"
             trackButton.backgroundTintList = ContextCompat.getColorStateList(context!!, android.R.color.holo_red_dark)
             root.findViewById<LinearLayout>(R.id.btn_container).visibility = View.INVISIBLE
         }
         walkingButton.setOnClickListener {
-            val editor = sharedPreferences.edit()
-            editor.putString(SharedPreferenceUtil.EXERCISE_TYPE, "walking")
-            editor.commit()
+            SharedPreferenceUtil.saveExerciseType(activity!!, "Walking")
             walkingButton.setBackgroundColor(resources.getColor(R.color.selected))
             cyclingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
         }
         cyclingButton.setOnClickListener {
-            val editor = sharedPreferences.edit()
-            editor.putString(SharedPreferenceUtil.EXERCISE_TYPE, "cycling")
-            editor.commit()
+            SharedPreferenceUtil.saveExerciseType(activity!!, "Cycling")
             cyclingButton.setBackgroundColor(resources.getColor(R.color.selected))
             walkingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
         }
@@ -109,7 +103,7 @@ class TrackerFragment : Fragment(), SensorEventListener {
             val enabled = sharedPreferences.getBoolean(
                 SharedPreferenceUtil.KEY_FOREGROUND_ENABLED, false)
             val exerciseType = sharedPreferences.getString(
-                SharedPreferenceUtil.EXERCISE_TYPE, "")
+                SharedPreferenceUtil.KEY_EXERCISE_TYPE, "")
             if (exerciseType == "") {
                 Toast.makeText(
                     activity,
@@ -119,22 +113,20 @@ class TrackerFragment : Fragment(), SensorEventListener {
                 return@setOnClickListener
             }
             if (enabled) {
-                if (exerciseType == "cycling") {
+                if (exerciseType == "Cycling") {
                     trackingService?.unsubscribeToLocationUpdates()
                 } else {
                     trackingService?.unsubscribeToStepCounter()
                 }
                 cyclingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
                 walkingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
-                val editor = sharedPreferences.edit()
-                editor.putString(SharedPreferenceUtil.EXERCISE_TYPE, "")
-                editor.commit()
+                SharedPreferenceUtil.saveExerciseType(activity!!, "")
                 root.findViewById<LinearLayout>(R.id.btn_container).visibility = View.VISIBLE
                 (it as MaterialButton).text = "Start Tracking"
                 it.backgroundTintList = ContextCompat.getColorStateList(context!!, android.R.color.holo_green_dark)
             } else {
                 if (permissionApproved()) {
-                    if (exerciseType == "cycling") {
+                    if (exerciseType == "Cycling") {
                         trackingService?.subscribeToLocationUpdates()
                     } else {
                         trackingService?.subscribeToStepCounter()
