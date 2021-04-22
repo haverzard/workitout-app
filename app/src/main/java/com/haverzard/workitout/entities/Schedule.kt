@@ -17,16 +17,9 @@ data class RoutineExerciseSchedule(
     val end_time: Time,
 )
 
-@Entity(tableName = "single_exercise_schedule_table",
-    foreignKeys = [ForeignKey(entity = RoutineExerciseSchedule::class,
-        parentColumns = arrayOf("id"),
-        childColumns = arrayOf("routine_id"),
-        onDelete = ForeignKey.CASCADE
-    )]
-)
+@Entity(tableName = "single_exercise_schedule_table")
 data class SingleExerciseSchedule(
     @PrimaryKey(autoGenerate = true) val id: Int,
-    val routine_id: Int?,
     val exercise_type: ExerciseType,
     val target: Double,
     val date: Date,
