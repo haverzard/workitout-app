@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Switch
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.observe
@@ -21,6 +22,7 @@ import com.haverzard.workitout.entities.Day
 import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.receivers.ScheduleReceiver
+import com.haverzard.workitout.services.SharedPreferenceUtil
 import com.haverzard.workitout.viewmodel.ScheduleViewModel
 import com.haverzard.workitout.viewmodel.ScheduleViewModelFactory
 import java.sql.Date
@@ -29,7 +31,9 @@ class ScheduleFragment : Fragment() {
 
     private lateinit var scheduleViewModel: ScheduleViewModel
     private lateinit var alarmManager: AlarmManager
+
     private val scheduleTypeDialog = ScheduleTypeDialog()
+    private var autoTrack = false
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -44,6 +48,14 @@ class ScheduleFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_schedule, container, false)
         root.findViewById<FloatingActionButton>(R.id.fab)?.setOnClickListener {
             scheduleTypeDialog.show(fragmentManager, "timePicker")
+        }
+
+        autoTrack = SharedPreferenceUtil.getAutoTrackPref(context!!)
+        var autoTrackSwitch = root.findViewById<Switch>(R.id.auto_track_switch)
+        autoTrackSwitch?.isChecked = autoTrack
+        autoTrackSwitch?.setOnClickListener {
+            autoTrack = !autoTrack
+            SharedPreferenceUtil.saveAutoTrackPref(context!!, autoTrack)
         }
 
         val recyclerView = root.findViewById<RecyclerView>(R.id.recyclerview)

@@ -18,6 +18,7 @@
 
             <TextView
                     android:id="@+id/header_pick_exercise"
+                    android:textColor="@color/black"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="48dp"
@@ -200,6 +201,7 @@
 
                 <TextView
                         android:id="@+id/target_text"
+                        android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:minWidth="100dp"
@@ -221,6 +223,7 @@
 
                 <TextView
                         android:text="km"
+                        android:textColor="@color/black"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
