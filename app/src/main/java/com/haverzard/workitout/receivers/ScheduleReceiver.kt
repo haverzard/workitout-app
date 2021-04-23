@@ -81,7 +81,7 @@ class ScheduleReceiver: BroadcastReceiver() {
                         serviceIntent.putExtra("exercise_type", schedule.exercise_type.name)
                         context.startService(serviceIntent)
                     }
-                    repository.deleteRoutineSchedule(schedule)
+                    repository.deleteSingleSchedule(schedule)
                 }
             } else {
                 val schedule = repository.getRoutineSchedule(((id-1) / 2).toInt())
