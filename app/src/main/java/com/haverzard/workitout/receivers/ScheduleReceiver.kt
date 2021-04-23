@@ -10,6 +10,8 @@ import androidx.core.app.NotificationCompat
 import com.haverzard.workitout.MainActivity
 import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
+import com.haverzard.workitout.services.SharedPreferenceUtil
+import com.haverzard.workitout.services.TrackingService
 import kotlinx.coroutines.launch
 import java.sql.Date
 
@@ -42,6 +44,8 @@ class ScheduleReceiver: BroadcastReceiver() {
         val yearSub = Date(1970, 0, 0).time
 
         scope.launch {
+            val autoTrack = SharedPreferenceUtil.getAutoTrackPref(context)
+            System.out.println(autoTrack)
             if (id % 2 == 0L) {
                 val schedule = repository.getSingleSchedule((id / 2).toInt())
                 if (start) {
@@ -59,9 +63,25 @@ class ScheduleReceiver: BroadcastReceiver() {
                         schedule.date.time - yearSub + schedule.end_time.time,
                         alarmIntent
                     )
+                    if (autoTrack) {
+                        System.out.println("Yes")
+                        var serviceIntent = Intent(context, TrackingService::class.java)
+                        serviceIntent.putExtra("start", true)
+                        serviceIntent.putExtra("exercise_type", schedule.exercise_type.name)
+                        serviceIntent.putExtra("target", schedule.target)
+                        context.startService(serviceIntent)
+                    }
+                    repository.updateSingleSchedule(schedule.id)
                 } else {
                     title = "Work out ends!"
                     body = "You have completed your work out"
+                    if (autoTrack) {
+                        var serviceIntent = Intent(context, TrackingService::class.java)
+                        serviceIntent.putExtra("start", false)
+                        serviceIntent.putExtra("exercise_type", schedule.exercise_type.name)
+                        context.startService(serviceIntent)
+                    }
+                    repository.deleteRoutineSchedule(schedule)
                 }
             } else {
                 val schedule = repository.getRoutineSchedule(((id-1) / 2).toInt())
@@ -79,6 +99,13 @@ class ScheduleReceiver: BroadcastReceiver() {
                         currentDate - yearSub + schedule.end_time.time,
                         alarmIntent
                     )
+                    if (autoTrack) {
+                        var serviceIntent = Intent(context, TrackingService::class.java)
+                        serviceIntent.putExtra("start", true)
+                        serviceIntent.putExtra("exercise_type", schedule.exercise_type.name)
+                        serviceIntent.putExtra("target", schedule.target)
+                        context.startService(serviceIntent)
+                    }
                 } else {
                     title = "Work out ends!"
                     body = "You have completed your work out"
@@ -86,6 +113,12 @@ class ScheduleReceiver: BroadcastReceiver() {
                         intent.putExtra("requestCode", (schedule.id + 1)*2 - 1);
                         intent.putExtra("start", true);
                         PendingIntent.getBroadcast(context, (schedule.id+1)*8-day-1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                    }
+                    if (autoTrack) {
+                        var serviceIntent = Intent(context, TrackingService::class.java)
+                        serviceIntent.putExtra("start", false)
+                        serviceIntent.putExtra("exercise_type", schedule.exercise_type.name)
+                        context.startService(serviceIntent)
                     }
                 }
             }
