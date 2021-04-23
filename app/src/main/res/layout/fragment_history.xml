@@ -16,7 +16,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="100dp"/>
         <TextView
-                android:id="@+id/no_history"
+                android:id="@+id/title_history"
                 android:text="Show your daily training histories"
                 android:gravity="center"
                 android:textSize="20dp"
