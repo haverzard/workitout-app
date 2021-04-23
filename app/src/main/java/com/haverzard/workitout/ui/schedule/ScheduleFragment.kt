@@ -51,7 +51,6 @@ class ScheduleFragment : Fragment() {
         }
 
         autoTrack = SharedPreferenceUtil.getAutoTrackPref(context!!)
-        System.out.println(autoTrack)
         var autoTrackSwitch = root.findViewById<Switch>(R.id.auto_track_switch)
         autoTrackSwitch?.isChecked = autoTrack
         autoTrackSwitch?.setOnClickListener {

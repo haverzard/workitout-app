@@ -26,7 +26,6 @@ class ScheduleReceiver: BroadcastReceiver() {
         val extras = intent.extras!!
         val start = extras.getBoolean("start", false)
         val id = extras.getLong("requestCode", 0)
-        System.out.println(id)
         var title = "Let's work out!"
         var body = ""
 
@@ -45,7 +44,6 @@ class ScheduleReceiver: BroadcastReceiver() {
 
         scope.launch {
             val autoTrack = SharedPreferenceUtil.getAutoTrackPref(context)
-            System.out.println(autoTrack)
             if (id % 2 == 0L) {
                 val schedule = repository.getSingleSchedule((id / 2).toInt())
                 if (start) {
@@ -64,7 +62,6 @@ class ScheduleReceiver: BroadcastReceiver() {
                         alarmIntent
                     )
                     if (autoTrack) {
-                        System.out.println("Yes")
                         var serviceIntent = Intent(context, TrackingService::class.java)
                         serviceIntent.putExtra("start", true)
                         serviceIntent.putExtra("exercise_type", schedule.exercise_type.name)

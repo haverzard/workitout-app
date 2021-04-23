@@ -70,7 +70,6 @@ class TrackingService: Service(), SensorEventListener {
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                System.out.println("update")
                 super.onLocationResult(locationResult)
                 if (currentLocation != null) {
                     targetReached += currentLocation!!.distanceTo(locationResult.lastLocation).toDouble() / 1000
@@ -95,7 +94,6 @@ class TrackingService: Service(), SensorEventListener {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val exerciseType = intent.getStringExtra("exercise_type")
-        System.out.println(exerciseType)
         if (exerciseType == null) {
             val cancelLocationTrackingFromNotification =
                 intent.getBooleanExtra(EXTRA_CANCEL_LOCATION_TRACKING_FROM_NOTIFICATION, false)
@@ -107,12 +105,10 @@ class TrackingService: Service(), SensorEventListener {
         } else {
             val scheduledExerciseType = SharedPreferenceUtil.getExerciseType(this)
             val ableToStart = scheduledExerciseType == null || scheduledExerciseType == ""
-            System.out.println(scheduledExerciseType)
             if (ableToStart)
                 SharedPreferenceUtil.saveExerciseType(this, exerciseType!!)
             val start = intent.getBooleanExtra("start", false)
             target = intent.getDoubleExtra("target", 0.0)
-            System.out.printf("START %s\n", start)
             if (exerciseType!! == "Cycling") {
                 if (start && ableToStart) {
                     enableTarget = true
@@ -164,7 +160,6 @@ class TrackingService: Service(), SensorEventListener {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        System.out.println("New config")
         configurationChange = true
     }
 
@@ -185,7 +180,6 @@ class TrackingService: Service(), SensorEventListener {
     }
 
     fun saveData() {
-        System.out.println(startTime)
         enableTarget = false
         SharedPreferenceUtil.saveExerciseType(this, "")
         if (startTime != null) {
