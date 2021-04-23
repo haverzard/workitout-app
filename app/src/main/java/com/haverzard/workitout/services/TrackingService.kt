@@ -83,7 +83,7 @@ class TrackingService: Service(), SensorEventListener {
                 points.add(LatLng(currentLocation!!.latitude, currentLocation!!.longitude))
                 var notifText = "You have been cycling for ${targetReached} km"
                 if (enableTarget) {
-                    notifText += " - Your target is ${target} km"
+                    notifText += "\nYour target is ${target} km"
                 }
                 notificationManager.notify(
                     NOTIFICATION_ID,
@@ -94,15 +94,7 @@ class TrackingService: Service(), SensorEventListener {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val exerciseType = intent.getStringExtra("exercise_type")
-        if (exerciseType == null) {
-            val cancelLocationTrackingFromNotification =
-                intent.getBooleanExtra(EXTRA_CANCEL_LOCATION_TRACKING_FROM_NOTIFICATION, false)
-
-            if (cancelLocationTrackingFromNotification) {
-                unsubscribeToLocationUpdates()
-                stopSelf()
-            }
-        } else {
+        if (exerciseType != null) {
             val scheduledExerciseType = SharedPreferenceUtil.getExerciseType(this)
             val ableToStart = scheduledExerciseType == null || scheduledExerciseType == ""
             if (ableToStart)
@@ -145,9 +137,9 @@ class TrackingService: Service(), SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent) {
         targetReached += 1.0
-        var notifText = "You have been walking for ${targetReached.toInt()} steps"
+        var notifText = "You have been walking for ${targetReached.toInt()} steps."
         if (enableTarget) {
-            notifText += " - Your target is ${target.toInt()} steps"
+            notifText += " \nYour target is ${target.toInt()} steps."
         }
         notificationManager.notify(
             NOTIFICATION_ID,
@@ -218,9 +210,13 @@ class TrackingService: Service(), SensorEventListener {
             sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR),
             SensorManager.SENSOR_DELAY_GAME
         )
+        var notifText = "You have been walking for ${targetReached.toInt()} steps."
+        if (enableTarget) {
+            notifText += " \nYour target is ${target.toInt()} steps."
+        }
         notificationManager.notify(
             NOTIFICATION_ID,
-            generateNotification("You have been walking for ${targetReached.toInt()} steps"))
+            generateNotification(notifText))
     }
 
     fun unsubscribeToStepCounter() {
@@ -240,9 +236,13 @@ class TrackingService: Service(), SensorEventListener {
         try {
             fusedLocationProviderClient.requestLocationUpdates(
                 locationRequest, locationCallback, Looper.getMainLooper())
+            var notifText = "You have been cycling for ${targetReached} km."
+            if (enableTarget) {
+                notifText += " \nYour target is ${target} km."
+            }
             notificationManager.notify(
                 NOTIFICATION_ID,
-                generateNotification("You have been cycling for ${targetReached} km"))
+                generateNotification(notifText))
         } catch (unlikely: SecurityException) {
             SharedPreferenceUtil.saveLocationTrackingPref(this, false)
         }
@@ -293,7 +293,8 @@ class TrackingService: Service(), SensorEventListener {
         val launchActivityIntent = Intent(this, MainActivity::class.java)
 
         val cancelIntent = Intent(this, TrackingService::class.java)
-        cancelIntent.putExtra(EXTRA_CANCEL_LOCATION_TRACKING_FROM_NOTIFICATION, true)
+        cancelIntent.putExtra("start", false)
+        cancelIntent.putExtra("exercise_type", SharedPreferenceUtil.getExerciseType(this))
 
         val servicePendingIntent = PendingIntent.getService(
             this, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -315,7 +316,8 @@ class TrackingService: Service(), SensorEventListener {
             .setOngoing(true)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .addAction(
-                R.drawable.ic_launcher_background, getString(R.string.launch_activity),
+                R.drawable.ic_launcher_background,
+                getString(R.string.launch_activity),
                 activityPendingIntent
             )
             .addAction(
