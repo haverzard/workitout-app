@@ -96,23 +96,24 @@ class TrackingService: Service(), SensorEventListener {
         val exerciseType = intent.getStringExtra("exercise_type")
         if (exerciseType != null) {
             val scheduledExerciseType = SharedPreferenceUtil.getExerciseType(this)
-            val ableToStart = scheduledExerciseType == null || scheduledExerciseType == ""
-            if (ableToStart)
+            val sameAsScheduled = exerciseType == scheduledExerciseType
+            val isNotScheduled = scheduledExerciseType == null || scheduledExerciseType == ""
+            if (isNotScheduled)
                 SharedPreferenceUtil.saveExerciseType(this, exerciseType!!)
             val start = intent.getBooleanExtra("start", false)
             target = intent.getDoubleExtra("target", 0.0)
             if (exerciseType!! == "Cycling") {
-                if (start && ableToStart) {
+                if (start && isNotScheduled) {
                     enableTarget = true
                     subscribeToLocationUpdates()
-                } else {
+                } else if (!start && sameAsScheduled) {
                     unsubscribeToLocationUpdates()
                 }
             } else {
-                if (start && ableToStart) {
+                if (start && isNotScheduled) {
                     enableTarget = true
                     subscribeToStepCounter()
-                } else {
+                } else if (!start && sameAsScheduled) {
                     unsubscribeToStepCounter()
                 }
             }

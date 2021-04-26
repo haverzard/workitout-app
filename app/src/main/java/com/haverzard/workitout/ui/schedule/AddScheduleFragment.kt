@@ -238,7 +238,7 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
                         if (delta < 0) {
                             delta += 7
                         }
-                        alarmManager.setRepeating(
+                        alarmManager.setInexactRepeating(
                             AlarmManager.RTC,
                             currentDate - timeSub - yearSub + startTime!!.time + AlarmManager.INTERVAL_DAY * delta,
                             AlarmManager.INTERVAL_DAY * 7,

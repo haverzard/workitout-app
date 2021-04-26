@@ -44,10 +44,18 @@ class ScheduleListAdapter(scheduleSelectedListener: ScheduleSelectedListener) : 
                 singleExerciseSchedule.end_time.hours,
                 singleExerciseSchedule.end_time.minutes,
             )
-            val target = "Target: %.2f %s".format(
-                singleExerciseSchedule.target,
-                if (singleExerciseSchedule.exercise_type == ExerciseType.Cycling) "km" else "steps",
-            )
+            var target = ""
+            if (singleExerciseSchedule.exercise_type == ExerciseType.Cycling) {
+                target = "Target: %.2f %s".format(
+                    singleExerciseSchedule.target,
+                    "km",
+                )
+            } else {
+                target = "Target: %d %s".format(
+                    singleExerciseSchedule.target.toInt(),
+                    "steps",
+                )
+            }
             holder.itemView.findViewById<ImageButton>(R.id.schedule_delete).setOnClickListener {
                 scheduleSelectedListener.onScheduleSelected(singleExerciseSchedule)
             }
@@ -60,10 +68,18 @@ class ScheduleListAdapter(scheduleSelectedListener: ScheduleSelectedListener) : 
                 routineExerciseSchedule.end_time.hours,
                 routineExerciseSchedule.end_time.minutes,
             )
-            val target = "Target: %.2f %s".format(
-                routineExerciseSchedule.target,
-                if (routineExerciseSchedule.exercise_type == ExerciseType.Cycling) "km" else "steps",
-            )
+            var target = ""
+            if (routineExerciseSchedule.exercise_type == ExerciseType.Cycling) {
+                target = "Target: %.2f %s".format(
+                    routineExerciseSchedule.target,
+                    "km",
+                )
+            } else {
+                target = "Target: %d %s".format(
+                    routineExerciseSchedule.target.toInt(),
+                    "steps",
+                )
+            }
             holder.itemView.findViewById<ImageButton>(R.id.schedule_delete).setOnClickListener {
                 scheduleSelectedListener.onScheduleSelected(routineExerciseSchedule)
             }

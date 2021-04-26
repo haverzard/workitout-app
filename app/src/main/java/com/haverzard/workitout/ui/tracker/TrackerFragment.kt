@@ -125,6 +125,9 @@ class TrackerFragment : Fragment(), SensorEventListener {
                 (it as MaterialButton).text = "Start Tracking"
                 it.backgroundTintList = ContextCompat.getColorStateList(context!!, android.R.color.holo_green_dark)
             } else {
+                if (!permissionApproved()) {
+                    requestForegroundPermissions()
+                }
                 if (permissionApproved()) {
                     if (exerciseType == "Cycling") {
                         trackingService?.subscribeToLocationUpdates()
@@ -133,9 +136,8 @@ class TrackerFragment : Fragment(), SensorEventListener {
                     }
                     root.findViewById<LinearLayout>(R.id.btn_container).visibility = View.INVISIBLE
                     (it as MaterialButton).text = "Stop Tracking"
-                    it.backgroundTintList = ContextCompat.getColorStateList(context!!, android.R.color.holo_red_dark)
-                } else {
-                    requestForegroundPermissions()
+                    it.backgroundTintList =
+                        ContextCompat.getColorStateList(context!!, android.R.color.holo_red_dark)
                 }
             }
         }
@@ -241,35 +243,6 @@ class TrackerFragment : Fragment(), SensorEventListener {
             Snackbar.make(
                 view!!,
                 getString(R.string.permission_rationale),
-                Snackbar.LENGTH_LONG
-            )
-                .setAction("Okay!") {
-                    // Request permission
-                    ActivityCompat.requestPermissions(
-                        activity!!,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACTIVITY_RECOGNITION),
-                        REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
-                    )
-                }
-                .show()
-        } else {
-            ActivityCompat.requestPermissions(
-                activity!!,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACTIVITY_RECOGNITION),
-                REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
-            )
-        }
-    }
-
-    private fun requestPermissions() {
-        val provideRationale = permissionApproved()
-
-        // If the user denied a previous request, but didn't check "Don't ask again", provide
-        // additional rationale.
-        if (provideRationale) {
-            Snackbar.make(
-                view!!,
-                R.string.permission_rationale,
                 Snackbar.LENGTH_LONG
             )
                 .setAction("Okay!") {
