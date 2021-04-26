@@ -77,7 +77,7 @@ class ScheduleFragment : Fragment() {
             ScheduleListAdapter.ScheduleSelectedListener {
             override fun onScheduleSelected(schedule: SingleExerciseSchedule) {
                 var alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
-                    PendingIntent.getBroadcast(context, schedule.id*8, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                    PendingIntent.getBroadcast(context, schedule.id*8, intent, PendingIntent.FLAG_NO_CREATE)
                 }
                 alarmManager.cancel(alarmIntent)
                 scheduleViewModel.deleteSingleSchedule(schedule)
@@ -87,7 +87,7 @@ class ScheduleFragment : Fragment() {
                 schedule.days.forEach {
                     val day = Day.values().indexOf(it)
                     var alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
-                        PendingIntent.getBroadcast(context, (schedule.id+1)*8-day-1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                        PendingIntent.getBroadcast(context, (schedule.id+1)*8-day-1, intent, PendingIntent.FLAG_NO_CREATE)
                     }
                     alarmManager.cancel(alarmIntent)
                 }

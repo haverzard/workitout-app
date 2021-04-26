@@ -41,9 +41,9 @@ class ScheduleReceiver: BroadcastReceiver() {
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val currentDate = Date(year, month, day).time
         val yearSub = Date(1970, 0, 0).time
+        val autoTrack = SharedPreferenceUtil.getAutoTrackPref(context)
 
         scope.launch {
-            val autoTrack = SharedPreferenceUtil.getAutoTrackPref(context)
             if (id % 2 == 0L) {
                 val schedule = repository.getSingleSchedule((id / 2).toInt())
                 if (start) {
@@ -66,7 +66,7 @@ class ScheduleReceiver: BroadcastReceiver() {
                         serviceIntent.putExtra("start", true)
                         serviceIntent.putExtra("exercise_type", schedule.exercise_type.name)
                         serviceIntent.putExtra("target", schedule.target)
-                        context.startService(serviceIntent)
+                        context.startForegroundService(serviceIntent)
                     }
                     repository.updateSingleSchedule(schedule.id)
                 } else {
@@ -76,7 +76,7 @@ class ScheduleReceiver: BroadcastReceiver() {
                         var serviceIntent = Intent(context, TrackingService::class.java)
                         serviceIntent.putExtra("start", false)
                         serviceIntent.putExtra("exercise_type", schedule.exercise_type.name)
-                        context.startService(serviceIntent)
+                        context.startForegroundService(serviceIntent)
                     }
                     repository.deleteSingleSchedule(schedule)
                 }
@@ -101,7 +101,7 @@ class ScheduleReceiver: BroadcastReceiver() {
                         serviceIntent.putExtra("start", true)
                         serviceIntent.putExtra("exercise_type", schedule.exercise_type.name)
                         serviceIntent.putExtra("target", schedule.target)
-                        context.startService(serviceIntent)
+                        context.startForegroundService(serviceIntent)
                     }
                 } else {
                     title = "Work out ends!"
@@ -115,7 +115,7 @@ class ScheduleReceiver: BroadcastReceiver() {
                         var serviceIntent = Intent(context, TrackingService::class.java)
                         serviceIntent.putExtra("start", false)
                         serviceIntent.putExtra("exercise_type", schedule.exercise_type.name)
-                        context.startService(serviceIntent)
+                        context.startForegroundService(serviceIntent)
                     }
                 }
             }
