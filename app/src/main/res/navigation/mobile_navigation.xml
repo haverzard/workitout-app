@@ -37,9 +37,9 @@
 
     <fragment
             android:id="@+id/navigation_history"
-            android:name="com.haverzard.workitout.ui.history.HistoryFragment"
+            android:name="com.haverzard.workitout.ui.history.HistoryDetailFragment"
             android:label="@string/title_history"
-            tools:layout="@layout/fragment_history"/>
+            tools:layout="@layout/fragment_history_detail"/>
 
     <fragment
             android:id="@+id/navigation_schedule"

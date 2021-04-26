@@ -94,6 +94,7 @@ class TrackingService: Service(), SensorEventListener {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val exerciseType = intent.getStringExtra("exercise_type")
+        System.out.println(exerciseType)
         if (exerciseType != null) {
             val scheduledExerciseType = SharedPreferenceUtil.getExerciseType(this)
             val sameAsScheduled = exerciseType == scheduledExerciseType
@@ -102,6 +103,7 @@ class TrackingService: Service(), SensorEventListener {
                 SharedPreferenceUtil.saveExerciseType(this, exerciseType!!)
             val start = intent.getBooleanExtra("start", false)
             target = intent.getDoubleExtra("target", 0.0)
+            System.out.println(scheduledExerciseType)
             if (exerciseType!! == "Cycling") {
                 if (start && isNotScheduled) {
                     enableTarget = true
@@ -222,6 +224,7 @@ class TrackingService: Service(), SensorEventListener {
 
     fun unsubscribeToStepCounter() {
         SharedPreferenceUtil.saveLocationTrackingPref(this, false)
+        SharedPreferenceUtil.saveExerciseType(this, "")
         sensorManager.unregisterListener(this)
         notificationManager.cancel(NOTIFICATION_ID)
         saveData()
@@ -258,6 +261,7 @@ class TrackingService: Service(), SensorEventListener {
                 }
             }
             SharedPreferenceUtil.saveLocationTrackingPref(this, false)
+            SharedPreferenceUtil.saveExerciseType(this, "")
             notificationManager.cancel(NOTIFICATION_ID)
             saveData()
         } catch (unlikely: SecurityException) {

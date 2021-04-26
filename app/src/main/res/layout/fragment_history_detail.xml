@@ -5,7 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.schedule.ScheduleFragment">
+        tools:context=".ui.history.HistoryDetailFragment">
 
     <LinearLayout
             android:padding="32dp"
@@ -44,7 +44,7 @@
         <com.google.android.gms.maps.MapView
                 android:layout_width="match_parent"
                 android:layout_height="375dp"
-                android:id="@+id/mapView"/>
+                android:id="@+id/map_route"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
