@@ -3,7 +3,6 @@ package com.haverzard.workitout.services
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -12,11 +11,8 @@ import android.hardware.SensorManager
 import android.icu.util.Calendar
 import android.location.Location
 import android.os.Binder
-import android.os.Build
 import android.os.IBinder
 import android.os.Looper
-import android.view.animation.Animation
-import android.view.animation.RotateAnimation
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.*
@@ -32,7 +28,6 @@ import java.sql.Time
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.HashSet
-import kotlin.math.roundToInt
 
 class TrackingService: Service(), SensorEventListener {
     private lateinit var notificationManager: NotificationManager
@@ -94,7 +89,6 @@ class TrackingService: Service(), SensorEventListener {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val exerciseType = intent.getStringExtra("exercise_type")
-        System.out.println(exerciseType)
         if (exerciseType != null) {
             val scheduledExerciseType = SharedPreferenceUtil.getExerciseType(this)
             val sameAsScheduled = exerciseType == scheduledExerciseType
@@ -103,8 +97,7 @@ class TrackingService: Service(), SensorEventListener {
                 SharedPreferenceUtil.saveExerciseType(this, exerciseType!!)
             val start = intent.getBooleanExtra("start", false)
             target = intent.getDoubleExtra("target", 0.0)
-            System.out.println(scheduledExerciseType)
-            if (exerciseType!! == "Cycling") {
+            if (exerciseType == "Cycling") {
                 if (start && isNotScheduled) {
                     enableTarget = true
                     subscribeToLocationUpdates()
@@ -159,7 +152,7 @@ class TrackingService: Service(), SensorEventListener {
     }
 
     fun initData() {
-        var calendar = Calendar.getInstance()
+        val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
         val day = calendar.get(Calendar.DAY_OF_MONTH)
@@ -174,11 +167,11 @@ class TrackingService: Service(), SensorEventListener {
         exerciseType = ExerciseType.valueOf(SharedPreferenceUtil.getExerciseType(this)!!)
     }
 
-    fun saveData() {
+    private fun saveData() {
         enableTarget = false
         SharedPreferenceUtil.saveExerciseType(this, "")
         if (startTime != null) {
-            var calendar = Calendar.getInstance()
+            val calendar = Calendar.getInstance()
             val hour = calendar.get(Calendar.HOUR_OF_DAY)
             val minute = calendar.get(Calendar.MINUTE)
             val second = calendar.get(Calendar.SECOND)
@@ -236,9 +229,9 @@ class TrackingService: Service(), SensorEventListener {
         try {
             fusedLocationProviderClient.requestLocationUpdates(
                 locationRequest, locationCallback, Looper.getMainLooper())
-            var notifText = "You have been cycling for ${targetReached} km."
+            var notifText = "You have been cycling for $targetReached km."
             if (enableTarget) {
-                notifText += " \nYour target is ${target} km."
+                notifText += " \nYour target is $target km."
             }
             notificationManager.notify(
                 NOTIFICATION_ID,
@@ -266,7 +259,7 @@ class TrackingService: Service(), SensorEventListener {
     }
 
     private fun generateNotification(mainNotificationText: String): Notification {
-        System.out.println("Generating...")
+        println("Generating...")
         // Main steps for building a BIG_TEXT_STYLE notification:
         //      0. Get data
         //      1. Create Notification Channel for O+
@@ -278,12 +271,10 @@ class TrackingService: Service(), SensorEventListener {
         val titleText = getString(R.string.app_name)
 
         // 1. Create Notification Channel for O+ and beyond devices (26+).
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(
-                NOTIFICATION_CHANNEL_ID, titleText, NotificationManager.IMPORTANCE_DEFAULT)
+        val notificationChannel = NotificationChannel(
+            NOTIFICATION_CHANNEL_ID, titleText, NotificationManager.IMPORTANCE_DEFAULT)
 
-            notificationManager.createNotificationChannel(notificationChannel)
-        }
+        notificationManager.createNotificationChannel(notificationChannel)
 
         // 2. Build the BIG_TEXT_STYLE.
         val bigTextStyle = NotificationCompat.BigTextStyle()
@@ -342,9 +333,6 @@ class TrackingService: Service(), SensorEventListener {
 
         internal const val EXTRA_LOCATION = "$PACKAGE_NAME.extra.LOCATION"
 
-        private const val EXTRA_CANCEL_LOCATION_TRACKING_FROM_NOTIFICATION =
-            "$PACKAGE_NAME.extra.CANCEL_LOCATION_TRACKING_FROM_NOTIFICATION"
-
         private const val NOTIFICATION_ID = 1351812001
 
         private const val NOTIFICATION_CHANNEL_ID = "workitout_01"
@@ -353,23 +341,23 @@ class TrackingService: Service(), SensorEventListener {
 
 internal object SharedPreferenceUtil {
 
+    private const val KEY_AUTO_TRACK = "auto_track"
     const val KEY_FOREGROUND_ENABLED = "tracking_foreground_location"
     const val KEY_EXERCISE_TYPE = "exercise_type"
-    const val KEY_AUTO_TRACK = "auto_track"
 
-    fun getLocationTrackingPref(context: Context): Boolean =
-        context.getSharedPreferences(
-            context.getString(R.string.preference_file_key),
-            Context.MODE_PRIVATE,
-        ).getBoolean(KEY_FOREGROUND_ENABLED, false)
+//    fun getLocationTrackingPref(context: Context): Boolean =
+//        context.getSharedPreferences(
+//            context.getString(R.string.preference_file_key),
+//            Context.MODE_PRIVATE,
+//        ).getBoolean(KEY_FOREGROUND_ENABLED, false)
 
     fun saveLocationTrackingPref(context: Context, requestingLocationUpdates: Boolean) {
-        var editor = context.getSharedPreferences(
+        val editor = context.getSharedPreferences(
             context.getString(R.string.preference_file_key),
             Context.MODE_PRIVATE,
         ).edit()
         editor.putBoolean(KEY_FOREGROUND_ENABLED, requestingLocationUpdates)
-        editor.commit()
+        editor.apply()
     }
 
     fun getExerciseType(context: Context): String? =
@@ -379,12 +367,12 @@ internal object SharedPreferenceUtil {
         ).getString(KEY_EXERCISE_TYPE, "")
 
     fun saveExerciseType(context: Context, exerciseType: String) {
-        var editor = context.getSharedPreferences(
+        val editor = context.getSharedPreferences(
             context.getString(R.string.preference_file_key),
             Context.MODE_PRIVATE,
         ).edit()
         editor.putString(KEY_EXERCISE_TYPE, exerciseType)
-        editor.commit()
+        editor.apply()
     }
 
     fun getAutoTrackPref(context: Context): Boolean =
@@ -394,11 +382,11 @@ internal object SharedPreferenceUtil {
         ).getBoolean(KEY_AUTO_TRACK, false)
 
     fun saveAutoTrackPref(context: Context, autoTrack: Boolean) {
-        var editor = context.getSharedPreferences(
+        val editor = context.getSharedPreferences(
             context.getString(R.string.preference_file_key),
             Context.MODE_PRIVATE,
         ).edit()
         editor.putBoolean(KEY_AUTO_TRACK, autoTrack)
-        editor.commit()
+        editor.apply()
     }
 }
