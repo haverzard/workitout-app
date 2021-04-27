@@ -97,7 +97,7 @@ class ScheduleFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        scheduleViewModel.schedules.observe(owner = this) { schedules ->
+        scheduleViewModel.schedules.observe(this) { schedules ->
             schedules.let { adapter.submitList(it) }
         }
         return root

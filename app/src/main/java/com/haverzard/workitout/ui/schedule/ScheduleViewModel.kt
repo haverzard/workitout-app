@@ -10,11 +10,11 @@ import kotlinx.coroutines.launch
 
 class ScheduleViewModel(private val repository: WorkOutRepository) : ViewModel() {
 
-    var schedules = MediatorLiveData<List<ScheduleListAdapter.Schedule>>()
-    private var singleSchedules = MutableList<ScheduleListAdapter.Schedule>(0) {
+    val schedules = MediatorLiveData<List<ScheduleListAdapter.Schedule>>()
+    private var singleSchedules = MutableList(0) {
         _ -> ScheduleListAdapter.Schedule(null, null)
     }
-    private var routineSchedules = MutableList<ScheduleListAdapter.Schedule>(0) {
+    private var routineSchedules = MutableList(0) {
         _ -> ScheduleListAdapter.Schedule(null, null)
     }
 
