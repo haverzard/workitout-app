@@ -4,71 +4,124 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.PolylineOptions
 import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
-import com.haverzard.workitout.viewmodel.ScheduleViewModel
-import com.haverzard.workitout.viewmodel.ScheduleViewModelFactory
+import com.haverzard.workitout.entities.ExerciseType
+import com.haverzard.workitout.entities.History
+import java.sql.Date
 
 
 class HistoryDetailFragment : Fragment(), OnMapReadyCallback {
 
-    private lateinit var scheduleViewModel: ScheduleViewModel
+    private lateinit var historyViewModel: HistoryViewModel
     private lateinit var mapView: MapView
+    private val safeArgs: HistoryDetailFragmentArgs by navArgs()
+
+    private var gMap: GoogleMap? = null
+    private var history: History? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        scheduleViewModel = ViewModelProviders.of(
-            this, ScheduleViewModelFactory((activity?.application as WorkOutApplication).repository)
-        ).get(ScheduleViewModel::class.java)
+        historyViewModel = ViewModelProviders.of(
+            this, HistoryViewModelFactory((activity?.application as WorkOutApplication).repository)
+        ).get(HistoryViewModel::class.java)
 
         val root = inflater.inflate(R.layout.fragment_history_detail, container, false)
         mapView = root.findViewById(R.id.map_route)
         mapView.onCreate(savedInstanceState)
-        mapView.getMapAsync(this)
+        mapView.visibility = View.GONE
 
+        historyViewModel.getHistory(safeArgs.historyId)
+        historyViewModel.currentHistory.observe(this) {
+            if (it != null) {
+                val date = Date(
+                    it.date.year - 1900,
+                    it.date.month,
+                    it.date.date
+                ).toLocaleString()
+                val time = "%02d:%02d - %02d:%02d".format(
+                    it.start_time.hours,
+                    it.start_time.minutes,
+                    it.end_time.hours,
+                    it.end_time.minutes,
+                )
+                var target = ""
+                if (it.exercise_type == ExerciseType.Cycling) {
+                    target = "You have cycled for  %.2f km".format(
+                        it.target_reached
+                    )
+                } else {
+                    target = "You have walked for %d steps".format(
+                        it.target_reached.toInt()
+                    )
+                }
 
-//        val recyclerView = root.findViewById<RecyclerView>(R.id.recyclerview)
-//        val adapter = ScheduleListAdapter()
-//        recyclerView.adapter = adapter
-//        recyclerView.layoutManager = LinearLayoutManager(activity)
+                root.findViewById<TextView>(R.id.date).text = date.substring(0, date.length - 9)
+                root.findViewById<TextView>(R.id.time).text = time
+                root.findViewById<TextView>(R.id.target).text = target
 
-//        scheduleViewModel.schedules.observe(owner = this) { schedules ->
-//            schedules.let { adapter.submitList(it) }
-//        }
+                if (it.exercise_type == ExerciseType.Cycling) {
+                    history = it
+                    mapView.getMapAsync(this)
+                    mapView.visibility = View.VISIBLE
+                }
+            }
+        }
         return root
     }
 
     override fun onMapReady(map: GoogleMap?) {
-//        mapV
-        System.out.println(map)
-        val polyline: Polyline? = map?.addPolyline(
-            PolylineOptions()
-                .clickable(true)
-                .add(
-                    LatLng(-35.016, 143.321),
-                    LatLng(-34.747, 145.592),
-                    LatLng(-34.364, 147.891),
-                    LatLng(-33.501, 150.217),
-                    LatLng(-32.306, 149.248),
-                    LatLng(-32.491, 147.309)
-                )
-        )
-//        map?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(-23.684, 133.903), 4f))
+        gMap = map
+        var points: List<LatLng> = history!!.points
+
+        if (points.isNotEmpty()) {
+            gMap!!.addPolyline(
+                PolylineOptions()
+                    .clickable(true)
+                    .addAll(points)
+            )
+
+            val builder = LatLngBounds.Builder()
+            points.forEach {
+                builder.include(it)
+            }
+            val bounds = builder.build()
+            val cu = CameraUpdateFactory.newLatLngBounds(bounds, 50)
+            gMap!!.moveCamera(cu)
+        }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapView.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
     }
 }
