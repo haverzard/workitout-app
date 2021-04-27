@@ -189,8 +189,6 @@ class TrackingService: Service(), SensorEventListener {
             application.applicationScope.launch {
                 val history = History(
                     0,
-                    null,
-                    null,
                     exerciseType!!,
                     currentDate!!,
                     startTime!!,
