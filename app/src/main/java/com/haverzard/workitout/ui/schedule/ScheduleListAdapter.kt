@@ -14,11 +14,9 @@ import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
 import java.sql.Date
 
-class ScheduleListAdapter(scheduleSelectedListener: ScheduleSelectedListener) : ListAdapter<ScheduleListAdapter.Schedule, ScheduleListAdapter.ScheduleViewHolder>(
+class ScheduleListAdapter(private val scheduleSelectedListener: ScheduleSelectedListener) : ListAdapter<ScheduleListAdapter.Schedule, ScheduleListAdapter.ScheduleViewHolder>(
     SchedulesComparator()
 ) {
-
-    private val scheduleSelectedListener: ScheduleSelectedListener = scheduleSelectedListener
 
     interface ScheduleSelectedListener {
         fun onScheduleSelected(schedule: SingleExerciseSchedule)
@@ -68,14 +66,13 @@ class ScheduleListAdapter(scheduleSelectedListener: ScheduleSelectedListener) : 
                 routineExerciseSchedule.end_time.hours,
                 routineExerciseSchedule.end_time.minutes,
             )
-            var target = ""
-            if (routineExerciseSchedule.exercise_type == ExerciseType.Cycling) {
-                target = "Target: %.2f %s".format(
+            val target: String = if (routineExerciseSchedule.exercise_type == ExerciseType.Cycling) {
+                "Target: %.2f %s".format(
                     routineExerciseSchedule.target,
                     "km",
                 )
             } else {
-                target = "Target: %d %s".format(
+                "Target: %d %s".format(
                     routineExerciseSchedule.target.toInt(),
                     "steps",
                 )
@@ -97,13 +94,21 @@ class ScheduleListAdapter(scheduleSelectedListener: ScheduleSelectedListener) : 
         fun getRoutineSchedule(): RoutineExerciseSchedule? {
             return routineExerciseSchedule
         }
-        fun equals(schedule: Schedule): Boolean {
-            if (singleExerciseSchedule != null && schedule.singleExerciseSchedule != null) {
-                return singleExerciseSchedule.id == schedule.singleExerciseSchedule.id
-            } else if (routineExerciseSchedule != null && schedule.routineExerciseSchedule != null) {
-                return routineExerciseSchedule.id == schedule.routineExerciseSchedule.id
+        override fun equals(other: Any?): Boolean {
+            if (other is Schedule) {
+                if (singleExerciseSchedule != null && other.singleExerciseSchedule != null) {
+                    return singleExerciseSchedule.id == other.singleExerciseSchedule.id
+                } else if (routineExerciseSchedule != null && other.routineExerciseSchedule != null) {
+                    return routineExerciseSchedule.id == other.routineExerciseSchedule.id
+                }
             }
             return false
+        }
+
+        override fun hashCode(): Int {
+            var result = singleExerciseSchedule?.hashCode() ?: 0
+            result = 31 * result + (routineExerciseSchedule?.hashCode() ?: 0)
+            return result
         }
     }
 
@@ -147,7 +152,7 @@ class ScheduleListAdapter(scheduleSelectedListener: ScheduleSelectedListener) : 
             oldItem: Schedule,
             newItem: Schedule
         ): Boolean {
-            return oldItem.equals(newItem)
+            return oldItem == newItem
         }
     }
 }

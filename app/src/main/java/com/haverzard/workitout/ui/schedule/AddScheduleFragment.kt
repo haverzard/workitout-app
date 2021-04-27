@@ -22,8 +22,6 @@ import com.haverzard.workitout.entities.ExerciseType
 import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.receivers.ScheduleReceiver
-import com.haverzard.workitout.viewmodel.ScheduleViewModel
-import com.haverzard.workitout.viewmodel.ScheduleViewModelFactory
 import kotlinx.coroutines.launch
 import java.sql.Date
 import java.sql.Time

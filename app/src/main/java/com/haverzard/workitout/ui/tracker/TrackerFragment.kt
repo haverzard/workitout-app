@@ -17,7 +17,6 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -27,11 +26,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.haverzard.workitout.BuildConfig
 import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
-import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.services.SharedPreferenceUtil
 import com.haverzard.workitout.services.TrackingService
-import com.haverzard.workitout.viewmodel.ScheduleViewModel
-import com.haverzard.workitout.viewmodel.ScheduleViewModelFactory
+import com.haverzard.workitout.ui.schedule.ScheduleViewModel
+import com.haverzard.workitout.ui.schedule.ScheduleViewModelFactory
 import kotlin.math.roundToInt
 
 

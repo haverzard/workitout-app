@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.DialogFragment
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.haverzard.workitout.R
 
