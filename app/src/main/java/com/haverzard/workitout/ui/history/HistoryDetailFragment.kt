@@ -20,7 +20,6 @@ import com.haverzard.workitout.WorkOutApplication
 import com.haverzard.workitout.entities.ExerciseType
 import com.haverzard.workitout.entities.History
 import java.sql.Date
-import java.util.*
 
 
 class HistoryDetailFragment : Fragment(), OnMapReadyCallback {
@@ -88,7 +87,7 @@ class HistoryDetailFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap?) {
         gMap = map
-        var points: List<LatLng> = history!!.points
+        val points: List<LatLng> = history!!.points
 
         if (points.isNotEmpty()) {
             gMap!!.addPolyline(

@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -15,11 +14,9 @@ import com.haverzard.workitout.entities.History
 import java.sql.Date
 
 
-class HistoryListAdapter(historySelectedListener: HistorySelectedListener) : ListAdapter<History, HistoryListAdapter.HistoryViewHolder>(
+class HistoryListAdapter(private val historySelectedListener: HistorySelectedListener) : ListAdapter<History, HistoryListAdapter.HistoryViewHolder>(
     HistoriesComparator()
 ) {
-
-    private val historySelectedListener: HistorySelectedListener = historySelectedListener
 
     interface HistorySelectedListener {
         fun onHistorySelected(history: History)

@@ -78,7 +78,7 @@ class TrackingService: Service(), SensorEventListener {
                 points.add(LatLng(currentLocation!!.latitude, currentLocation!!.longitude))
                 var notifText = "You have been cycling for ${targetReached} km"
                 if (enableTarget) {
-                    notifText += "\nYour target is ${target} km"
+                    notifText += "\nYour target is $target km"
                 }
                 notificationManager.notify(
                     NOTIFICATION_ID,
@@ -94,7 +94,7 @@ class TrackingService: Service(), SensorEventListener {
             val sameAsScheduled = exerciseType == scheduledExerciseType
             val isNotScheduled = scheduledExerciseType == null || scheduledExerciseType == ""
             if (isNotScheduled)
-                SharedPreferenceUtil.saveExerciseType(this, exerciseType!!)
+                SharedPreferenceUtil.saveExerciseType(this, exerciseType)
             val start = intent.getBooleanExtra("start", false)
             target = intent.getDoubleExtra("target", 0.0)
             if (exerciseType == "Cycling") {
