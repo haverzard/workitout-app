@@ -20,6 +20,7 @@ import com.haverzard.workitout.WorkOutApplication
 import com.haverzard.workitout.entities.ExerciseType
 import com.haverzard.workitout.entities.History
 import java.sql.Date
+import java.util.*
 
 
 class HistoryDetailFragment : Fragment(), OnMapReadyCallback {
@@ -40,12 +41,13 @@ class HistoryDetailFragment : Fragment(), OnMapReadyCallback {
             this, HistoryViewModelFactory((activity?.application as WorkOutApplication).repository)
         ).get(HistoryViewModel::class.java)
 
+        val historyId = if (arguments != null) arguments!!.getInt("history_id") else safeArgs.historyId
         val root = inflater.inflate(R.layout.fragment_history_detail, container, false)
         mapView = root.findViewById(R.id.map_route)
         mapView.onCreate(savedInstanceState)
         mapView.visibility = View.GONE
 
-        historyViewModel.getHistory(safeArgs.historyId)
+        historyViewModel.getHistory(historyId)
         historyViewModel.currentHistory.observe(this) {
             if (it != null) {
                 val date = Date(

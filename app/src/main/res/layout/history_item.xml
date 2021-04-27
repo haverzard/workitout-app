@@ -5,9 +5,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
     <LinearLayout
-            android:layout_margin="@dimen/big_padding"
-            android:background="@android:color/holo_orange_light"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -61,5 +64,10 @@
                 android:minWidth="64dp"/>
 
     </LinearLayout>
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
 
 </LinearLayout>

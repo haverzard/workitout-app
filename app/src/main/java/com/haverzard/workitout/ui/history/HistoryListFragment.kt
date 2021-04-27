@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -36,9 +38,20 @@ class HistoryListFragment : Fragment() {
         val adapter = HistoryListAdapter(object :
             HistoryListAdapter.HistorySelectedListener {
             override fun onHistorySelected(history: History) {
-                val action =
-                    HistoryListFragmentDirections.actionHistoryList(history.id)
-                findNavController().navigate(action)
+                if (isTwoPane()) {
+                    val fragmentItem = HistoryDetailFragment()
+                    val args = Bundle()
+                    args.putInt("history_id", history.id)
+                    fragmentItem.arguments = args
+
+                    val ft: FragmentTransaction = fragmentManager!!.beginTransaction()
+                    ft.replace(R.id.detail_container, fragmentItem)
+                    ft.commit()
+                } else {
+                    val action =
+                        HistoryListFragmentDirections.actionHistoryList(history.id)
+                    findNavController().navigate(action)
+                }
             }
         })
         recyclerView.adapter = adapter
@@ -50,5 +63,9 @@ class HistoryListFragment : Fragment() {
             histories.let { adapter.submitList(it) }
         }
         return root
+    }
+
+    fun isTwoPane(): Boolean {
+        return view?.findViewById<FrameLayout>(R.id.detail_container) != null
     }
 }

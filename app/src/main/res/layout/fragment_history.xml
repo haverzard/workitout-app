@@ -7,48 +7,38 @@
         android:layout_height="match_parent"
         tools:context=".ui.schedule.ScheduleFragment">
 
-    <LinearLayout
-            android:orientation="vertical"
+    <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        <Space
+            android:layout_height="match_parent"
+            >
+        <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"/>
-        <TextView
-                android:id="@+id/title_history"
-                android:text="Show your daily training histories"
-                android:textColor="@color/black"
-                android:gravity="center"
-                android:textSize="20dp"
-                android:padding="@dimen/big_padding"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="match_parent">
 
-        <Space
-                android:layout_width="match_parent"
-                android:layout_height="50dp"/>
+            <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"/>
+            <TextView
+                    android:id="@+id/title_history"
+                    android:text="Show your daily training histories"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:textSize="20dp"
+                    android:padding="@dimen/big_padding"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
-        <CalendarView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/calendar"/>
+            <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"/>
 
-<!--        <TextView-->
-<!--                android:id="@+id/no_history"-->
-<!--                android:text="@string/no_history"-->
-<!--                android:gravity="center"-->
-<!--                android:textSize="20dp"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"/>-->
+            <CalendarView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/calendar"/>
 
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--                android:id="@+id/recyclerview"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                tools:listitem="@layout/schedule_item"-->
-<!--                android:padding="@dimen/big_padding"-->
-<!--                />-->
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
