@@ -16,6 +16,7 @@
         <TextView
                 android:text="Apr 23, 2021"
                 android:textSize="22dp"
+                android:textColor="@color/black"
                 android:paddingTop="16dp"
                 android:paddingBottom="16dp"
                 android:layout_width="match_parent"
@@ -24,6 +25,7 @@
 
         <TextView
                 android:text="11:29:12 - 14:30:50"
+                android:textColor="@color/black"
                 android:paddingBottom="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -35,6 +37,7 @@
 
         <TextView
                 android:text="You have walked for 30 steps"
+                android:textColor="@color/black"
                 android:textSize="16dp"
                 android:paddingBottom="16dp"
                 android:layout_width="match_parent"
