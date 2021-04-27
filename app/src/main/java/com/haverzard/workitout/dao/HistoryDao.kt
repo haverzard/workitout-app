@@ -2,9 +2,7 @@ package com.haverzard.workitout.dao
 
 import androidx.room.*
 import com.haverzard.workitout.entities.History
-import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import kotlinx.coroutines.flow.Flow
-import java.sql.Date
 
 @Dao
 interface HistoryDao  {
