@@ -14,7 +14,6 @@ import android.widget.*
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
@@ -67,12 +66,12 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
         return root
     }
 
-    fun setupOnClickListeners(root: View) {
+    private fun setupOnClickListeners(root: View) {
         var dayIt = 0
         val posDays = Day.values()
-        root.findViewById<LinearLayout>(R.id.days_holder).children.forEach {
+        root.findViewById<LinearLayout>(R.id.days_holder).children.forEach { view ->
             val selected  = posDays[dayIt]
-            it.setOnClickListener {
+            view.setOnClickListener {
                 if (days.contains(selected)) {
                     days.remove(selected)
                     it.setBackgroundColor(resources.getColor(R.color.colorPrimary))
@@ -166,7 +165,7 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
             }
 
             // setup time
-            var calendar = Calendar.getInstance()
+            val calendar = Calendar.getInstance()
             val year = calendar.get(Calendar.YEAR)
             val month = calendar.get(Calendar.MONTH)
             val day = calendar.get(Calendar.DAY_OF_MONTH)
@@ -204,10 +203,11 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
                         end_time = endTime!!,
                     )
 
-                    var id = scheduleViewModel.insertSingleSchedule(schedule)
-                    var alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
-                        intent.putExtra("requestCode", id*2);
-                        intent.putExtra("start", true);
+                    val id = scheduleViewModel.insertSingleSchedule(schedule)
+                    val alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
+                        intent.putExtra("requestCode", id*2)
+                        intent.putExtra("start", true)
+                        intent.action = AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED
                         PendingIntent.getBroadcast(context, (id*8).toInt(), intent, 0)
                     }
                     alarmManager.setExact(
@@ -225,16 +225,17 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
                         end_time = endTime!!,
                     )
 
-                    var id = scheduleViewModel.insertRoutineSchedule(schedule)
-                    var currentDay = (calendar.get(Calendar.DAY_OF_WEEK) - 2) % 7
+                    val id = scheduleViewModel.insertRoutineSchedule(schedule)
+                    val currentDay = (calendar.get(Calendar.DAY_OF_WEEK) - 2) % 7
                     schedule.days.forEach {
-                        val day = Day.values().indexOf(it)
-                        var alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
-                            intent.putExtra("requestCode", (id + 1)*2 - 1);
-                            intent.putExtra("start", true);
-                            PendingIntent.getBroadcast(context, ((id+1)*8-day-1).toInt(), intent, 0)
+                        val dayIdx = Day.values().indexOf(it)
+                        val alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
+                            intent.putExtra("requestCode", (id + 1)*2 - 1)
+                            intent.putExtra("start", true)
+                            intent.action = AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED
+                            PendingIntent.getBroadcast(context, ((id+1)*8-dayIdx-1).toInt(), intent, 0)
                         }
-                        var delta = (day - currentDay)
+                        var delta = (dayIdx - currentDay)
                         if (delta < 0) {
                             delta += 7
                         }
@@ -273,7 +274,4 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
 }
