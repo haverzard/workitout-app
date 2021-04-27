@@ -207,7 +207,6 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
                     val alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
                         intent.putExtra("requestCode", id*2)
                         intent.putExtra("start", true)
-                        intent.action = AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED
                         PendingIntent.getBroadcast(context, (id*8).toInt(), intent, 0)
                     }
                     alarmManager.setExact(
@@ -232,7 +231,6 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
                         val alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
                             intent.putExtra("requestCode", (id + 1)*2 - 1)
                             intent.putExtra("start", true)
-                            intent.action = AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED
                             PendingIntent.getBroadcast(context, ((id+1)*8-dayIdx-1).toInt(), intent, 0)
                         }
                         var delta = (dayIdx - currentDay)
