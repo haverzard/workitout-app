@@ -1,9 +1,7 @@
 package com.haverzard.workitout.entities
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
 import java.sql.Date
 import java.sql.Time
 

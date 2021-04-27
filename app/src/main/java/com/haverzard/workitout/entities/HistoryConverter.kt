@@ -2,8 +2,6 @@ package com.haverzard.workitout.entities
 
 import androidx.room.TypeConverter
 import com.google.android.gms.maps.model.LatLng
-import java.sql.Date
-import java.sql.Time
 
 
 class HistoryConverters {
