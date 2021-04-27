@@ -10,6 +10,7 @@ import com.haverzard.workitout.entities.History
 import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
 import kotlinx.coroutines.flow.Flow
+import java.sql.Date
 
 class WorkOutRepository(
     private val singleExerciseScheduleDao: SingleExerciseScheduleDao,
@@ -20,8 +21,7 @@ class WorkOutRepository(
     // live data
     val schedules: Flow<List<SingleExerciseSchedule>> = singleExerciseScheduleDao.getCurrentSchedules()
     val routines: Flow<List<RoutineExerciseSchedule>> = routineExerciseScheduleDao.getSchedules()
-    val histories: Flow<List<History>> = historyDao.getHistories()
-    
+
     // run everything on worker thread
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
@@ -53,5 +53,13 @@ class WorkOutRepository(
 
     fun getRoutineSchedule(id: Int): RoutineExerciseSchedule {
         return routineExerciseScheduleDao.getSchedule(id)
+    }
+
+    fun getHistories(date: String): Flow<List<History>> {
+        return historyDao.getHistories(date)
+    }
+
+    fun getHistory(id: Int): Flow<History> {
+        return historyDao.getHistory(id)
     }
 }
