@@ -198,9 +198,7 @@ class TrackingService: Service(), SensorEventListener {
                     targetReached,
                     points.toList(),
                 )
-                System.out.println(history)
-                // TODO: uncomment and implement history page
-                // application.repository.insertHistory(history)
+                 application.repository.insertHistory(history)
             }
         }
     }
