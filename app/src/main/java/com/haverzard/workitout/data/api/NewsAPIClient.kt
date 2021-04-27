@@ -1,4 +1,4 @@
-package com.haverzard.workitout.ui.news
+package com.haverzard.workitout.data.api
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -7,7 +7,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class NewsAPIClient {
-    private val BASE_URL: String = ""
+    private val BASE_URL: String = "https://newsapi.org/v2/"
+    private val country: String = "id";
+    private val category: String = "sports";
+    private val API_KEY: String = "76b33f118a4a497dafe751d9db583719"
 
     private val gson : Gson by lazy {
         GsonBuilder().setLenient().create()
@@ -20,8 +23,7 @@ class NewsAPIClient {
     private val retrofit : Retrofit by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .client(httpClient)
-            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
