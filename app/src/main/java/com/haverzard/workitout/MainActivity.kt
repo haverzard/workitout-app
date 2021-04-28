@@ -29,6 +29,7 @@ class MainActivity : AppCompatActivity() {
             val bundle = Bundle()
             bundle.putInt("history_id", historyId)
             navController.navigate(R.id.navigation_history_detail, bundle)
+            intent.removeExtra("history_id")
         }
     }
 
