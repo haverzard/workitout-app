@@ -67,7 +67,6 @@ class ScheduleReceiver: BroadcastReceiver() {
                     )
                     if (autoTrack) {
                         val serviceIntent = Intent(context, TrackingService::class.java)
-                        serviceIntent.putExtra("start", true)
                         serviceIntent.putExtra("exercise_type", schedule.exercise_type.name)
                         serviceIntent.putExtra("target", schedule.target)
                         context.startForegroundService(serviceIntent)
@@ -78,9 +77,7 @@ class ScheduleReceiver: BroadcastReceiver() {
                     body = "You have completed your work out"
                     if (autoTrack) {
                         val serviceIntent = Intent(context, TrackingService::class.java)
-                        serviceIntent.putExtra("start", false)
-                        serviceIntent.putExtra("exercise_type", schedule.exercise_type.name)
-                        context.startForegroundService(serviceIntent)
+                        context.stopService(serviceIntent)
                     }
                     repository.deleteSingleSchedule(schedule)
                 }
@@ -108,7 +105,6 @@ class ScheduleReceiver: BroadcastReceiver() {
                     )
                     if (autoTrack) {
                         val serviceIntent = Intent(context, TrackingService::class.java)
-                        serviceIntent.putExtra("start", true)
                         serviceIntent.putExtra("exercise_type", schedule.exercise_type.name)
                         serviceIntent.putExtra("target", schedule.target)
                         context.startForegroundService(serviceIntent)
@@ -128,9 +124,7 @@ class ScheduleReceiver: BroadcastReceiver() {
                     }
                     if (autoTrack) {
                         val serviceIntent = Intent(context, TrackingService::class.java)
-                        serviceIntent.putExtra("start", false)
-                        serviceIntent.putExtra("exercise_type", schedule.exercise_type.name)
-                        context.startForegroundService(serviceIntent)
+                        context.stopService(serviceIntent)
                     }
                 }
             }
