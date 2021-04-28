@@ -26,7 +26,6 @@ import com.haverzard.workitout.util.CalendarPlus
 import com.haverzard.workitout.util.CustomTime
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
-import kotlin.collections.HashSet
 
 class TrackingService: Service(), SensorEventListener {
     private lateinit var notificationManager: NotificationManager
@@ -44,7 +43,7 @@ class TrackingService: Service(), SensorEventListener {
     private var enableTarget = false
     private var target = 0.0
     private var targetReached = 0.0
-    private var points = HashSet<LatLng>(0)
+    private var points = MutableList(0) { LatLng(0.0, 0.0) }
     private var currentDate: Calendar? = null
     private var startTime: CustomTime? = null
     private var endTime: CustomTime? = null
@@ -73,7 +72,10 @@ class TrackingService: Service(), SensorEventListener {
                 intent.putExtra(EXTRA_LOCATION, currentLocation)
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
 
-                points.add(LatLng(currentLocation!!.latitude, currentLocation!!.longitude))
+                val latLng = LatLng(currentLocation!!.latitude, currentLocation!!.longitude)
+                if (points.isNotEmpty() && points[points.size-1] != latLng) {
+                    points.add(latLng)
+                }
                 var notifText = "You have been cycling for $targetReached km"
                 if (enableTarget) {
                     notifText += "\nYour target is $target km"
@@ -346,29 +348,7 @@ object SharedPreferenceUtil {
 
     private const val KEY_AUTO_TRACK = "auto_track"
     const val KEY_TRACKING_ENABLED = "tracking"
-    const val KEY_FOREGROUND_ENABLED = "foreground"
     const val KEY_EXERCISE_TYPE = "exercise_type"
-
-    fun getForegroundPref(context: Context): Boolean =
-        context.getSharedPreferences(
-            context.getString(R.string.preference_file_key),
-            Context.MODE_PRIVATE,
-        ).getBoolean(KEY_FOREGROUND_ENABLED, false)
-
-    fun saveForegroundPref(context: Context, foreground: Boolean) {
-        val editor = context.getSharedPreferences(
-            context.getString(R.string.preference_file_key),
-            Context.MODE_PRIVATE,
-        ).edit()
-        editor.putBoolean(KEY_FOREGROUND_ENABLED, foreground)
-        editor.apply()
-    }
-
-//    fun getTrackingPref(context: Context): Boolean =
-//        context.getSharedPreferences(
-//            context.getString(R.string.preference_file_key),
-//            Context.MODE_PRIVATE,
-//        ).getBoolean(KEY_TRACKING_ENABLED, false)
 
     fun saveTrackingPref(context: Context, tracking: Boolean) {
         val editor = context.getSharedPreferences(

@@ -8,7 +8,6 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.haverzard.workitout.services.SharedPreferenceUtil
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,7 +17,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        SharedPreferenceUtil.saveForegroundPref(this, false)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
         appBarConfiguration = AppBarConfiguration(setOf(
@@ -32,11 +30,6 @@ class MainActivity : AppCompatActivity() {
             bundle.putInt("history_id", historyId)
             navController.navigate(R.id.navigation_history_detail, bundle)
         }
-    }
-
-    override fun onDestroy() {
-        SharedPreferenceUtil.saveForegroundPref(this, true)
-        super.onDestroy()
     }
 
     override fun onSupportNavigateUp(): Boolean {

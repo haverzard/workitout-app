@@ -87,7 +87,7 @@ class TrackerFragment : Fragment(), SensorEventListener {
         val cyclingButton = root.findViewById<ImageButton>(R.id.exercise_cycling)
         val walkingButton = root.findViewById<ImageButton>(R.id.exercise_walking)
         val trackButton = root.findViewById<MaterialButton>(R.id.btn_track)
-        if (!sharedPreferences.getBoolean(SharedPreferenceUtil.KEY_FOREGROUND_ENABLED, false)) {
+        if (!sharedPreferences.getBoolean(SharedPreferenceUtil.KEY_TRACKING_ENABLED, false)) {
             SharedPreferenceUtil.saveExerciseType(activity!!, "")
         } else {
             trackButton.text = getString(R.string.stop_tracking_btn)
