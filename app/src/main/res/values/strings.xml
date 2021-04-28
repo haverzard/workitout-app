@@ -28,4 +28,9 @@
     <string name="no_history">There is no training history</string>
     <string name="title_history_detail">History Detail</string>
     <string name="title_history_list">History List</string>
+    <string name="stop_tracking_btn">Stop Tracking</string>
+    <string name="start_tracking_btn">Start Tracking</string>
+    <string name="stop_tracking_btn">Stop Tracking</string>
+    <string name="unit_km">km</string>
+    <string name="unit_steps">steps</string>
 </resources>
