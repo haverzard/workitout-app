@@ -151,7 +151,7 @@ class ScheduleFragment : Fragment() {
             )
             val intent = Intent(
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package: com.haverzard.workitout")
+                Uri.parse("package: " + activity?.packageName)
             )
             startActivityForResult(intent, 5469)
         }
