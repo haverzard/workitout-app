@@ -17,7 +17,7 @@ interface HistoryDao  {
     fun getHistory(id: Int): Flow<History>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(history: History)
+    fun insert(history: History): Long
 
     @Delete
     suspend fun delete(history: History)

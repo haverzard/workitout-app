@@ -32,17 +32,13 @@ class WorkOutRepository(
     }
     @Suppress("RedundantSuspendModifier")
     @WorkerThread
-    suspend fun insertHistory(history: History) {
-        historyDao.insert(history)
-    }
-    @Suppress("RedundantSuspendModifier")
-    @WorkerThread
     suspend fun updateSingleSchedule(id: Int) {
         singleExerciseScheduleDao.update(id)
     }
 
     fun insertRoutineSchedule(schedule: RoutineExerciseSchedule) = routineExerciseScheduleDao.insert(schedule)
     fun insertSingleSchedule(schedule: SingleExerciseSchedule) = singleExerciseScheduleDao.insert(schedule)
+    fun insertHistory(history: History) = historyDao.insert(history)
 
     fun getSingleSchedule(id: Int): SingleExerciseSchedule {
         return singleExerciseScheduleDao.getSchedule(id)
