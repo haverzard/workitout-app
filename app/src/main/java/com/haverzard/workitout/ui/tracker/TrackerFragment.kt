@@ -75,6 +75,15 @@ class TrackerFragment : Fragment(), SensorEventListener {
         sharedPreferences =
             activity!!.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
+        if (!permissionApproved()) {
+            requestForegroundPermissions()
+        }
+
+        setupOnClickListener(root)
+        return root
+    }
+
+    private fun setupOnClickListener(root: View) {
         val cyclingButton = root.findViewById<ImageButton>(R.id.exercise_cycling)
         val walkingButton = root.findViewById<ImageButton>(R.id.exercise_walking)
         val trackButton = root.findViewById<MaterialButton>(R.id.btn_track)
@@ -98,7 +107,7 @@ class TrackerFragment : Fragment(), SensorEventListener {
 
         trackButton.setOnClickListener {
             val enabled = sharedPreferences.getBoolean(
-                SharedPreferenceUtil.KEY_FOREGROUND_ENABLED, false)
+                SharedPreferenceUtil.KEY_TRACKING_ENABLED, false)
             val exerciseType = sharedPreferences.getString(
                 SharedPreferenceUtil.KEY_EXERCISE_TYPE, "")
             if (exerciseType == "") {
@@ -124,8 +133,7 @@ class TrackerFragment : Fragment(), SensorEventListener {
             } else {
                 if (!permissionApproved()) {
                     requestForegroundPermissions()
-                }
-                if (permissionApproved()) {
+                } else {
                     if (exerciseType == "Cycling") {
                         trackingService?.subscribeToLocationUpdates()
                     } else {
@@ -138,7 +146,6 @@ class TrackerFragment : Fragment(), SensorEventListener {
                 }
             }
         }
-        return root
     }
 
     override fun onStart() {
