@@ -20,7 +20,7 @@ class ScheduleEnumConverters {
     fun fromTime(value: Time) = value.toString()
 
     @TypeConverter
-    fun toTime(value: String) = Time.valueOf(value)
+    fun toTime(value: String): Time = Time.valueOf(value)
 
     @TypeConverter
     fun toDays(value: String): List<Day> {
@@ -32,9 +32,6 @@ class ScheduleEnumConverters {
 
     @TypeConverter
     fun toDay(value: String) = enumValueOf<Day>(value)
-
-    @TypeConverter
-    fun fromDay(value: Day) = value.name
 
     @TypeConverter
     fun toExerciseType(value: String) = enumValueOf<ExerciseType>(value)
