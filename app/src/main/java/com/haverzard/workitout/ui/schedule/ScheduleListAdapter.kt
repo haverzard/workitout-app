@@ -42,14 +42,13 @@ class ScheduleListAdapter(private val scheduleSelectedListener: ScheduleSelected
                 singleExerciseSchedule.end_time.hours,
                 singleExerciseSchedule.end_time.minutes,
             )
-            var target = ""
-            if (singleExerciseSchedule.exercise_type == ExerciseType.Cycling) {
-                target = "Target: %.2f %s".format(
+            val target: String = if (singleExerciseSchedule.exercise_type == ExerciseType.Cycling) {
+                "Target: %.2f %s".format(
                     singleExerciseSchedule.target,
                     "km",
                 )
             } else {
-                target = "Target: %d %s".format(
+                "Target: %d %s".format(
                     singleExerciseSchedule.target.toInt(),
                     "steps",
                 )

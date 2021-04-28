@@ -60,13 +60,12 @@ class HistoryDetailFragment : Fragment(), OnMapReadyCallback {
                     it.end_time.hours,
                     it.end_time.minutes,
                 )
-                var target = ""
-                if (it.exercise_type == ExerciseType.Cycling) {
-                    target = "You have cycled for  %.2f km".format(
+                val target: String = if (it.exercise_type == ExerciseType.Cycling) {
+                    "You have cycled for  %.2f km".format(
                         it.target_reached
                     )
                 } else {
-                    target = "You have walked for %d steps".format(
+                    "You have walked for %d steps".format(
                         it.target_reached.toInt()
                     )
                 }

@@ -45,7 +45,6 @@ class TrackerFragment : Fragment(), SensorEventListener {
     private var trackingServiceBound = false
 
     private var currentDegree = 0f
-    private var exerciseType = ""
 
     private val trackingServiceConnection = object : ServiceConnection {
 
@@ -76,25 +75,25 @@ class TrackerFragment : Fragment(), SensorEventListener {
         sharedPreferences =
             activity!!.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
-        var cyclingButton = root.findViewById<ImageButton>(R.id.exercise_cycling)
-        var walkingButton = root.findViewById<ImageButton>(R.id.exercise_walking)
-        var trackButton = root.findViewById<MaterialButton>(R.id.btn_track)
+        val cyclingButton = root.findViewById<ImageButton>(R.id.exercise_cycling)
+        val walkingButton = root.findViewById<ImageButton>(R.id.exercise_walking)
+        val trackButton = root.findViewById<MaterialButton>(R.id.btn_track)
         if (!sharedPreferences.getBoolean(SharedPreferenceUtil.KEY_FOREGROUND_ENABLED, false)) {
             SharedPreferenceUtil.saveExerciseType(activity!!, "")
         } else {
-            trackButton.text = "Stop Tracking"
+            trackButton.text = getString(R.string.stop_tracking_btn)
             trackButton.backgroundTintList = ContextCompat.getColorStateList(context!!, android.R.color.holo_red_dark)
             root.findViewById<LinearLayout>(R.id.btn_container).visibility = View.INVISIBLE
         }
         walkingButton.setOnClickListener {
             SharedPreferenceUtil.saveExerciseType(activity!!, "Walking")
-            walkingButton.setBackgroundColor(resources.getColor(R.color.selected))
-            cyclingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+            walkingButton.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.selected))
+            cyclingButton.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
         }
         cyclingButton.setOnClickListener {
             SharedPreferenceUtil.saveExerciseType(activity!!, "Cycling")
-            cyclingButton.setBackgroundColor(resources.getColor(R.color.selected))
-            walkingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+            cyclingButton.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.selected))
+            walkingButton.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
         }
 
         trackButton.setOnClickListener {
@@ -116,11 +115,11 @@ class TrackerFragment : Fragment(), SensorEventListener {
                 } else {
                     trackingService?.unsubscribeToStepCounter()
                 }
-                cyclingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
-                walkingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                cyclingButton.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
+                walkingButton.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
                 SharedPreferenceUtil.saveExerciseType(activity!!, "")
                 root.findViewById<LinearLayout>(R.id.btn_container).visibility = View.VISIBLE
-                (it as MaterialButton).text = "Start Tracking"
+                (it as MaterialButton).text = getString(R.string.start_tracking_btn)
                 it.backgroundTintList = ContextCompat.getColorStateList(context!!, android.R.color.holo_green_dark)
             } else {
                 if (!permissionApproved()) {
@@ -133,7 +132,7 @@ class TrackerFragment : Fragment(), SensorEventListener {
                         trackingService?.subscribeToStepCounter()
                     }
                     root.findViewById<LinearLayout>(R.id.btn_container).visibility = View.INVISIBLE
-                    (it as MaterialButton).text = "Stop Tracking"
+                    (it as MaterialButton).text = getString(R.string.stop_tracking_btn)
                     it.backgroundTintList =
                         ContextCompat.getColorStateList(context!!, android.R.color.holo_red_dark)
                 }
@@ -153,7 +152,7 @@ class TrackerFragment : Fragment(), SensorEventListener {
         super.onResume()
         sensorManager.registerListener(
             this,
-            sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+            sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
             SensorManager.SENSOR_DELAY_GAME
         )
     }
@@ -262,21 +261,4 @@ class TrackerFragment : Fragment(), SensorEventListener {
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-//    private inner class ForegroundOnlyBroadcastReceiver : BroadcastReceiver() {
-//
-//        override fun onReceive(context: Context, intent: Intent) {
-//            val location = intent.getParcelableExtra<Location>(
-//                ForegroundOnlyLocationService.EXTRA_LOCATION
-//            )
-//
-//            if (location != null) {
-//                logResultsToScreen("Foreground location: ${location.toText()}")
-//            }
-//        }
-//    }
 }

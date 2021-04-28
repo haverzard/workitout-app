@@ -39,14 +39,13 @@ class HistoryListAdapter(private val historySelectedListener: HistorySelectedLis
             history.end_time.hours,
             history.end_time.minutes,
         )
-        var target = ""
-        if (history.exercise_type == ExerciseType.Cycling) {
-            target = "Reached: %.2f %s".format(
+        val target: String = if (history.exercise_type == ExerciseType.Cycling) {
+            "Reached: %.2f %s".format(
                 history.target_reached,
                 "km",
             )
         } else {
-            target = "Reached: %d %s".format(
+            "Reached: %d %s".format(
                 history.target_reached.toInt(),
                 "steps",
             )

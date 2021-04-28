@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -72,10 +73,10 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
             view.setOnClickListener {
                 if (days.contains(selected)) {
                     days.remove(selected)
-                    it.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                    it.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
                 } else {
                     days.add(selected)
-                    it.setBackgroundColor(resources.getColor(R.color.selected))
+                    it.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.selected))
                 }
             }
             dayIt += 1
@@ -111,32 +112,33 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
 
         val cyclingButton = root.findViewById<ImageButton>(R.id.exercise_cycling)
         val walkingButton = root.findViewById<ImageButton>(R.id.exercise_walking)
+        val enterTarget = root.findViewById<EditText>(R.id.enter_target)
         walkingButton?.setOnClickListener {
             walkingButton
-                .setBackgroundColor(resources.getColor(R.color.selected))
+                .setBackgroundColor(ContextCompat.getColor(activity!!, R.color.selected))
             cyclingButton
-                .setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                .setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
             exerciseType = ExerciseType.Walking
-            root.findViewById<EditText>(R.id.enter_target).setText("")
-            root.findViewById<EditText>(R.id.enter_target).inputType = InputType.TYPE_CLASS_NUMBER
-            root.findViewById<TextView>(R.id.target_unit).text = "steps"
+            enterTarget.setText("")
+            enterTarget.inputType = InputType.TYPE_CLASS_NUMBER
+            root.findViewById<TextView>(R.id.target_unit).text = getString(R.string.unit_steps)
         }
 
         cyclingButton?.setOnClickListener {
             cyclingButton
-                .setBackgroundColor(resources.getColor(R.color.selected))
+                .setBackgroundColor(ContextCompat.getColor(activity!!, R.color.selected))
             walkingButton
-                .setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                .setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
             exerciseType = ExerciseType.Cycling
 
-            root.findViewById<EditText>(R.id.enter_target).setText("")
-            root.findViewById<EditText>(R.id.enter_target).inputType =
+            enterTarget.setText("")
+            enterTarget.inputType =
                 InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-            root.findViewById<TextView>(R.id.target_unit).text = "km"
+            root.findViewById<TextView>(R.id.target_unit).text = getString(R.string.unit_km)
         }
 
         root.findViewById<TextView>(R.id.button_save)?.setOnClickListener {
-            val targetStr = root.findViewById<EditText>(R.id.enter_target).text.toString()
+            val targetStr = enterTarget.text.toString()
             if (
                 exerciseType == null
                 || (safeArgs.type == "single" && date == null)
