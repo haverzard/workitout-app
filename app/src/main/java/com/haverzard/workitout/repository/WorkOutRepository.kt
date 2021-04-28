@@ -1,11 +1,9 @@
 package com.haverzard.workitout.repository
 
-import android.icu.util.Calendar
 import androidx.annotation.WorkerThread
 import com.haverzard.workitout.dao.HistoryDao
 import com.haverzard.workitout.dao.RoutineExerciseScheduleDao
 import com.haverzard.workitout.dao.SingleExerciseScheduleDao
-import com.haverzard.workitout.entities.Day
 import com.haverzard.workitout.entities.History
 import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
