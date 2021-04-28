@@ -7,11 +7,11 @@ import com.google.android.gms.maps.model.LatLng
 class HistoryConverters {
 
     @TypeConverter
-    fun fromLatLng(value: LatLng) = "${value.latitude}-${value.longitude}"
+    fun fromLatLng(value: LatLng) = "${value.latitude}~${value.longitude}"
 
     @TypeConverter
     fun toLatLng(value: String): LatLng {
-        val latlng = value.split("-").map { it.toDouble() }
+        val latlng = value.split("~").map { it.toDouble() }
         return LatLng(latlng[0], latlng[1])
     }
 
