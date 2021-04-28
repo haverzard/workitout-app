@@ -5,22 +5,17 @@ class CustomTime {
         set(value) {
             field = value
             time = this.toMillis()
-            timeInSeconds = this.toSeconds()
         }
     var minutes: Int
         set(value) {
             field = value
             time = this.toMillis()
-            timeInSeconds = this.toSeconds()
         }
     var seconds: Int
         set(value) {
             field = value
             time = this.toMillis()
-            timeInSeconds = this.toSeconds()
         }
-    var timeInSeconds: Int = 0
-        private set
     var time: Long = 0
         private set
 
@@ -29,11 +24,6 @@ class CustomTime {
         this.minutes = minutes
         this.seconds = seconds
         time = this.toMillis()
-        timeInSeconds = this.toSeconds()
-    }
-
-    private fun toSeconds(): Int {
-        return hours * 3600 + minutes * 60 + seconds
     }
 
     private fun toMillis(): Long {
@@ -68,19 +58,7 @@ class CustomTime {
         var result = hours
         result = 31 * result + minutes
         result = 31 * result + seconds
-        result = 31 * result + timeInSeconds
         result = 31 * result + time.hashCode()
         return result
-    }
-
-    companion object {
-        fun fromSeconds(_seconds: Int): CustomTime {
-            var seconds = _seconds
-            val hours = seconds / 3600
-            seconds %= 3600
-            val minutes = seconds / 60
-            seconds %= 60
-            return CustomTime(hours, minutes, seconds)
-        }
     }
 }

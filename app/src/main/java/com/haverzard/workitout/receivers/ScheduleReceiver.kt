@@ -13,7 +13,6 @@ import com.haverzard.workitout.WorkOutApplication
 import com.haverzard.workitout.services.SharedPreferenceUtil
 import com.haverzard.workitout.services.TrackingService
 import kotlinx.coroutines.launch
-import java.sql.Date
 import java.util.*
 
 
@@ -38,11 +37,8 @@ class ScheduleReceiver: BroadcastReceiver() {
         val scope = (context.applicationContext as WorkOutApplication).applicationScope
 
         val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
+        val currentTime = calendar.timeInMillis
         val day = calendar.get(Calendar.DAY_OF_MONTH)
-        val currentDate = Date(year, month, day).time
-        val yearSub = Date(1970, 0, 0).time
         val autoTrack = SharedPreferenceUtil.getAutoTrackPref(context)
 
         scope.launch {
@@ -66,7 +62,7 @@ class ScheduleReceiver: BroadcastReceiver() {
                         }
                     alarmManager.setExact(
                         AlarmManager.RTC,
-                        schedule.date.time - yearSub + schedule.end_time.time,
+                        schedule.date.timeInMillis + schedule.end_time.time,
                         alarmIntent
                     )
                     if (autoTrack) {
@@ -107,7 +103,7 @@ class ScheduleReceiver: BroadcastReceiver() {
                         }
                     alarmManager.setExact(
                         AlarmManager.RTC,
-                        currentDate - yearSub + schedule.end_time.time,
+                        currentTime + schedule.end_time.time,
                         alarmIntent
                     )
                     if (autoTrack) {

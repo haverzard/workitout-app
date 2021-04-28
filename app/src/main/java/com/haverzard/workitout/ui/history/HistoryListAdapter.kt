@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.haverzard.workitout.R
 import com.haverzard.workitout.entities.ExerciseType
 import com.haverzard.workitout.entities.History
-import java.sql.Date
+import com.haverzard.workitout.util.CalendarPlus
 
 
 class HistoryListAdapter(private val historySelectedListener: HistorySelectedListener) : ListAdapter<History, HistoryListAdapter.HistoryViewHolder>(
@@ -28,11 +28,7 @@ class HistoryListAdapter(private val historySelectedListener: HistorySelectedLis
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
         val history = getItem(position)
-        val date = Date(
-            history.date.year - 1900,
-            history.date.month,
-            history.date.date
-        ).toLocaleString()
+        val date = CalendarPlus.toLocaleString(history.date)
         val time = "%02d:%02d - %02d:%02d".format(
             history.start_time.hours,
             history.start_time.minutes,
@@ -53,7 +49,7 @@ class HistoryListAdapter(private val historySelectedListener: HistorySelectedLis
         holder.itemView.findViewById<ImageButton>(R.id.show_detail).setOnClickListener {
             historySelectedListener.onHistorySelected(history)
         }
-        holder.bind(history.exercise_type, date.substring(0, date.length - 9), time, target)
+        holder.bind(history.exercise_type, date, time, target)
     }
 
     class HistoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

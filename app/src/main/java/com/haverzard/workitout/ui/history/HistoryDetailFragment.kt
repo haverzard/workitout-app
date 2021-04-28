@@ -19,7 +19,7 @@ import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
 import com.haverzard.workitout.entities.ExerciseType
 import com.haverzard.workitout.entities.History
-import java.sql.Date
+import com.haverzard.workitout.util.CalendarPlus
 
 
 class HistoryDetailFragment : Fragment(), OnMapReadyCallback {
@@ -49,11 +49,7 @@ class HistoryDetailFragment : Fragment(), OnMapReadyCallback {
         historyViewModel.getHistory(historyId)
         historyViewModel.currentHistory.observe(this) {
             if (it != null) {
-                val date = Date(
-                    it.date.year - 1900,
-                    it.date.month,
-                    it.date.date
-                ).toLocaleString()
+                val date = CalendarPlus.toLocaleString(it.date)
                 val time = "%02d:%02d - %02d:%02d".format(
                     it.start_time.hours,
                     it.start_time.minutes,
@@ -70,7 +66,7 @@ class HistoryDetailFragment : Fragment(), OnMapReadyCallback {
                     )
                 }
 
-                root.findViewById<TextView>(R.id.date).text = date.substring(0, date.length - 9)
+                root.findViewById<TextView>(R.id.date).text = date
                 root.findViewById<TextView>(R.id.time).text = time
                 root.findViewById<TextView>(R.id.target).text = target
 

@@ -56,8 +56,7 @@ class ScheduleFragment : Fragment() {
         autoTrackSwitch?.setOnClickListener {
             if (!permissionApproved()) {
                 requestForegroundPermissions()
-            }
-            if (permissionApproved()) {
+            } else {
                 autoTrack = !autoTrack
                 SharedPreferenceUtil.saveAutoTrackPref(context!!, autoTrack)
             }

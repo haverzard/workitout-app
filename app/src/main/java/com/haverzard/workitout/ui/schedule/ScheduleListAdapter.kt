@@ -12,7 +12,7 @@ import com.haverzard.workitout.R
 import com.haverzard.workitout.entities.ExerciseType
 import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
-import java.sql.Date
+import com.haverzard.workitout.util.CalendarPlus
 
 class ScheduleListAdapter(private val scheduleSelectedListener: ScheduleSelectedListener) : ListAdapter<ScheduleListAdapter.Schedule, ScheduleListAdapter.ScheduleViewHolder>(
     SchedulesComparator()
@@ -31,11 +31,7 @@ class ScheduleListAdapter(private val scheduleSelectedListener: ScheduleSelected
         val singleExerciseSchedule = getItem(position).getSingleSchedule()
         val routineExerciseSchedule = getItem(position).getRoutineSchedule()
         if (singleExerciseSchedule != null) {
-            val date = Date(
-                singleExerciseSchedule.date.year - 1900,
-                singleExerciseSchedule.date.month,
-                singleExerciseSchedule.date.date
-            ).toLocaleString()
+            val date = CalendarPlus.toLocaleString(singleExerciseSchedule.date)
             val time = "%02d:%02d - %02d:%02d".format(
                 singleExerciseSchedule.start_time.hours,
                 singleExerciseSchedule.start_time.minutes,
@@ -56,7 +52,12 @@ class ScheduleListAdapter(private val scheduleSelectedListener: ScheduleSelected
             holder.itemView.findViewById<ImageButton>(R.id.schedule_delete).setOnClickListener {
                 scheduleSelectedListener.onScheduleSelected(singleExerciseSchedule)
             }
-            holder.bind(singleExerciseSchedule.exercise_type, date.substring(0, date.length - 9), time, target)
+            holder.bind(
+                singleExerciseSchedule.exercise_type,
+                date,
+                time,
+                target
+            )
         } else if (routineExerciseSchedule != null) {
             val days = routineExerciseSchedule.days.joinToString(separator = "-")
             val time = "%02d:%02d - %02d:%02d".format(

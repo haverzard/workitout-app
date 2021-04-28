@@ -23,10 +23,9 @@ import com.haverzard.workitout.entities.ExerciseType
 import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.receivers.ScheduleReceiver
+import com.haverzard.workitout.util.CalendarPlus
 import com.haverzard.workitout.util.CustomTime
 import kotlinx.coroutines.launch
-import java.sql.Date
-import java.sql.Time
 
 class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePickerDialogFragmentEvents {
 
@@ -36,7 +35,7 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
     private val timePicker = TimePickerFragment()
     private val safeArgs: AddScheduleFragmentArgs by navArgs()
 
-    private var date: Date? = null
+    private var date: Calendar? = null
     private var startTime: CustomTime? = null
     private var endTime: CustomTime? = null
     private var exerciseType: ExerciseType? = null
@@ -86,7 +85,7 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
             datePicker.setObserver(this)
             datePicker.setCalendar(Calendar.getInstance())
             if (date != null) {
-                datePicker.setCalendar(date!!.year, date!!.month, date!!.date)
+                datePicker.setCalendar(date!!.get(Calendar.YEAR), date!!.get(Calendar.MONTH), date!!.get(Calendar.DATE))
             }
             datePicker.show(fragmentManager, "datePicker")
         }
@@ -167,17 +166,13 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
 
             // setup time
             val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            val currentTime = calendar.timeInMillis
             val hour = calendar.get(Calendar.HOUR_OF_DAY)
             val minute = calendar.get(Calendar.MINUTE)
             val second = calendar.get(Calendar.SECOND)
-            val currentDate = Date(year, month, day).time + Time(hour, minute, second).time
-            val yearSub = Date(1970, 0, 0).time
             val timeSub = CustomTime(hour, minute, second).time
 
-            if (date != null && date!!.time + startTime!!.time <= currentDate) {
+            if (date != null && date!!.timeInMillis + startTime!!.time <= currentTime) {
                 Toast.makeText(
                     activity,
                     "Schedule only for future exercise",
@@ -212,7 +207,7 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
                     }
                     alarmManager.setExact(
                         AlarmManager.RTC,
-                        date!!.time - yearSub + startTime!!.time,
+                        date!!.timeInMillis + startTime!!.time,
                         alarmIntent
                     )
                 } else {
@@ -240,7 +235,7 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
                         }
                         alarmManager.setInexactRepeating(
                             AlarmManager.RTC,
-                            currentDate - timeSub - yearSub + startTime!!.time + AlarmManager.INTERVAL_DAY * delta,
+                            currentTime - timeSub + startTime!!.time + AlarmManager.INTERVAL_DAY * delta,
                             AlarmManager.INTERVAL_DAY * 7,
                             alarmIntent
                         )
@@ -258,7 +253,7 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
 
     override fun onDateSet(year: Int, month: Int, day: Int) {
         val dateStr = "%04d-%02d-%02d".format(year, month, day)
-        date = Date(year, month, day)
+        date = CalendarPlus.initCalendarDate(year, month, day)
         view?.findViewById<TextView>(R.id.pick_date)?.text = dateStr
     }
 

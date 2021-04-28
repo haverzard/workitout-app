@@ -22,10 +22,9 @@ import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
 import com.haverzard.workitout.entities.ExerciseType
 import com.haverzard.workitout.entities.History
+import com.haverzard.workitout.util.CalendarPlus
 import com.haverzard.workitout.util.CustomTime
 import kotlinx.coroutines.launch
-import java.sql.Date
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.HashSet
 
@@ -46,7 +45,7 @@ class TrackingService: Service(), SensorEventListener {
     private var target = 0.0
     private var targetReached = 0.0
     private var points = HashSet<LatLng>(0)
-    private var currentDate: Date? = null
+    private var currentDate: Calendar? = null
     private var startTime: CustomTime? = null
     private var endTime: CustomTime? = null
     private var exerciseType: ExerciseType? = null
@@ -159,7 +158,7 @@ class TrackingService: Service(), SensorEventListener {
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
         val second = calendar.get(Calendar.SECOND)
-        currentDate = Date(year, month, day)
+        currentDate = CalendarPlus.initCalendarDate(year, month, day)
         targetReached = 0.0
         points.clear()
         startTime = CustomTime(hour, minute, second)

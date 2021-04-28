@@ -3,7 +3,7 @@ package com.haverzard.workitout.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.haverzard.workitout.util.CustomTime
-import java.sql.Date
+import android.icu.util.Calendar
 
 @Entity(tableName = "routine_schedule_table")
 data class RoutineExerciseSchedule(
@@ -20,7 +20,7 @@ data class SingleExerciseSchedule(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val exercise_type: ExerciseType,
     val target: Double,
-    val date: Date,
+    val date: Calendar,
     val start_time: CustomTime,
     val end_time: CustomTime,
 )
