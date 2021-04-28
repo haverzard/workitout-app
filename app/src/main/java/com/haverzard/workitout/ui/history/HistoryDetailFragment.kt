@@ -84,12 +84,16 @@ class HistoryDetailFragment : Fragment(), OnMapReadyCallback {
         return root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+
     override fun onMapReady(map: GoogleMap?) {
         gMap = map
         val points: List<LatLng> = history!!.points
 
         if (points.isNotEmpty()) {
-            gMap!!.addPolyline(
+            gMap?.addPolyline(
                 PolylineOptions()
                     .clickable(true)
                     .addAll(points)
@@ -101,7 +105,7 @@ class HistoryDetailFragment : Fragment(), OnMapReadyCallback {
             }
             val bounds = builder.build()
             val cu = CameraUpdateFactory.newLatLngBounds(bounds, 50)
-            gMap!!.moveCamera(cu)
+            gMap?.moveCamera(cu)
         }
     }
 

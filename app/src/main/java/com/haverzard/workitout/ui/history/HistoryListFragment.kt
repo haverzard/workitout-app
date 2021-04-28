@@ -45,7 +45,7 @@ class HistoryListFragment : Fragment() {
                     fragmentItem.arguments = args
 
                     val ft: FragmentTransaction = fragmentManager!!.beginTransaction()
-                    ft.replace(R.id.detail_container, fragmentItem)
+                    ft.replace(R.id.detail_container, fragmentItem, "detail")
                     ft.commit()
                 } else {
                     val action =
@@ -67,5 +67,15 @@ class HistoryListFragment : Fragment() {
 
     fun isTwoPane(): Boolean {
         return view?.findViewById<FrameLayout>(R.id.detail_container) != null
+    }
+
+    override fun onPause() {
+        val frag = fragmentManager!!.findFragmentByTag("detail")
+        if (frag != null) {
+            val ft: FragmentTransaction = fragmentManager!!.beginTransaction()
+            ft.remove(frag)
+            ft.commit()
+        }
+        super.onPause()
     }
 }
