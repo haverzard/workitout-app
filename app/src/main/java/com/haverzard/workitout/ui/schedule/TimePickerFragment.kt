@@ -1,12 +1,10 @@
 package com.haverzard.workitout.ui.schedule
 
-import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.icu.util.Calendar
 import android.os.Bundle
-import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
 

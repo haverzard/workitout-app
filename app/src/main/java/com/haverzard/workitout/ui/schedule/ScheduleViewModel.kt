@@ -1,7 +1,6 @@
-package com.haverzard.workitout.viewmodel
+package com.haverzard.workitout.ui.schedule
 
 import androidx.lifecycle.*
-import com.haverzard.workitout.ui.schedule.ScheduleListAdapter
 import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.repository.WorkOutRepository
@@ -10,12 +9,12 @@ import kotlinx.coroutines.launch
 
 class ScheduleViewModel(private val repository: WorkOutRepository) : ViewModel() {
 
-    var schedules = MediatorLiveData<List<ScheduleListAdapter.Schedule>>()
-    private var singleSchedules = MutableList<ScheduleListAdapter.Schedule>(0) {
-        _ -> ScheduleListAdapter.Schedule(null, null)
+    val schedules = MediatorLiveData<List<ScheduleListAdapter.Schedule>>()
+    private var singleSchedules = MutableList(0) {
+        ScheduleListAdapter.Schedule(null, null)
     }
-    private var routineSchedules = MutableList<ScheduleListAdapter.Schedule>(0) {
-        _ -> ScheduleListAdapter.Schedule(null, null)
+    private var routineSchedules = MutableList(0) {
+        ScheduleListAdapter.Schedule(null, null)
     }
 
     init {

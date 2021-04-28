@@ -1,34 +1,18 @@
 package com.haverzard.workitout.entities
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.google.android.gms.maps.model.LatLng
-import java.sql.Date
-import java.sql.Time
+import com.haverzard.workitout.util.CustomTime
+import android.icu.util.Calendar
 
-@Entity(tableName = "histories",
-    foreignKeys = [
-        ForeignKey(entity = SingleExerciseSchedule::class,
-            parentColumns = arrayOf("id"),
-            childColumns = arrayOf("single_id"),
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(entity = RoutineExerciseSchedule::class,
-            parentColumns = arrayOf("id"),
-            childColumns = arrayOf("routine_id"),
-            onDelete = ForeignKey.CASCADE
-        ),
-    ]
-)
+@Entity(tableName = "histories")
 data class History(
     @PrimaryKey(autoGenerate = true) val id: Int,
-    val single_id: Int?,
-    val routine_id: Int?,
     val exercise_type: ExerciseType,
-    val date: Date,
-    val start_time: Time,
-    val end_time: Time,
+    val date: Calendar,
+    val start_time: CustomTime,
+    val end_time: CustomTime,
     val target_reached: Double,
     val points: List<LatLng>,
 )

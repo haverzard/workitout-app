@@ -14,6 +14,7 @@
         <action
                 android:id="@+id/action_HomeFragment_to_HomeSecondFragment"
                 app:destination="@id/navigation_home_second"/>
+
     </fragment>
     <fragment
             android:id="@+id/navigation_home_second"
@@ -39,7 +40,37 @@
             android:id="@+id/navigation_history"
             android:name="com.haverzard.workitout.ui.history.HistoryFragment"
             android:label="@string/title_history"
-            tools:layout="@layout/fragment_history"/>
+            tools:layout="@layout/fragment_history">
+
+        <action
+                android:id="@+id/action_history"
+                app:destination="@id/navigation_history_list"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/navigation_history_list"
+            android:name="com.haverzard.workitout.ui.history.HistoryListFragment"
+            android:label="@string/title_history_list"
+            tools:layout="@layout/fragment_history_list">
+
+        <argument
+                android:name="date"
+                app:argType="string"/>
+        <action
+                android:id="@+id/action_history_list"
+                app:destination="@id/navigation_history_detail"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/navigation_history_detail"
+            android:name="com.haverzard.workitout.ui.history.HistoryDetailFragment"
+            android:label="@string/title_history_detail"
+            tools:layout="@layout/fragment_history_list">
+
+        <argument
+                android:name="history_id"
+                app:argType="integer"/>
+    </fragment>
 
     <fragment
             android:id="@+id/navigation_schedule"

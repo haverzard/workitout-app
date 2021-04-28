@@ -23,7 +23,7 @@
             <TextView
                     android:text="Your Schedules"
                     android:textColor="@color/black"
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/header"
@@ -40,7 +40,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/darker_gray"
-                    android:textSize="16dp"
+                    android:textSize="16sp"
                     android:id="@+id/auto_track_switch"/>
         </LinearLayout>
 
