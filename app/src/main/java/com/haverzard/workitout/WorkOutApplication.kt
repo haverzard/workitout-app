@@ -9,7 +9,7 @@ import kotlinx.coroutines.SupervisorJob
 class WorkOutApplication : Application() {
 
     val applicationScope = CoroutineScope(SupervisorJob())
-    val database by lazy { WorkOutDatabase.getDatabase(this) }
+    private val database by lazy { WorkOutDatabase.getDatabase(this) }
     val repository by lazy {
         WorkOutRepository(
             database.singleExerciseScheduleDao(),

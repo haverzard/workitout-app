@@ -76,7 +76,7 @@ class TrackingService: Service(), SensorEventListener {
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
 
                 points.add(LatLng(currentLocation!!.latitude, currentLocation!!.longitude))
-                var notifText = "You have been cycling for ${targetReached} km"
+                var notifText = "You have been cycling for $targetReached km"
                 if (enableTarget) {
                     notifText += "\nYour target is $target km"
                 }
