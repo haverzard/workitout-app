@@ -22,9 +22,9 @@ import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
 import com.haverzard.workitout.entities.ExerciseType
 import com.haverzard.workitout.entities.History
+import com.haverzard.workitout.util.CustomTime
 import kotlinx.coroutines.launch
 import java.sql.Date
-import java.sql.Time
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.HashSet
@@ -47,8 +47,8 @@ class TrackingService: Service(), SensorEventListener {
     private var targetReached = 0.0
     private var points = HashSet<LatLng>(0)
     private var currentDate: Date? = null
-    private var startTime: Time? = null
-    private var endTime: Time? = null
+    private var startTime: CustomTime? = null
+    private var endTime: CustomTime? = null
     private var exerciseType: ExerciseType? = null
 
     override fun onCreate() {
@@ -151,7 +151,7 @@ class TrackingService: Service(), SensorEventListener {
         configurationChange = true
     }
 
-    fun initData() {
+    private fun initData() {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
@@ -162,7 +162,7 @@ class TrackingService: Service(), SensorEventListener {
         currentDate = Date(year, month, day)
         targetReached = 0.0
         points.clear()
-        startTime = Time(hour, minute, second)
+        startTime = CustomTime(hour, minute, second)
         endTime = null
         exerciseType = ExerciseType.valueOf(SharedPreferenceUtil.getExerciseType(this)!!)
     }
@@ -175,9 +175,9 @@ class TrackingService: Service(), SensorEventListener {
             val hour = calendar.get(Calendar.HOUR_OF_DAY)
             val minute = calendar.get(Calendar.MINUTE)
             val second = calendar.get(Calendar.SECOND)
-            endTime = Time(hour, minute, second)
+            endTime = CustomTime(hour, minute, second)
             if (startTime!! >= endTime!!) {
-                endTime = Time(23, 59, 59)
+                endTime = CustomTime(23, 59, 59)
             }
             application.applicationScope.launch {
                 val history = History(

@@ -1,8 +1,8 @@
 package com.haverzard.workitout.entities
 
 import androidx.room.TypeConverter
+import com.haverzard.workitout.util.CustomTime
 import java.sql.Date
-import java.sql.Time
 
 
 class ScheduleEnumConverters {
@@ -17,10 +17,10 @@ class ScheduleEnumConverters {
     }
 
     @TypeConverter
-    fun fromTime(value: Time) = value.toString()
+    fun fromTime(value: CustomTime) = value.timeInSeconds
 
     @TypeConverter
-    fun toTime(value: String): Time = Time.valueOf(value)
+    fun toTime(value: Int): CustomTime = CustomTime.fromSeconds(value)
 
     @TypeConverter
     fun toDays(value: String): List<Day> {

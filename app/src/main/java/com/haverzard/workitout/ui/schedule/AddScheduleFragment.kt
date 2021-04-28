@@ -23,6 +23,7 @@ import com.haverzard.workitout.entities.ExerciseType
 import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.receivers.ScheduleReceiver
+import com.haverzard.workitout.util.CustomTime
 import kotlinx.coroutines.launch
 import java.sql.Date
 import java.sql.Time
@@ -36,8 +37,8 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
     private val safeArgs: AddScheduleFragmentArgs by navArgs()
 
     private var date: Date? = null
-    private var startTime: Time? = null
-    private var endTime: Time? = null
+    private var startTime: CustomTime? = null
+    private var endTime: CustomTime? = null
     private var exerciseType: ExerciseType? = null
     private var days = HashSet<Day>()
 
@@ -174,7 +175,7 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
             val second = calendar.get(Calendar.SECOND)
             val currentDate = Date(year, month, day).time + Time(hour, minute, second).time
             val yearSub = Date(1970, 0, 0).time
-            val timeSub = Time(hour, minute, second).time
+            val timeSub = CustomTime(hour, minute, second).time
 
             if (date != null && date!!.time + startTime!!.time <= currentDate) {
                 Toast.makeText(
@@ -264,10 +265,10 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
     override fun onTimeSet(hour: Int, minute: Int, arg: String) {
         val timeStr = "%02d:%02d".format(hour, minute)
         if (arg == "start") {
-            startTime = Time(hour, minute, 0)
+            startTime = CustomTime(hour, minute, 0)
             view?.findViewById<TextView>(R.id.pick_start_time)?.text = timeStr
         } else {
-            endTime = Time(hour, minute, 0)
+            endTime = CustomTime(hour, minute, 0)
             view?.findViewById<TextView>(R.id.pick_end_time)?.text = timeStr
         }
     }
