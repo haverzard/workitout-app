@@ -6,7 +6,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +28,7 @@ import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.receivers.ScheduleReceiver
 import com.haverzard.workitout.services.SharedPreferenceUtil
 
+
 private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
 class ScheduleFragment : Fragment() {
 
@@ -36,12 +39,12 @@ class ScheduleFragment : Fragment() {
     private var autoTrack = false
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         scheduleViewModel = ViewModelProviders.of(
-        this, ScheduleViewModelFactory((activity?.application as WorkOutApplication).repository)
+            this, ScheduleViewModelFactory((activity?.application as WorkOutApplication).repository)
         ).get(ScheduleViewModel::class.java)
         alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -68,7 +71,12 @@ class ScheduleFragment : Fragment() {
             ScheduleListAdapter.ScheduleSelectedListener {
             override fun onScheduleSelected(schedule: SingleExerciseSchedule) {
                 val alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
-                    PendingIntent.getBroadcast(context, schedule.id*8, intent, PendingIntent.FLAG_NO_CREATE)
+                    PendingIntent.getBroadcast(
+                        context,
+                        schedule.id * 8,
+                        intent,
+                        PendingIntent.FLAG_NO_CREATE
+                    )
                 }
                 alarmManager.cancel(alarmIntent)
                 scheduleViewModel.deleteSingleSchedule(schedule)
@@ -78,7 +86,12 @@ class ScheduleFragment : Fragment() {
                 schedule.days.forEach {
                     val day = Day.values().indexOf(it)
                     val alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
-                        PendingIntent.getBroadcast(context, (schedule.id+1)*8-day-1, intent, PendingIntent.FLAG_NO_CREATE)
+                        PendingIntent.getBroadcast(
+                            context,
+                            (schedule.id + 1) * 8 - day - 1,
+                            intent,
+                            PendingIntent.FLAG_NO_CREATE
+                        )
                     }
                     alarmManager.cancel(alarmIntent)
                 }
@@ -96,13 +109,14 @@ class ScheduleFragment : Fragment() {
 
     private fun permissionApproved(): Boolean {
         return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
-            context!!,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-                && PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
-            context!!,
-            Manifest.permission.ACTIVITY_RECOGNITION
-        )
+                context!!,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            && PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
+                context!!,
+                Manifest.permission.ACTIVITY_RECOGNITION
+            )
+            && Settings.canDrawOverlays(activity)
     }
 
     private fun requestForegroundPermissions() {
@@ -118,7 +132,10 @@ class ScheduleFragment : Fragment() {
                     // Request permission
                     ActivityCompat.requestPermissions(
                         activity!!,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACTIVITY_RECOGNITION),
+                        arrayOf(
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACTIVITY_RECOGNITION,
+                        ),
                         REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
                     )
                 }
@@ -126,9 +143,17 @@ class ScheduleFragment : Fragment() {
         } else {
             ActivityCompat.requestPermissions(
                 activity!!,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACTIVITY_RECOGNITION),
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACTIVITY_RECOGNITION,
+                ),
                 REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
             )
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package: com.haverzard.workitout")
+            )
+            startActivityForResult(intent, 5469)
         }
     }
 
