@@ -13,7 +13,15 @@ import com.haverzard.workitout.data.models.Article
 import java.text.DateFormat
 import java.util.*
 
-class NewsAdapter(val articles: List<Article>): RecyclerView.Adapter<NewsViewHolder>() {
+class NewsAdapter(
+    private val articles: List<Article>,
+    private val articlesSelectedListener: ArticlesSelectedListener,
+): RecyclerView.Adapter<NewsViewHolder>() {
+
+    interface ArticlesSelectedListener {
+        fun onArticleSelected(article: Article)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
         return NewsViewHolder.create(parent)
     }
@@ -23,7 +31,11 @@ class NewsAdapter(val articles: List<Article>): RecyclerView.Adapter<NewsViewHol
     }
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
-        return holder.bind(articles[position])
+        val article = articles[position]
+        holder.itemView.setOnClickListener {
+            articlesSelectedListener.onArticleSelected(article)
+        }
+        return holder.bind(article)
     }
 }
 

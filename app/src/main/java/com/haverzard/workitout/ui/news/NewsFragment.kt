@@ -9,9 +9,11 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.haverzard.workitout.R
+import com.haverzard.workitout.data.models.Article
 
 class NewsFragment : Fragment() {
 
@@ -35,7 +37,15 @@ class NewsFragment : Fragment() {
         recyclerView.layoutManager = GridLayoutManager(context, totalCol)
         newsViewModel.articles.observe(this) {
             if (it.isNotEmpty()) {
-                recyclerView.adapter = NewsAdapter(it)
+                recyclerView.adapter = NewsAdapter(it, object: NewsAdapter.ArticlesSelectedListener {
+                    override fun onArticleSelected(article: Article) {
+                        val url: String = if (article.url != null) {
+                            article.url!!
+                        } else ""
+                        val action = NewsFragmentDirections.actionShowWebview(url)
+                        findNavController().navigate(action)
+                    }
+                })
                 root.findViewById<ProgressBar>(R.id.progress_bar).visibility = View.GONE
             }
         }
