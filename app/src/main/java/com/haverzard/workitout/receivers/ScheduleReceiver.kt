@@ -10,14 +10,13 @@ import androidx.core.app.NotificationCompat
 import com.haverzard.workitout.MainActivity
 import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
-import com.haverzard.workitout.services.SharedPreferenceUtil
+import com.haverzard.workitout.entities.ExerciseType
+import com.haverzard.workitout.util.SharedPreferenceUtil
 import com.haverzard.workitout.services.TrackingService
+import com.haverzard.workitout.util.NotificationHelper
 import kotlinx.coroutines.launch
 import java.util.*
 
-
-private const val NOTIFICATION_ID = 1351812002
-private const val NOTIFICATION_CHANNEL_ID = "workitout_02"
 
 class ScheduleReceiver: BroadcastReceiver() {
 
@@ -42,12 +41,18 @@ class ScheduleReceiver: BroadcastReceiver() {
         val autoTrack = SharedPreferenceUtil.getAutoTrackPref(context)
 
         scope.launch {
+            var end = false
             if (id % 2 == 0L) {
                 val schedule = repository.getSingleSchedule((id / 2).toInt())
                 if (start) {
-                    body = "It's your time to do some %s".format(
+                    body = "It's your time to do some %s. ".format(
                         schedule.exercise_type.name.toLowerCase(Locale.ROOT)
                     )
+                    body += if (schedule.exercise_type == ExerciseType.Cycling) {
+                        "Your target: %.2f km".format(schedule.target)
+                    } else {
+                        "Your target: %d steps".format(schedule.target.toInt())
+                    }
 
                     val alarmIntent =
                         Intent(context, ScheduleReceiver::class.java).let { intent ->
@@ -80,6 +85,7 @@ class ScheduleReceiver: BroadcastReceiver() {
                         context.stopService(serviceIntent)
                     }
                     repository.deleteSingleSchedule(schedule)
+                    end = true
                 }
             } else {
                 val schedule = repository.getRoutineSchedule(((id - 1) / 2).toInt())
@@ -87,6 +93,11 @@ class ScheduleReceiver: BroadcastReceiver() {
                     body = "It's your time to do some %s".format(
                         schedule.exercise_type.name.toLowerCase(Locale.ROOT)
                     )
+                    body += if (schedule.exercise_type == ExerciseType.Cycling) {
+                        "Your target: %.2f km".format(schedule.target)
+                    } else {
+                        "Your target: %d steps".format(schedule.target.toInt())
+                    }
                     val alarmIntent =
                         Intent(context, ScheduleReceiver::class.java).let { intent ->
                             intent.putExtra("requestCode", ((schedule.id + 1) * 2 - 1).toLong())
@@ -126,52 +137,28 @@ class ScheduleReceiver: BroadcastReceiver() {
                         val serviceIntent = Intent(context, TrackingService::class.java)
                         context.stopService(serviceIntent)
                     }
+                    end = true
                 }
             }
-            notificationManager.notify(
-                NOTIFICATION_ID,
-                generateNotification(
-                    context,
-                    title,
-                    body,
+            if (!end || !autoTrack) {
+                notificationManager.notify(
+                    NotificationHelper.NOTIFICATION_SCHEDULER_ID,
+                    generateNotification(
+                        context,
+                        title,
+                        body,
+                    )
                 )
-            )
+            }
         }
     }
 
     private fun generateNotification(context: Context, titleText: String, mainNotificationText: String): Notification {
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        // 1. Create Notification Channel for O+ and beyond devices (26+).
-        val notificationChannel = NotificationChannel(
-            NOTIFICATION_CHANNEL_ID, titleText, NotificationManager.IMPORTANCE_DEFAULT)
-
-        notificationManager.createNotificationChannel(notificationChannel)
-
-        // 2. Build the BIG_TEXT_STYLE.
-        val bigTextStyle = NotificationCompat.BigTextStyle()
-            .bigText(mainNotificationText)
-            .setBigContentTitle(titleText)
-
-        // 3. Set up main Intent/Pending Intents for notification.
         val launchActivityIntent = Intent(context, MainActivity::class.java)
-
         val activityPendingIntent = PendingIntent.getActivity(
             context, 0, launchActivityIntent, 0)
 
-        // 4. Build and issue the notification.
-        // Notification Channel Id is ignored for Android pre O (26).
-        val notificationCompatBuilder =
-            NotificationCompat.Builder(context,
-                NOTIFICATION_CHANNEL_ID
-            )
-
-        return notificationCompatBuilder
-            .setStyle(bigTextStyle)
-            .setContentTitle(titleText)
-            .setContentText(mainNotificationText)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setDefaults(NotificationCompat.DEFAULT_ALL)
+        return NotificationHelper.generateNotification(context, titleText, mainNotificationText)
             .setOngoing(false)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(activityPendingIntent)
