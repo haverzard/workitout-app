@@ -32,4 +32,5 @@
     <string name="start_tracking_btn">Start Tracking</string>
     <string name="unit_km">km</string>
     <string name="unit_steps">steps</string>
+    <string name="API_KEY">76b33f118a4a497dafe751d9db583719</string>
 </resources>

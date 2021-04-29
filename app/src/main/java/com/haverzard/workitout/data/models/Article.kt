@@ -1,7 +1,5 @@
 package com.haverzard.workitout.data.models
 
-import com.google.gson.annotations.SerializedName
-
 data class Article (
     var source: Source,
     var totalResults: String,

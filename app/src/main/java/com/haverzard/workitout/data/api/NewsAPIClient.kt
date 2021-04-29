@@ -1,20 +1,11 @@
 package com.haverzard.workitout.data.api
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class NewsAPIClient {
-    private val BASE_URL: String = "https://newsapi.org/v2/"
-    private val country: String = "id";
-    private val category: String = "sports";
-    private val API_KEY: String = "76b33f118a4a497dafe751d9db583719"
-
-    private val gson : Gson by lazy {
-        GsonBuilder().setLenient().create()
-    }
+object NewsAPIClient {
+    private const val BASE_URL: String = "https://newsapi.org/v2/"
 
     private val httpClient : OkHttpClient by lazy {
         OkHttpClient.Builder().build()
@@ -24,10 +15,11 @@ class NewsAPIClient {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
+            .client(httpClient)
             .build()
     }
 
-    val apiService : NewsAPIService by lazy{
-        retrofit.create(NewsAPIService::class.java)
+    fun<T> buildClient(service: Class<T>): T{
+        return retrofit.create(service)
     }
 }
