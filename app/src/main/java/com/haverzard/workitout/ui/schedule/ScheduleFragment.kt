@@ -82,7 +82,9 @@ class ScheduleFragment : Fragment() {
                         PendingIntent.FLAG_NO_CREATE
                     )
                 }
-                alarmManager.cancel(alarmIntent)
+                if (alarmIntent != null) {
+                    alarmManager.cancel(alarmIntent)
+                }
                 scheduleViewModel.deleteSingleSchedule(schedule)
             }
 
@@ -97,7 +99,9 @@ class ScheduleFragment : Fragment() {
                             PendingIntent.FLAG_NO_CREATE
                         )
                     }
-                    alarmManager.cancel(alarmIntent)
+                    if (alarmIntent != null) {
+                        alarmManager.cancel(alarmIntent)
+                    }
                 }
                 scheduleViewModel.deleteRoutineSchedule(schedule)
             }

@@ -199,6 +199,7 @@ class TrackingService: Service(), SensorEventListener {
         val launchActivityIntent = Intent(this, MainActivity::class.java)
         launchActivityIntent.putExtra("history_id", id)
 
+        SharedPreferenceUtil.saveHistoryId(this, id)
         val activityPendingIntent = PendingIntent.getActivity(
             this, 0, launchActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
@@ -208,7 +209,7 @@ class TrackingService: Service(), SensorEventListener {
                 "Work out ends!",
                 "You have completed your work out"
             )
-            .setOngoing(true)
+            .setOngoing(false)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(activityPendingIntent)
             .setAutoCancel(true)
@@ -220,10 +221,8 @@ class TrackingService: Service(), SensorEventListener {
         )
 
         if (SharedPreferenceUtil.alertWindowEnabled() || SharedPreferenceUtil.getForegroundPref(this)) {
-            val launchActivityIntent2 = Intent(this, MainActivity::class.java)
-            SharedPreferenceUtil.saveHistoryId(this, id)
-            launchActivityIntent2.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            this.startActivity(launchActivityIntent2)
+            launchActivityIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            this.startActivity(launchActivityIntent)
             stopSelf()
         }
     }

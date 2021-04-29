@@ -58,13 +58,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goToHistory() {
-        var historyId = intent.extras?.getLong("history_id")?.toInt()
-        if (historyId == null) historyId = SharedPreferenceUtil.getHistoryId(this).toInt()
+        var historyId = SharedPreferenceUtil.getHistoryId(this).toInt()
         if (historyId != -1) {
             val bundle = Bundle()
             bundle.putInt("history_id", historyId)
             findNavController(R.id.nav_host_fragment).navigate(R.id.navigation_history_detail, bundle)
-            intent.removeExtra("history_id")
             SharedPreferenceUtil.saveHistoryId(this, -1L)
         }
     }
