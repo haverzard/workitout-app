@@ -25,7 +25,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.haverzard.workitout.BuildConfig
 import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
-import com.haverzard.workitout.services.SharedPreferenceUtil
+import com.haverzard.workitout.util.SharedPreferenceUtil
 import com.haverzard.workitout.services.TrackingService
 import com.haverzard.workitout.ui.schedule.ScheduleViewModel
 import com.haverzard.workitout.ui.schedule.ScheduleViewModelFactory
@@ -40,25 +40,8 @@ class TrackerFragment : Fragment(), SensorEventListener {
     private lateinit var image: ImageView
     private lateinit var sharedPreferences: SharedPreferences
 
-//    private var trackingService: TrackingService? = null
-//    private var trackingServiceBound = false
-
     private var currentDegree = 0f
     private var exerciseType = ""
-
-//    private val trackingServiceConnection = object : ServiceConnection {
-//
-//        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-//            val binder = service as TrackingService.LocalBinder
-//            trackingService = binder.service
-//            trackingServiceBound = true
-//        }
-//
-//        override fun onServiceDisconnected(name: ComponentName) {
-//            trackingService = null
-//            trackingServiceBound = false
-//        }
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,7 +71,7 @@ class TrackerFragment : Fragment(), SensorEventListener {
         val walkingButton = root.findViewById<ImageButton>(R.id.exercise_walking)
         val trackButton = root.findViewById<MaterialButton>(R.id.btn_track)
 
-        if (!SharedPreferenceUtil.getTracking(activity!!)!!) {
+        if (!SharedPreferenceUtil.getTracking(activity!!)) {
             SharedPreferenceUtil.saveExerciseType(activity!!, "")
         } else {
             trackButton.text = getString(R.string.stop_tracking_btn)
@@ -121,7 +104,6 @@ class TrackerFragment : Fragment(), SensorEventListener {
 
             val serviceIntent = Intent(activity!!, TrackingService::class.java)
             if (enabled) {
-                println("Test")
                 activity!!.stopService(serviceIntent)
                 cyclingButton.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
                 walkingButton.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))

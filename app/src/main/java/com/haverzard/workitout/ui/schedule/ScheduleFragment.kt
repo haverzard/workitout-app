@@ -1,9 +1,11 @@
 package com.haverzard.workitout.ui.schedule
 
 import android.Manifest
+import android.app.ActivityManager
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -26,7 +28,7 @@ import com.haverzard.workitout.entities.Day
 import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.receivers.ScheduleReceiver
-import com.haverzard.workitout.services.SharedPreferenceUtil
+import com.haverzard.workitout.util.SharedPreferenceUtil
 
 
 private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
@@ -34,6 +36,7 @@ class ScheduleFragment : Fragment() {
 
     private lateinit var scheduleViewModel: ScheduleViewModel
     private lateinit var alarmManager: AlarmManager
+    private lateinit var activityManager: ActivityManager
 
     private val scheduleTypeDialog = ScheduleTypeDialog()
     private var autoTrack = false
@@ -47,6 +50,7 @@ class ScheduleFragment : Fragment() {
             this, ScheduleViewModelFactory((activity?.application as WorkOutApplication).repository)
         ).get(ScheduleViewModel::class.java)
         alarmManager = context?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        activityManager = context?.getSystemService(ACTIVITY_SERVICE) as ActivityManager
 
         val root = inflater.inflate(R.layout.fragment_schedule, container, false)
         root.findViewById<FloatingActionButton>(R.id.fab)?.setOnClickListener {
@@ -109,14 +113,14 @@ class ScheduleFragment : Fragment() {
 
     private fun permissionApproved(): Boolean {
         return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
-                context!!,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
+            context!!,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
             && PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
-                context!!,
-                Manifest.permission.ACTIVITY_RECOGNITION
-            )
-            && Settings.canDrawOverlays(activity)
+            context!!,
+            Manifest.permission.ACTIVITY_RECOGNITION
+        )
+            && (Settings.canDrawOverlays(activity) || !SharedPreferenceUtil.alertWindowEnabled())
     }
 
     private fun requestForegroundPermissions() {
@@ -149,11 +153,13 @@ class ScheduleFragment : Fragment() {
                 ),
                 REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
             )
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package: " + activity?.packageName)
-            )
-            startActivityForResult(intent, 5469)
+            if (SharedPreferenceUtil.alertWindowEnabled()) {
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package: " + activity?.packageName)
+                )
+                startActivityForResult(intent, 5469)
+            }
         }
     }
 

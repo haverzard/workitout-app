@@ -1,12 +1,8 @@
 package com.haverzard.workitout.ui.news
 
-import android.widget.Toast
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.haverzard.workitout.R
+import com.haverzard.workitout.BuildConfig
 import com.haverzard.workitout.data.api.NewsAPIClient
 import com.haverzard.workitout.data.api.NewsAPIService
 import com.haverzard.workitout.data.models.Article
@@ -19,7 +15,6 @@ class NewsViewModel : ViewModel() {
 
     private val country: String = "id"
     private val category: String = "sports"
-    private val api_key: String = "76b33f118a4a497dafe751d9db583719"
     val articles = MutableLiveData<List<Article>>()
     val error = MutableLiveData<Boolean>(false)
 
@@ -40,7 +35,7 @@ class NewsViewModel : ViewModel() {
 
     fun fetchData(callback: Callback<News>) {
         val request = NewsAPIClient.buildClient(NewsAPIService::class.java)
-        val call = request.getNews(country, category, api_key)
+        val call = request.getNews(country, category, BuildConfig.NEWS_API_KEY)
         call.enqueue(callback)
     }
 }
