@@ -47,7 +47,4 @@ class NewsFragment : Fragment() {
         }
         return root
     }
-
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//    }
 }
