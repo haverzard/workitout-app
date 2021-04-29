@@ -1,19 +1,22 @@
 package com.haverzard.workitout.receivers
 
 import android.annotation.SuppressLint
-import android.app.*
+import android.app.AlarmManager
+import android.app.Notification
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
 import androidx.core.app.NotificationCompat
 import com.haverzard.workitout.MainActivity
-import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
 import com.haverzard.workitout.entities.ExerciseType
-import com.haverzard.workitout.util.SharedPreferenceUtil
 import com.haverzard.workitout.services.TrackingService
+import com.haverzard.workitout.util.CustomTime
 import com.haverzard.workitout.util.NotificationHelper
+import com.haverzard.workitout.util.SharedPreferenceUtil
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -36,7 +39,10 @@ class ScheduleReceiver: BroadcastReceiver() {
         val scope = (context.applicationContext as WorkOutApplication).applicationScope
 
         val calendar = Calendar.getInstance()
-        val currentTime = calendar.timeInMillis
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+        val second = calendar.get(Calendar.SECOND)
+        val currentTime = calendar.timeInMillis - CustomTime(hour, minute, second).time
         val day = calendar.get(Calendar.DAY_OF_MONTH)
         val autoTrack = SharedPreferenceUtil.getAutoTrackPref(context)
 
