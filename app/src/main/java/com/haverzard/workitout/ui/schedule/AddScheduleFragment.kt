@@ -11,10 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
@@ -23,11 +23,9 @@ import com.haverzard.workitout.entities.ExerciseType
 import com.haverzard.workitout.entities.RoutineExerciseSchedule
 import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.receivers.ScheduleReceiver
-import com.haverzard.workitout.viewmodel.ScheduleViewModel
-import com.haverzard.workitout.viewmodel.ScheduleViewModelFactory
+import com.haverzard.workitout.util.CalendarPlus
+import com.haverzard.workitout.util.CustomTime
 import kotlinx.coroutines.launch
-import java.sql.Date
-import java.sql.Time
 
 class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePickerDialogFragmentEvents {
 
@@ -37,9 +35,9 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
     private val timePicker = TimePickerFragment()
     private val safeArgs: AddScheduleFragmentArgs by navArgs()
 
-    private var date: Date? = null
-    private var startTime: Time? = null
-    private var endTime: Time? = null
+    private var date: Calendar? = null
+    private var startTime: CustomTime? = null
+    private var endTime: CustomTime? = null
     private var exerciseType: ExerciseType? = null
     private var days = HashSet<Day>()
 
@@ -67,18 +65,18 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
         return root
     }
 
-    fun setupOnClickListeners(root: View) {
+    private fun setupOnClickListeners(root: View) {
         var dayIt = 0
         val posDays = Day.values()
-        root.findViewById<LinearLayout>(R.id.days_holder).children.forEach {
+        root.findViewById<LinearLayout>(R.id.days_holder).children.forEach { view ->
             val selected  = posDays[dayIt]
-            it.setOnClickListener {
+            view.setOnClickListener {
                 if (days.contains(selected)) {
                     days.remove(selected)
-                    it.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                    it.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
                 } else {
                     days.add(selected)
-                    it.setBackgroundColor(resources.getColor(R.color.selected))
+                    it.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.selected))
                 }
             }
             dayIt += 1
@@ -87,7 +85,7 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
             datePicker.setObserver(this)
             datePicker.setCalendar(Calendar.getInstance())
             if (date != null) {
-                datePicker.setCalendar(date!!.year, date!!.month, date!!.date)
+                datePicker.setCalendar(date!!.get(Calendar.YEAR), date!!.get(Calendar.MONTH), date!!.get(Calendar.DATE))
             }
             datePicker.show(fragmentManager, "datePicker")
         }
@@ -114,32 +112,33 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
 
         val cyclingButton = root.findViewById<ImageButton>(R.id.exercise_cycling)
         val walkingButton = root.findViewById<ImageButton>(R.id.exercise_walking)
+        val enterTarget = root.findViewById<EditText>(R.id.enter_target)
         walkingButton?.setOnClickListener {
             walkingButton
-                .setBackgroundColor(resources.getColor(R.color.selected))
+                .setBackgroundColor(ContextCompat.getColor(activity!!, R.color.selected))
             cyclingButton
-                .setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                .setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
             exerciseType = ExerciseType.Walking
-            root.findViewById<EditText>(R.id.enter_target).setText("")
-            root.findViewById<EditText>(R.id.enter_target).inputType = InputType.TYPE_CLASS_NUMBER
-            root.findViewById<TextView>(R.id.target_unit).text = "steps"
+            enterTarget.setText("")
+            enterTarget.inputType = InputType.TYPE_CLASS_NUMBER
+            root.findViewById<TextView>(R.id.target_unit).text = getString(R.string.unit_steps)
         }
 
         cyclingButton?.setOnClickListener {
             cyclingButton
-                .setBackgroundColor(resources.getColor(R.color.selected))
+                .setBackgroundColor(ContextCompat.getColor(activity!!, R.color.selected))
             walkingButton
-                .setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                .setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
             exerciseType = ExerciseType.Cycling
 
-            root.findViewById<EditText>(R.id.enter_target).setText("")
-            root.findViewById<EditText>(R.id.enter_target).inputType =
+            enterTarget.setText("")
+            enterTarget.inputType =
                 InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-            root.findViewById<TextView>(R.id.target_unit).text = "km"
+            root.findViewById<TextView>(R.id.target_unit).text = getString(R.string.unit_km)
         }
 
         root.findViewById<TextView>(R.id.button_save)?.setOnClickListener {
-            val targetStr = root.findViewById<EditText>(R.id.enter_target).text.toString()
+            val targetStr = enterTarget.text.toString()
             if (
                 exerciseType == null
                 || (safeArgs.type == "single" && date == null)
@@ -166,18 +165,14 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
             }
 
             // setup time
-            var calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
+            val calendar = Calendar.getInstance()
+            val currentTime = calendar.timeInMillis
             val hour = calendar.get(Calendar.HOUR_OF_DAY)
             val minute = calendar.get(Calendar.MINUTE)
             val second = calendar.get(Calendar.SECOND)
-            val currentDate = Date(year, month, day).time + Time(hour, minute, second).time
-            val yearSub = Date(1970, 0, 0).time
-            val timeSub = Time(hour, minute, second).time
+            val timeSub = CustomTime(hour, minute, second).time
 
-            if (date != null && date!!.time + startTime!!.time <= currentDate) {
+            if (date != null && date!!.timeInMillis + startTime!!.time <= currentTime) {
                 Toast.makeText(
                     activity,
                     "Schedule only for future exercise",
@@ -204,15 +199,15 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
                         end_time = endTime!!,
                     )
 
-                    var id = scheduleViewModel.insertSingleSchedule(schedule)
-                    var alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
-                        intent.putExtra("requestCode", id*2);
-                        intent.putExtra("start", true);
+                    val id = scheduleViewModel.insertSingleSchedule(schedule)
+                    val alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
+                        intent.putExtra("requestCode", id*2)
+                        intent.putExtra("start", true)
                         PendingIntent.getBroadcast(context, (id*8).toInt(), intent, 0)
                     }
                     alarmManager.setExact(
                         AlarmManager.RTC,
-                        date!!.time - yearSub + startTime!!.time,
+                        date!!.timeInMillis + startTime!!.time,
                         alarmIntent
                     )
                 } else {
@@ -225,22 +220,22 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
                         end_time = endTime!!,
                     )
 
-                    var id = scheduleViewModel.insertRoutineSchedule(schedule)
-                    var currentDay = (calendar.get(Calendar.DAY_OF_WEEK) - 2) % 7
+                    val id = scheduleViewModel.insertRoutineSchedule(schedule)
+                    val currentDay = (calendar.get(Calendar.DAY_OF_WEEK) - 2) % 7
                     schedule.days.forEach {
-                        val day = Day.values().indexOf(it)
-                        var alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
-                            intent.putExtra("requestCode", (id + 1)*2 - 1);
-                            intent.putExtra("start", true);
-                            PendingIntent.getBroadcast(context, ((id+1)*8-day-1).toInt(), intent, 0)
+                        val dayIdx = Day.values().indexOf(it)
+                        val alarmIntent = Intent(context, ScheduleReceiver::class.java).let { intent ->
+                            intent.putExtra("requestCode", (id + 1)*2 - 1)
+                            intent.putExtra("start", true)
+                            PendingIntent.getBroadcast(context, ((id+1)*8-dayIdx-1).toInt(), intent, 0)
                         }
-                        var delta = (day - currentDay)
+                        var delta = (dayIdx - currentDay)
                         if (delta < 0) {
                             delta += 7
                         }
-                        alarmManager.setRepeating(
+                        alarmManager.setInexactRepeating(
                             AlarmManager.RTC,
-                            currentDate - timeSub - yearSub + startTime!!.time + AlarmManager.INTERVAL_DAY * delta,
+                            currentTime - timeSub + startTime!!.time + AlarmManager.INTERVAL_DAY * delta,
                             AlarmManager.INTERVAL_DAY * 7,
                             alarmIntent
                         )
@@ -258,22 +253,19 @@ class AddScheduleFragment : Fragment(), DatePickerDialogFragmentEvents, TimePick
 
     override fun onDateSet(year: Int, month: Int, day: Int) {
         val dateStr = "%04d-%02d-%02d".format(year, month, day)
-        date = Date(year, month, day)
+        date = CalendarPlus.initCalendarDate(year, month, day)
         view?.findViewById<TextView>(R.id.pick_date)?.text = dateStr
     }
 
     override fun onTimeSet(hour: Int, minute: Int, arg: String) {
         val timeStr = "%02d:%02d".format(hour, minute)
         if (arg == "start") {
-            startTime = Time(hour, minute, 0)
+            startTime = CustomTime(hour, minute, 0)
             view?.findViewById<TextView>(R.id.pick_start_time)?.text = timeStr
         } else {
-            endTime = Time(hour, minute, 0)
+            endTime = CustomTime(hour, minute, 0)
             view?.findViewById<TextView>(R.id.pick_end_time)?.text = timeStr
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
 }

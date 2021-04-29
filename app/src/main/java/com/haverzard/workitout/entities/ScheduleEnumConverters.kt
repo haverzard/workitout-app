@@ -1,26 +1,31 @@
 package com.haverzard.workitout.entities
 
 import androidx.room.TypeConverter
-import java.sql.Date
-import java.sql.Time
-
+import com.haverzard.workitout.util.CalendarPlus
+import com.haverzard.workitout.util.CustomTime
+import android.icu.util.Calendar
 
 class ScheduleEnumConverters {
 
     @TypeConverter
-    fun fromDate(value: Date) = "%04d-%02d-%02d".format(value.year, value.month+1, value.date)
-
-    @TypeConverter
-    fun toDate(value: String): Date {
-        val date = value.split("-").map { it.toInt() }
-        return Date(date[0], date[1]-1, date[2])
+    fun fromDate(value: Calendar): String {
+        return "%04d-%02d-%02d".format(value.get(Calendar.YEAR), value.get(Calendar.MONTH)+1, value.get(Calendar.DATE))
     }
 
     @TypeConverter
-    fun fromTime(value: Time) = value.toString()
+    fun toDate(value: String): Calendar {
+        val date = value.split("-").map { it.toInt() }
+        return CalendarPlus.initCalendarDate(date[0], date[1]-1, date[2])
+    }
 
     @TypeConverter
-    fun toTime(value: String) = Time.valueOf(value)
+    fun fromTime(value: CustomTime): String = "%02d:%02d:%02d".format(value.hours, value.minutes, value.seconds)
+
+    @TypeConverter
+    fun toTime(value: String): CustomTime {
+        val time = value.split(":").map { it.toInt() }
+        return CustomTime(time[0], time[1], time[2])
+    }
 
     @TypeConverter
     fun toDays(value: String): List<Day> {
@@ -32,9 +37,6 @@ class ScheduleEnumConverters {
 
     @TypeConverter
     fun toDay(value: String) = enumValueOf<Day>(value)
-
-    @TypeConverter
-    fun fromDay(value: Day) = value.name
 
     @TypeConverter
     fun toExerciseType(value: String) = enumValueOf<ExerciseType>(value)

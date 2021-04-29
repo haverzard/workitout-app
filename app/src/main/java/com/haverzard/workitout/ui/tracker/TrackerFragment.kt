@@ -9,7 +9,6 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.IBinder
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,6 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -27,11 +25,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.haverzard.workitout.BuildConfig
 import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
-import com.haverzard.workitout.entities.SingleExerciseSchedule
 import com.haverzard.workitout.services.SharedPreferenceUtil
 import com.haverzard.workitout.services.TrackingService
-import com.haverzard.workitout.viewmodel.ScheduleViewModel
-import com.haverzard.workitout.viewmodel.ScheduleViewModelFactory
+import com.haverzard.workitout.ui.schedule.ScheduleViewModel
+import com.haverzard.workitout.ui.schedule.ScheduleViewModelFactory
 import kotlin.math.roundToInt
 
 
@@ -43,25 +40,25 @@ class TrackerFragment : Fragment(), SensorEventListener {
     private lateinit var image: ImageView
     private lateinit var sharedPreferences: SharedPreferences
 
-    private var trackingService: TrackingService? = null
-    private var trackingServiceBound = false
+//    private var trackingService: TrackingService? = null
+//    private var trackingServiceBound = false
 
     private var currentDegree = 0f
     private var exerciseType = ""
 
-    private val trackingServiceConnection = object : ServiceConnection {
-
-        override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            val binder = service as TrackingService.LocalBinder
-            trackingService = binder.service
-            trackingServiceBound = true
-        }
-
-        override fun onServiceDisconnected(name: ComponentName) {
-            trackingService = null
-            trackingServiceBound = false
-        }
-    }
+//    private val trackingServiceConnection = object : ServiceConnection {
+//
+//        override fun onServiceConnected(name: ComponentName, service: IBinder) {
+//            val binder = service as TrackingService.LocalBinder
+//            trackingService = binder.service
+//            trackingServiceBound = true
+//        }
+//
+//        override fun onServiceDisconnected(name: ComponentName) {
+//            trackingService = null
+//            trackingServiceBound = false
+//        }
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,32 +75,41 @@ class TrackerFragment : Fragment(), SensorEventListener {
         sharedPreferences =
             activity!!.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
-        var cyclingButton = root.findViewById<ImageButton>(R.id.exercise_cycling)
-        var walkingButton = root.findViewById<ImageButton>(R.id.exercise_walking)
-        var trackButton = root.findViewById<MaterialButton>(R.id.btn_track)
-        if (!sharedPreferences.getBoolean(SharedPreferenceUtil.KEY_FOREGROUND_ENABLED, false)) {
+        if (!permissionApproved()) {
+            requestForegroundPermissions()
+        }
+
+        setupOnClickListener(root)
+        return root
+    }
+
+    private fun setupOnClickListener(root: View) {
+        val cyclingButton = root.findViewById<ImageButton>(R.id.exercise_cycling)
+        val walkingButton = root.findViewById<ImageButton>(R.id.exercise_walking)
+        val trackButton = root.findViewById<MaterialButton>(R.id.btn_track)
+
+        if (!SharedPreferenceUtil.getTracking(activity!!)!!) {
             SharedPreferenceUtil.saveExerciseType(activity!!, "")
         } else {
-            trackButton.text = "Stop Tracking"
+            trackButton.text = getString(R.string.stop_tracking_btn)
             trackButton.backgroundTintList = ContextCompat.getColorStateList(context!!, android.R.color.holo_red_dark)
             root.findViewById<LinearLayout>(R.id.btn_container).visibility = View.INVISIBLE
+            exerciseType = SharedPreferenceUtil.getExerciseType(activity!!)!!
         }
         walkingButton.setOnClickListener {
-            SharedPreferenceUtil.saveExerciseType(activity!!, "Walking")
-            walkingButton.setBackgroundColor(resources.getColor(R.color.selected))
-            cyclingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+            walkingButton.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.selected))
+            cyclingButton.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
+            exerciseType = "Walking"
         }
         cyclingButton.setOnClickListener {
-            SharedPreferenceUtil.saveExerciseType(activity!!, "Cycling")
-            cyclingButton.setBackgroundColor(resources.getColor(R.color.selected))
-            walkingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+            cyclingButton.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.selected))
+            walkingButton.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
+            exerciseType = "Cycling"
         }
 
         trackButton.setOnClickListener {
             val enabled = sharedPreferences.getBoolean(
-                SharedPreferenceUtil.KEY_FOREGROUND_ENABLED, false)
-            val exerciseType = sharedPreferences.getString(
-                SharedPreferenceUtil.KEY_EXERCISE_TYPE, "")
+                SharedPreferenceUtil.KEY_TRACKING_ENABLED, false)
             if (exerciseType == "") {
                 Toast.makeText(
                     activity,
@@ -112,41 +118,29 @@ class TrackerFragment : Fragment(), SensorEventListener {
                 ).show()
                 return@setOnClickListener
             }
+
+            val serviceIntent = Intent(activity!!, TrackingService::class.java)
             if (enabled) {
-                if (exerciseType == "Cycling") {
-                    trackingService?.unsubscribeToLocationUpdates()
-                } else {
-                    trackingService?.unsubscribeToStepCounter()
-                }
-                cyclingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
-                walkingButton.setBackgroundColor(resources.getColor(R.color.colorPrimary))
-                SharedPreferenceUtil.saveExerciseType(activity!!, "")
+                println("Test")
+                activity!!.stopService(serviceIntent)
+                cyclingButton.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
+                walkingButton.setBackgroundColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
                 root.findViewById<LinearLayout>(R.id.btn_container).visibility = View.VISIBLE
-                (it as MaterialButton).text = "Start Tracking"
+                (it as MaterialButton).text = getString(R.string.start_tracking_btn)
                 it.backgroundTintList = ContextCompat.getColorStateList(context!!, android.R.color.holo_green_dark)
             } else {
-                if (permissionApproved()) {
-                    if (exerciseType == "Cycling") {
-                        trackingService?.subscribeToLocationUpdates()
-                    } else {
-                        trackingService?.subscribeToStepCounter()
-                    }
-                    root.findViewById<LinearLayout>(R.id.btn_container).visibility = View.INVISIBLE
-                    (it as MaterialButton).text = "Stop Tracking"
-                    it.backgroundTintList = ContextCompat.getColorStateList(context!!, android.R.color.holo_red_dark)
-                } else {
+                if (!permissionApproved()) {
                     requestForegroundPermissions()
+                } else {
+                    serviceIntent.putExtra("exercise_type", exerciseType)
+                    activity!!.startForegroundService(serviceIntent)
+                    root.findViewById<LinearLayout>(R.id.btn_container).visibility = View.INVISIBLE
+                    (it as MaterialButton).text = getString(R.string.stop_tracking_btn)
+                    it.backgroundTintList =
+                        ContextCompat.getColorStateList(context!!, android.R.color.holo_red_dark)
                 }
             }
         }
-        return root
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        val serviceIntent = Intent(activity!!, TrackingService::class.java)
-        activity!!.bindService(serviceIntent, trackingServiceConnection, Context.BIND_AUTO_CREATE)
     }
 
     override fun onResume() {
@@ -159,10 +153,6 @@ class TrackerFragment : Fragment(), SensorEventListener {
     }
 
     override fun onPause() {
-        if (trackingServiceBound) {
-            activity!!.unbindService(trackingServiceConnection)
-            trackingServiceBound = false
-        }
         sensorManager.unregisterListener(this)
         super.onPause()
     }
@@ -176,7 +166,7 @@ class TrackerFragment : Fragment(), SensorEventListener {
             REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE -> when {
                 grantResults.isEmpty() -> {}
                 grantResults[0] == PackageManager.PERMISSION_GRANTED ->
-                    trackingService?.subscribeToLocationUpdates()
+                    println("Permission granted!")
                 else -> {
                     // disable button
                     Snackbar.make(
@@ -205,6 +195,7 @@ class TrackerFragment : Fragment(), SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent) {
         // get angle
+//        println(event.values[0])
         val degree = event.values[0].roundToInt().toFloat()
 
         // create rotate animation
@@ -261,51 +252,5 @@ class TrackerFragment : Fragment(), SensorEventListener {
         }
     }
 
-    private fun requestPermissions() {
-        val provideRationale = permissionApproved()
-
-        // If the user denied a previous request, but didn't check "Don't ask again", provide
-        // additional rationale.
-        if (provideRationale) {
-            Snackbar.make(
-                view!!,
-                R.string.permission_rationale,
-                Snackbar.LENGTH_LONG
-            )
-                .setAction("Okay!") {
-                    // Request permission
-                    ActivityCompat.requestPermissions(
-                        activity!!,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACTIVITY_RECOGNITION),
-                        REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
-                    )
-                }
-                .show()
-        } else {
-            ActivityCompat.requestPermissions(
-                activity!!,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACTIVITY_RECOGNITION),
-                REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE
-            )
-        }
-    }
-
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-//    private inner class ForegroundOnlyBroadcastReceiver : BroadcastReceiver() {
-//
-//        override fun onReceive(context: Context, intent: Intent) {
-//            val location = intent.getParcelableExtra<Location>(
-//                ForegroundOnlyLocationService.EXTRA_LOCATION
-//            )
-//
-//            if (location != null) {
-//                logResultsToScreen("Foreground location: ${location.toText()}")
-//            }
-//        }
-//    }
 }

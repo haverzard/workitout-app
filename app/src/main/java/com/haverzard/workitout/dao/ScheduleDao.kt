@@ -33,6 +33,9 @@ interface SingleExerciseScheduleDao {
     @Query("SELECT * FROM single_exercise_schedule_table WHERE id = :id")
     fun getSchedule(id: Int): SingleExerciseSchedule
 
+    @Query("UPDATE single_exercise_schedule_table SET start_time = TIME('now', 'localtime', '-1 seconds') WHERE id = :id")
+    suspend fun update(id: Int)
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(schedule: SingleExerciseSchedule): Long
 

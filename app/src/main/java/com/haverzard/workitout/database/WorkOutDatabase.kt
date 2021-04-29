@@ -5,38 +5,22 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.haverzard.workitout.dao.HistoryDao
 import com.haverzard.workitout.dao.RoutineExerciseScheduleDao
 import com.haverzard.workitout.dao.SingleExerciseScheduleDao
 import com.haverzard.workitout.entities.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Database(
         entities = [RoutineExerciseSchedule::class, SingleExerciseSchedule::class, History::class],
         version = 1,
         exportSchema = false)
 @TypeConverters(ScheduleEnumConverters::class, HistoryConverters::class)
-public abstract class WorkOutDatabase : RoomDatabase() {
+abstract class WorkOutDatabase : RoomDatabase() {
 
     // DAOs
     abstract fun singleExerciseScheduleDao(): SingleExerciseScheduleDao
     abstract fun routineExerciseScheduleDao(): RoutineExerciseScheduleDao
     abstract fun historyDao(): HistoryDao
-
-    private class WordDatabaseCallback(
-        private val scope: CoroutineScope
-    ) : RoomDatabase.Callback() {
-
-        override fun onCreate(db: SupportSQLiteDatabase) {
-            super.onCreate(db)
-            INSTANCE?.let { database ->
-                scope.launch {
-                }
-            }
-        }
-    }
 
     companion object {
         // singleton
@@ -44,8 +28,7 @@ public abstract class WorkOutDatabase : RoomDatabase() {
         private var INSTANCE: WorkOutDatabase? = null
 
         fun getDatabase(
-            context: Context,
-            scope: CoroutineScope
+            context: Context
         ): WorkOutDatabase {
             // auto build database if not exist
             return INSTANCE ?: synchronized(this) {
@@ -54,7 +37,6 @@ public abstract class WorkOutDatabase : RoomDatabase() {
                         WorkOutDatabase::class.java,
                         "workout_database"
                 )
-                .addCallback(WordDatabaseCallback(scope))
                 .build()
                 INSTANCE = instance
                 // return instance

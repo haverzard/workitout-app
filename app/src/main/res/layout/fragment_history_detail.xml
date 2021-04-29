@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.history.HistoryDetailFragment">
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <LinearLayout
+                android:padding="32dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <TextView
+                    android:text="Apr 23, 2021"
+                    android:textSize="22dp"
+                    android:textColor="@color/black"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/date"/>
+
+            <TextView
+                    android:text="11:29:12 - 14:30:50"
+                    android:textColor="@color/black"
+                    android:paddingBottom="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/time"/>
+
+            <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"/>
+
+            <TextView
+                    android:text="You have walked for 30 steps"
+                    android:textColor="@color/black"
+                    android:textSize="16dp"
+                    android:paddingBottom="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/target"/>
+
+            <com.google.android.gms.maps.MapView
+                    android:layout_width="match_parent"
+                    android:layout_height="375dp"
+                    android:id="@+id/map_route"/>
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
