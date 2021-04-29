@@ -89,8 +89,10 @@ class TrackingService: Service(), SensorEventListener {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val exerciseType = intent.getStringExtra("exercise_type")
+        println(exerciseType)
         if (exerciseType != null) {
             val scheduledExerciseType = SharedPreferenceUtil.getExerciseType(this)
+            println(scheduledExerciseType)
             if (scheduledExerciseType == null || scheduledExerciseType == "") {
                 SharedPreferenceUtil.saveExerciseType(this, exerciseType)
                 target = intent.getDoubleExtra("target", 0.0)
@@ -102,12 +104,15 @@ class TrackingService: Service(), SensorEventListener {
                     subscribeToStepCounter()
                 }
             }
+        } else {
+            stopSelf()
         }
         // Tells the system not to recreate the service after it's been killed.
         return START_NOT_STICKY
     }
 
     override fun onDestroy() {
+        println("TEST")
         val scheduledExerciseType = SharedPreferenceUtil.getExerciseType(this)
         if (scheduledExerciseType != null) {
             if (scheduledExerciseType == "Cycling") {
@@ -195,14 +200,14 @@ class TrackingService: Service(), SensorEventListener {
     }
 
     private fun launchActivity(id: Long) {
-        val launchActivityIntent = Intent(applicationContext, MainActivity::class.java)
+        val launchActivityIntent = Intent(this, MainActivity::class.java)
         launchActivityIntent.putExtra("history_id", id)
         launchActivityIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        applicationContext.startActivity(launchActivityIntent)
+        this.startActivity(launchActivityIntent)
         stopSelf()
     }
 
-    fun subscribeToStepCounter() {
+    private fun subscribeToStepCounter() {
         initData()
         var notifText = "You have been walking for ${targetReached.toInt()} steps."
         if (enableTarget) {
@@ -219,15 +224,14 @@ class TrackingService: Service(), SensorEventListener {
         )
     }
 
-    fun unsubscribeToStepCounter() {
+    private fun unsubscribeToStepCounter() {
         SharedPreferenceUtil.saveTrackingPref(this, false)
-        SharedPreferenceUtil.saveExerciseType(this, "")
         sensorManager.unregisterListener(this)
         notificationManager.cancel(NOTIFICATION_ID)
         saveData()
     }
 
-    fun subscribeToLocationUpdates() {
+    private fun subscribeToLocationUpdates() {
         initData()
         SharedPreferenceUtil.saveTrackingPref(this, true)
 
@@ -246,7 +250,7 @@ class TrackingService: Service(), SensorEventListener {
         }
     }
 
-    fun unsubscribeToLocationUpdates() {
+    private fun unsubscribeToLocationUpdates() {
         try {
             val removeTask = fusedLocationProviderClient.removeLocationUpdates(locationCallback)
             removeTask.addOnCompleteListener { task ->
@@ -255,7 +259,6 @@ class TrackingService: Service(), SensorEventListener {
                 }
             }
             SharedPreferenceUtil.saveTrackingPref(this, false)
-            SharedPreferenceUtil.saveExerciseType(this, "")
             notificationManager.cancel(NOTIFICATION_ID)
             saveData()
         } catch (unlikely: SecurityException) {
@@ -264,15 +267,6 @@ class TrackingService: Service(), SensorEventListener {
     }
 
     private fun generateNotification(mainNotificationText: String): Notification {
-        println("Generating...")
-        // Main steps for building a BIG_TEXT_STYLE notification:
-        //      0. Get data
-        //      1. Create Notification Channel for O+
-        //      2. Build the BIG_TEXT_STYLE
-        //      3. Set up Intent / Pending Intent for notification
-        //      4. Build and issue the notification
-
-        // 0. Get data
         val titleText = getString(R.string.app_name)
 
         // 1. Create Notification Channel for O+ and beyond devices (26+).
@@ -290,8 +284,6 @@ class TrackingService: Service(), SensorEventListener {
         val launchActivityIntent = Intent(this, MainActivity::class.java)
 
         val cancelIntent = Intent(this, TrackingService::class.java)
-        cancelIntent.putExtra("start", false)
-        cancelIntent.putExtra("exercise_type", SharedPreferenceUtil.getExerciseType(this))
 
         val servicePendingIntent = PendingIntent.getService(
             this, 0, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -326,8 +318,8 @@ class TrackingService: Service(), SensorEventListener {
     }
 
     inner class LocalBinder : Binder() {
-        internal val service: TrackingService
-            get() = this@TrackingService
+//        internal val service: TrackingService
+//            get() = this@TrackingService
     }
 
     companion object {
@@ -338,7 +330,7 @@ class TrackingService: Service(), SensorEventListener {
 
         internal const val EXTRA_LOCATION = "$PACKAGE_NAME.extra.LOCATION"
 
-        private const val NOTIFICATION_ID = 1351812001
+        const val NOTIFICATION_ID = 1351812001
 
         private const val NOTIFICATION_CHANNEL_ID = "workitout_01"
     }
@@ -347,8 +339,14 @@ class TrackingService: Service(), SensorEventListener {
 object SharedPreferenceUtil {
 
     private const val KEY_AUTO_TRACK = "auto_track"
+    private const val KEY_EXERCISE_TYPE = "exercise_type"
     const val KEY_TRACKING_ENABLED = "tracking"
-    const val KEY_EXERCISE_TYPE = "exercise_type"
+
+    fun getTracking(context: Context): Boolean? =
+        context.getSharedPreferences(
+            context.getString(R.string.preference_file_key),
+            Context.MODE_PRIVATE,
+        ).getBoolean(KEY_TRACKING_ENABLED, false)
 
     fun saveTrackingPref(context: Context, tracking: Boolean) {
         val editor = context.getSharedPreferences(

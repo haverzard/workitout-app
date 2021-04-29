@@ -1,5 +1,7 @@
 package com.haverzard.workitout
 
+import android.app.NotificationManager
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -8,6 +10,8 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.haverzard.workitout.services.SharedPreferenceUtil
+import com.haverzard.workitout.services.TrackingService
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,6 +34,18 @@ class MainActivity : AppCompatActivity() {
             bundle.putInt("history_id", historyId)
             navController.navigate(R.id.navigation_history_detail, bundle)
             intent.removeExtra("history_id")
+        }
+
+        var reset = true
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.activeNotifications.forEach {
+            if (it.id == TrackingService.NOTIFICATION_ID) {
+                reset = false
+            }
+        }
+        if (reset) {
+            SharedPreferenceUtil.saveTrackingPref(this, false)
+            SharedPreferenceUtil.saveExerciseType(this, "")
         }
     }
 
