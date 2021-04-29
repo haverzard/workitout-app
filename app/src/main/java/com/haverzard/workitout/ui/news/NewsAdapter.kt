@@ -1,5 +1,6 @@
 package com.haverzard.workitout.ui.news
 
+import android.icu.text.SimpleDateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,11 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.haverzard.workitout.R
 import com.haverzard.workitout.data.models.Article
+import java.text.DateFormat
+import java.util.*
 
 class NewsAdapter(val articles: List<Article>): RecyclerView.Adapter<NewsViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_news, parent, false)
-        return NewsViewHolder(view)
+        return NewsViewHolder.create(parent)
     }
 
     override fun getItemCount(): Int {
@@ -26,16 +28,31 @@ class NewsAdapter(val articles: List<Article>): RecyclerView.Adapter<NewsViewHol
 }
 
 class NewsViewHolder(itemView : View): RecyclerView.ViewHolder(itemView){
-    private val photo:ImageView = itemView.findViewById(R.id.image_url)
-    private val title:TextView = itemView.findViewById(R.id.article_title)
-    private val description:TextView = itemView.findViewById(R.id.article_description)
-    private val author:TextView = itemView.findViewById(R.id.article_author)
+    private val photo = itemView.findViewById<ImageView>(R.id.image_url)
+    private val title = itemView.findViewById<TextView>(R.id.article_title)
+    private val author = itemView.findViewById<TextView>(R.id.article_author)
+    private val publishedDate = itemView.findViewById<TextView>(R.id.article_published_date)
 
     fun bind(article: Article) {
-        Glide.with(itemView.context).load(article.urlToImage).into(photo)
+        if (article.urlToImage != null) {
+            Glide.with(itemView.context).load(article.urlToImage).into(photo)
+        }
         title.text = article.title
-        description.text = article.description
-        author.text = "Author: "+article.author
+        val authorName = """Author: ${if (article.author != null) article.author else "-"}"""
+        author.text = authorName
+        if (article.publishedAt != null) {
+            val formatter = SimpleDateFormat("yyyy-mm-d", Locale.ENGLISH)
+            val date = formatter.parse(article.publishedAt)
+            val df: DateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM)
+            publishedDate.text = df.format(date.time)
+        }
     }
 
+    companion object {
+        fun create(parent: ViewGroup): NewsViewHolder {
+            val view: View = LayoutInflater.from(parent.context)
+                .inflate(R.layout.news_item, parent, false)
+            return NewsViewHolder(view)
+        }
+    }
 }
