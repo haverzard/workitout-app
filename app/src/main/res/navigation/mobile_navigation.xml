@@ -7,26 +7,23 @@
 
     <fragment
             android:id="@+id/navigation_news"
-            android:name="com.haverzard.workitout.ui.home.HomeFragment"
+            android:name="com.haverzard.workitout.ui.news.NewsFragment"
             android:label="@string/title_news"
-            tools:layout="@layout/fragment_home">
+            tools:layout="@layout/fragment_news">
 
         <action
-                android:id="@+id/action_HomeFragment_to_HomeSecondFragment"
-                app:destination="@id/navigation_home_second"/>
+                android:id="@+id/action_show_webview"
+                app:destination="@+id/navigation_news_webview"/>
 
     </fragment>
-    <fragment
-            android:id="@+id/navigation_home_second"
-            android:name="com.haverzard.workitout.ui.home.HomeSecondFragment"
-            android:label="@string/home_second"
-            tools:layout="@layout/fragment_home_second">
-        <action
-                android:id="@+id/action_HomeSecondFragment_to_HomeFragment"
-                app:destination="@id/navigation_news"/>
 
+    <fragment
+            android:id="@+id/navigation_news_webview"
+            android:name="com.haverzard.workitout.ui.news.NewsWebViewFragment"
+            android:label="@string/title_news_content"
+            tools:layout="@layout/fragment_news_webview">
         <argument
-                android:name="myArg"
+                android:name="url"
                 app:argType="string"/>
     </fragment>
 
