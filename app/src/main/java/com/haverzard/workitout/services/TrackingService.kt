@@ -79,7 +79,7 @@ class TrackingService: Service(), SensorEventListener {
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
 
                 val latLng = LatLng(currentLocation!!.latitude, currentLocation!!.longitude)
-                if (points.isNotEmpty() && points[points.size-1] != latLng) {
+                if (points.isEmpty() || points[points.size-1] != latLng) {
                     points.add(latLng)
                 }
                 var notifText = "You have been cycling for $targetReached km"
