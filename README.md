@@ -27,19 +27,19 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 ### Sport News (***SEMUA TERPENUHI***)
 1. Aplikasi WorkItOut kemudian dapat dibuka sehingga menampilkan tampilan awal berupa halaman Sport News. Untuk menampilkan halaman Sport News, kami menggunakan `interface client dan service Retrofit` untuk mengambil data dari News API melalui `view model` pada News. Dengan menggunakan view model, kita dapat menghindari fetching ulang akibat perubahan orientasi sehingga lebih efisien dalam penggunaan bandwidth. Data response dari News API akan diproses dan di-passing kepada `live data`. Live data tersebut telah di-observe oleh `NewsFragment` sehingga perubahannya akan diupdate pada sisi UI.
 
-<p align="center"><img src="/uploads/287fd67dfde9c6e2db4fc15f67fdd2bf/Screenshot_1619753044.png" alt="SportsNewsUpright" width="200"/></p>
+<div style="text-align:center"><img src="/uploads/287fd67dfde9c6e2db4fc15f67fdd2bf/Screenshot_1619753044.png" alt="SportsNewsUpright" width="200"/></div>
 
 2. Tampilan list berita ditampilkan secara ***responsive***, yaitu pada landscape, akan ditampilkan menjadi 2 kolom (dengan grid). Untuk menghandle responsive ini, kami memanfaatkan `grid layout` untuk menampilkan recyclerview dan data `configuration` pada `activity's resource` berupa orientasi yang akan dicek apakah merupakan landscape atau portrait. Jika orientasi dalam landscape, grid layout akan di-set dengan 2 kolom. Untuk portrait, grid layout akan di-set dengan 1 kolom.
 
-<p align="center"><img src="/uploads/ad9f55fb1e8d56aaa8f74828b4f6db3d/Screenshot_1619754107.png" alt="SportsNewsLandscape" width="200"/></p>
+<div style="text-align:center"><img src="/uploads/ad9f55fb1e8d56aaa8f74828b4f6db3d/Screenshot_1619754107.png" alt="SportsNewsLandscape" width="200"/></div>
 
 3. Jika suatu berita di-klik, akan menampilkan WebView dari konten beritanya. Untuk men-passing data URL dari berita, kami menggunakan argument pada library `Navigation`. Argument dapat di-pass melalui `action` yang dapat di-generate menggunakan kelas `direction` dari hasil build. URL tersebut kemudian akan diberikan kepada WebView untuk ditampilkan.
 
-<p align="center"><img src="/uploads/deb975515c9030e46f85fbfa2c624a42/NewsContent.png" alt="NewsContent" width="200"/></p>
+<div style="text-align:center"><img src="/uploads/deb975515c9030e46f85fbfa2c624a42/NewsContent.png" alt="NewsContent" width="200"/></div>
 
 
-### Tracker
-1. Klik navigasi Tracker di bawah sehingga halaman Tracker akan terbuka.
+### Tracker (***SEMUA TERPENUHI***)
+1. Klik navigasi Tracker di bawah sehingga halaman Tracker akan terbuka. Pada h
 
 ![Tracker](/uploads/411f7fb9de353ef2f6893c3a6076f2ec/Screenshot_1619753078.png)
 
@@ -64,7 +64,7 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 
 ![CyclingDetail](/uploads/872dc7cb69899831d5378b3438e7026b/CyclingDetail.png)
 
-### Training History
+### Training History (***SEMUA TERPENUHI***)
 1. Klik navigasi History di bawah sehingga halaman History akan terbuka.
 
 ![TrainingHistory](/uploads/503c5ce56bb589724e71e07901d629dd/Screenshot_1619753084.png)
@@ -91,27 +91,29 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 
 ![ResponsiveLog](/uploads/eb51bbc521a708df67adb9d5bafcaf27/ResponsiveLog.png)
 
-### Training Scheduler
-1. Klik navigasi Schedule di bawah sehingga halaman Schedule akan terbuka.
+### Training Scheduler (***SEMUA TERPENUHI***)
+1. Klik navigasi Schedule di bawah sehingga halaman Schedule akan terbuka. Scheduler akan mengambil semua data scheduler melalui DAO dari schedule yang memanfaatkan library `room persistence`. Pengambilan ini dilakukan pada `view model schedule` dengan memanfaatkan `Flow` pada library `Kotlin Coroutine` yang akan di-pass ke `live data` untuk diupdate jika terjadi perubahan pada tabel tersebut. Pada aplikasi kami, kami mendefinisikan 2 tipe schedule, yaitu `single schedule` (satu waktu) dan `routine schedule` (rutin pada hari-hari yang dipilih). Untuk men-schedule setiap hari, Anda dapat memanfaatkan `routine schedule` dengan cara memilih semua hari (senin-minggu). Kedua tipe schedule ini kami wrap menjadi sebuah kelas `Schedule` agar dapat di-pass kepada recycler view seakan-akan sebagai 1 kelas (bukan 2). Data schedule yang diambil kemudian ditampilkan menggunakan `recyclerview` yang diupdate oleh `live data`. Untuk menampilkan tipe latihan, kami menggunakan icon yang cukup jelas membedakan antara cycling dan walking.
 
-![TrackerDefault](/uploads/1a48df572be06248f43da8ea2e5ce48b/TrackerDefault.png)
+Pada halaman ini, pengguna juga dapat melakukan delete schedule. Delete schedule dilakukan dengan melakukan passing object `observer` dari UI kepada `adapter recyclerview`. Observer memiliki method untuk memproses delete jika pengguna menekan icon delete. Delete yang dilakukan dengan menghentikan alarm terkait schedule tersebut melalui request code unik yang dibentuk berdasarkan id schedule. Pembentukan request code akan dijelaskan pada penambahan schedule. Kemudian, schedule delete dari SQLite menggunakan DAO schedule.
 
-2. Anda dapat mengaktifkan auto track dengan menekan tombol switch pada kanan atas.
+<div style="text-align:center"><img src="/uploads/1a48df572be06248f43da8ea2e5ce48b/TrackerDefault.png" alt="TrackerDefault" width="200"/></div>
 
-![TrackerAutoTrackOn](/uploads/336c1b53b0ea6d445e4be6a1c7b260b4/TrackerAutoTrackOn.png)
+2. Anda dapat mengaktifkan auto track dengan menekan tombol switch pada kanan atas (dan juga dapat dinonaktifkan). Nilai auto-track (on/off) disimpan menggunakan shared preferences dengan key yang didefisinikan sebagai data boolean. Untuk melakukan auto-track, pengguna perlu memberikan akses kepada aplikasi untuk melakukan request location, activity recognition (step counter), dan system alert window (untuk menampilkan history bahkan saat aplikasi dalam keadaan tertutup, namun opsional bisa melalui notifikasi). Permission system alert window hanya dapat diatur menggunakan intent menuju settings untuk mengatur permission tersebut.
 
-3. Anda juga dapat menambahkan schedule baru dengan menekan tombol floating button pada kanan bawah sehingga ditampilkan dialog tipe schedule.
+<div style="text-align:center"><img src="/uploads/336c1b53b0ea6d445e4be6a1c7b260b4/TrackerAutoTrackOn.png" alt="TrackerAutoTrackOn" width="200"/></div>
 
-![TrackerChooseType](/uploads/24a57a456154d4921d4260caac62109a/TrackerChooseType.png)
+3. Anda juga dapat menambahkan schedule baru dengan menekan tombol floating button pada kanan bawah sehingga ditampilkan dialog tipe schedule. Dialog ini ditampilkan dengan memanfaatkan `DialogFragment`. Tombol-tombol pada dialog fragment diberikan onclick listener yang akan mengarahkan ke `AddScheduleFragment` menggunakan `action` dari navigation untuk men-passing `argument`.
 
-4. Anda dapat memilih untuk menambahkan schedule satu waktu atau rutin (setiap hari atau pada hari tertentu).
+<div style="text-align:center"><img src="/uploads/24a57a456154d4921d4260caac62109a/TrackerChooseType.png" alt="TrackerChooseType" width="200"/></div>
+
+4. Anda dapat memilih untuk menambahkan schedule satu waktu atau rutin (setiap hari atau pada hari tertentu). Untuk membedakan tampilan, kami menggunakan argument yang di-pass sebelumnya dan mengubah nilai parameter visibility pada UI.
 - Satu waktu
 
-![TrackerSingleType](/uploads/613854eb87aaf6d0e8472e94701d0f9d/TrackerSingleType.png)
+<div style="text-align:center"><img src="/uploads/613854eb87aaf6d0e8472e94701d0f9d/TrackerSingleType.png" alt="TrackerSingleType" width="200"/></div>
 
 - Rutin
 
-![TrackerRoutineType](/uploads/7314967b18a27850e82307c6c914a86f/TrackerRoutineType.png)
+<div style="text-align:center"><img src="/uploads/7314967b18a27850e82307c6c914a86f/TrackerRoutineType.png" alt="TrackerRoutineType" width="200"/></div>
 
 5. Untuk mengisi date dan time, digunakan dialog fragment.
 
