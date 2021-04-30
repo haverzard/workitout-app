@@ -35,7 +35,7 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 
 3. Jika suatu berita di-klik, akan menampilkan WebView dari konten beritanya.
 
-***GAMBAR***
+![NewsContent](/uploads/deb975515c9030e46f85fbfa2c624a42/NewsContent.png)
 
 ### Tracker
 1. Klik navigasi Tracker di bawah sehingga halaman Tracker akan terbuka.
@@ -61,7 +61,7 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 
 5. Tracking dihentikan sehingga menyimpan history dan menampilkannya menggunakan intent pada service. (Pada Android Go, digunakan notifikasi untuk menampilkan history)
 
-***GAMBAR***
+![CyclingDetail](/uploads/872dc7cb69899831d5378b3438e7026b/CyclingDetail.png)
 
 ### Training History
 1. Klik navigasi History di bawah sehingga halaman History akan terbuka.
@@ -71,44 +71,46 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 2. Klik suatu tanggal pada kalendar untuk menampilkan log list
 - Jika ada log
 
-***GAMBAR***
+![HistoryListFilled](/uploads/ed382ab615d9b7767349718f8992c6a3/HistoryListFilled.png)
 
 - Jika tidak ada log
+
+![HistoryListEmpty](/uploads/90bb7daebf378f15fe7a78bb2ac49e40/HistoryListEmpty.png)
 
 3. Jika terdapat log, klik panah hijau pada log untuk menampilkan detail log tersebut.
 - Untuk Cycling
 
-***GAMBAR***
+![CyclingDetail](/uploads/872dc7cb69899831d5378b3438e7026b/CyclingDetail.png)
 
 - Untuk Walking
 
-![HistoryLogWalking](/uploads/3e4491ed5c6f2db9646dbdeb25947a7b/Screenshot_1619753101.png)
+![HistoryDetailSteps](/uploads/bdb708939d00eedf10d29b3db53174ed/HistoryDetailSteps.png)
 
 4. Selain itu, log history dan detailnya juga dapat ditampilkan secara ***responsive menggunakan fragment***.
 
-***GAMBAR***
+![ResponsiveLog](/uploads/eb51bbc521a708df67adb9d5bafcaf27/ResponsiveLog.png)
 
 ### Training Scheduler
 1. Klik navigasi Schedule di bawah sehingga halaman Schedule akan terbuka.
 
-***GAMBAR***
+![TrackerDefault](/uploads/1a48df572be06248f43da8ea2e5ce48b/TrackerDefault.png)
 
 2. Anda dapat mengaktifkan auto track dengan menekan tombol switch pada kanan atas.
 
-***GAMBAR***
+![TrackerAutoTrackOn](/uploads/336c1b53b0ea6d445e4be6a1c7b260b4/TrackerAutoTrackOn.png)
 
 3. Anda juga dapat menambahkan schedule baru dengan menekan tombol floating button pada kanan bawah sehingga ditampilkan dialog tipe schedule.
 
-***GAMBAR***
+![TrackerChooseType](/uploads/24a57a456154d4921d4260caac62109a/TrackerChooseType.png)
 
 4. Anda dapat memilih untuk menambahkan schedule satu waktu atau rutin (setiap hari atau pada hari tertentu).
 - Satu waktu
 
-***GAMBAR***
+![TrackerSingleType](/uploads/613854eb87aaf6d0e8472e94701d0f9d/TrackerSingleType.png)
 
 - Rutin
 
-***GAMBAR***
+![TrackerRoutineType](/uploads/7314967b18a27850e82307c6c914a86f/TrackerRoutineType.png)
 
 5. Untuk mengisi date dan time, digunakan dialog fragment.
 
@@ -118,9 +120,9 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 
 6. Untuk mengisi schedule rutin, klik tombol hari yang diinginkan (bisa lebih dari satu).
 
-***GAMBAR***
+![TrackerTimeDialog](/uploads/6d274a0b3a1824eae620f1c5a7253463/TrackerTimeDialog.png)
 
-***GAMBAR***
+![TrackerFilled](/uploads/0228a53e87a5f1fc6b462ac5691b1667/TrackerFilled.png)
 
 7. Notifikasi akan ditampilkan saat schedule dimulai dan berakhir.
 
