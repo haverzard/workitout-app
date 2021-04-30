@@ -2,6 +2,7 @@ package com.haverzard.workitout.ui.tracker
 
 import android.Manifest
 import android.content.*
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -162,9 +163,10 @@ class TrackerFragment : Fragment(), SensorEventListener {
     }
 
     override fun onResume() {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         super.onResume()
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI)
-        sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI)
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
+        sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     override fun onPause() {
@@ -241,11 +243,6 @@ class TrackerFragment : Fragment(), SensorEventListener {
                 }
             }
         }
-
-        // get angle
-//        println(event.values[0])
-
-        // create rotate animation
     }
 
     private fun permissionApproved(): Boolean {
