@@ -139,14 +139,17 @@ class TrackingService: Service(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent) {
-        targetReached += 1.0
-        var notifText = "You have been walking for ${targetReached.toInt()} steps."
-        if (enableTarget) {
-            notifText += " \nYour target is ${target.toInt()} steps."
+        if (event.sensor.type == Sensor.TYPE_STEP_DETECTOR) {
+            targetReached += 1.0
+            var notifText = "You have been walking for ${targetReached.toInt()} steps."
+            if (enableTarget) {
+                notifText += " \nYour target is ${target.toInt()} steps."
+            }
+            notificationManager.notify(
+                NotificationHelper.NOTIFICATION_TRACKER_ID,
+                generateNotification(notifText)
+            )
         }
-        notificationManager.notify(
-            NotificationHelper.NOTIFICATION_TRACKER_ID,
-            generateNotification(notifText))
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
@@ -233,7 +236,6 @@ class TrackingService: Service(), SensorEventListener {
         if (enableTarget) {
             notifText += " \nYour target is ${target.toInt()} steps."
         }
-        targetReached = -1.0
         startForeground(
             NotificationHelper.NOTIFICATION_TRACKER_ID,
             generateNotification(notifText))
