@@ -48,16 +48,16 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 
 3. Tracking dapat dilakukan dengan memilih tipe latihan (Cycling atau Walking) dan menekan tombol Start Track.
 
-![TrainingInProgress](./screenshot/tracker_inProgress.png)
+![TrainingInProgress](./screenshot/tracker_inProgress.jpg)
 
 4. Notifikasi yang ditampilkan menunjukkan progress latihan, yang berjalan pada ***foreground service***.
 - Untuk Cycling
 
-![notification_cycling](./screenshot/foreground_cycling.png)
+![notification_cycling](./screenshot/foreground_cycling.jpg)
 
 - Untuk Walking
 
-![notification_running](./screenshot/foreground_running.png)
+![notification_running](./screenshot/foreground_running.jpg)
 
 5. Tracking dihentikan sehingga menyimpan history dan menampilkannya menggunakan intent pada service. (Pada Android Go, digunakan notifikasi untuk menampilkan history)
 
