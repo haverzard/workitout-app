@@ -130,14 +130,14 @@ Lalu kita dapat menjadwalkan alarm berdasarkan waktu mulai yang ditentukan. Flow
 8. Notifikasi akan ditampilkan saat schedule dimulai dan berakhir. Notifikasi ini ditampilkan dengan mengambil data schedule terkait berdasarkan id yang disimpan pada intent (untuk membedakan single dan routine schedule, digunakan perhitungan yang mirip seperti sebelumnya untuk pembentukan request code unik, namun hanya untuk 2 tipe).
 
 
-<div style="text-align:center"><img src="./screenshot/1172300.jpg" alt="StartWorkOut" width="200"/></div>
+<div style="text-align:center"><img src="./screenshot/1172326.jpg" alt="StartWorkOut" width="200"/></div>
 
-<div style="text-align:center"><img src="./screenshot/1172301.jpg" alt="EndWorkOut" width="200"/></div>
+<div style="text-align:center"><img src="./screenshot/1172327.jpg" alt="EndWorkOut" width="200"/></div>
 
 
-9. Auto-track yang dilakukan saat schedule dimulai dan berakhir.
+9. Auto-track yang dilakukan saat schedule dimulai dan berakhir akan menampilkan notifikasi tracking. Cara kerja-nya sama seperti pada halaman tracker, yaitu akan di-start foreground service saat schedule dimulai dan di-stop saat schedule berakhir.
 
-***GAMBAR***
+<div style="text-align:center"><img src="./screenshot/1172366.jpg" alt="StartWorkOutWithAutoTrack" width="200"/></div>
 
 
 ## Library yang Digunakan
