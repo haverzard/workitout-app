@@ -101,10 +101,10 @@ class TrackingService: Service(), SensorEventListener {
                 SharedPreferenceUtil.saveExerciseType(this, exerciseType)
                 target = intent.getDoubleExtra("target", 0.0)
                 if (exerciseType == "Cycling") {
-                    enableTarget = true
+                    enableTarget = target != 0.0
                     subscribeToLocationUpdates()
                 } else {
-                    enableTarget = true
+                    enableTarget = target != 0.0
                     subscribeToStepCounter()
                 }
             }
