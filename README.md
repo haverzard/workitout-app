@@ -31,7 +31,7 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 
 2. Tampilan list berita ditampilkan secara ***responsive***, yaitu pada landscape, akan ditampilkan menjadi 2 kolom (dengan grid). Untuk menghandle responsive ini, kami memanfaatkan `grid layout` untuk menampilkan recyclerview dan data `configuration` pada `activity's resource` berupa orientasi yang akan dicek apakah merupakan landscape atau portrait. Jika orientasi dalam landscape, grid layout akan di-set dengan 2 kolom. Untuk portrait, grid layout akan di-set dengan 1 kolom.
 
-<div style="text-align:center"><img src="/uploads/ad9f55fb1e8d56aaa8f74828b4f6db3d/Screenshot_1619754107.png" alt="SportsNewsLandscape" width="200"/></div>
+<div style="text-align:center"><img src="/uploads/ad9f55fb1e8d56aaa8f74828b4f6db3d/Screenshot_1619754107.png" alt="SportsNewsLandscape" width="400"/></div>
 
 3. Jika suatu berita di-klik, akan menampilkan WebView dari konten beritanya. Untuk men-passing data URL dari berita, kami menggunakan argument pada library `Navigation`. Argument dapat di-pass melalui `action` yang dapat di-generate menggunakan kelas `direction` dari hasil build. URL tersebut kemudian akan diberikan kepada WebView untuk ditampilkan.
 
@@ -65,11 +65,11 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 <div style="text-align:center"><img src="/uploads/872dc7cb69899831d5378b3438e7026b/CyclingDetail.png" alt="CyclingDetail" width="200"/></div>
 
 ### Training History (***SEMUA TERPENUHI***)
-1. Klik navigasi History di bawah sehingga halaman History akan terbuka.
+1. Klik navigasi History di bawah sehingga halaman History akan terbuka. Tampilan tanggal didefinisikan menggunakan `calendar view`.
 
 <div style="text-align:center"><img src="/uploads/503c5ce56bb589724e71e07901d629dd/Screenshot_1619753084.png" alt="TrainingHistory" width="200"/></div>
 
-2. Klik suatu tanggal pada kalendar untuk menampilkan log list
+2. Klik suatu tanggal pada kalendar untuk menampilkan log list. Tanggal yang terpilih dapat diambil datanya melalui `on date change listener` dan akan ditampilkan log history menggunakan action yang berisi argument tanggal. Log history kemudian diambil dari view model history melalui `DAO history` dan ditampilkan menggunakan `live data`.
 - Jika ada log
 
 <div style="text-align:center"><img src="/uploads/ed382ab615d9b7767349718f8992c6a3/HistoryListFilled.png" alt="HistoryListFilled" width="200"/></div>
@@ -78,7 +78,7 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 
 <div style="text-align:center"><img src="/uploads/90bb7daebf378f15fe7a78bb2ac49e40/HistoryListEmpty.png" alt="HistoryListEmpty" width="200"/></div>
 
-3. Jika terdapat log, klik panah hijau pada log untuk menampilkan detail log tersebut.
+3. Jika terdapat log, klik panah hijau pada log untuk menampilkan detail log tersebut. Detail log history diambil menggunakan DAO history yang caranya sama seperti pengambilan log memanfaatkan `live data`.
 - Untuk Cycling
 
 <div style="text-align:center"><img src="/uploads/872dc7cb69899831d5378b3438e7026b/CyclingDetail.png" alt="CyclingDetail" width="200"/></div>
@@ -87,9 +87,9 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 
 <div style="text-align:center"><img src="/uploads/bdb708939d00eedf10d29b3db53174ed/HistoryDetailSteps.png" alt="HistoryDetailSteps" width="200"/></div>
 
-4. Selain itu, log history dan detailnya juga dapat ditampilkan secara ***responsive menggunakan fragment***.
+4. Selain itu, log history dan detailnya juga dapat ditampilkan secara ***responsive menggunakan fragment***. Hal ini dapat dilakukan dengan mendefinisikan sebuah `komponen layout` (misal FrameLayout) pada `landscape layout` dari fragment HistoryListFragment (log history). Akibatnya tampilan menjadi seperti di bawah. Kemudian kita cek apakah frame layout tersebut terdefinisi, dan jika ya maka berarti view dalam keadaan landscape sehingga pada saat pengguna menekan tombol panah hijau pada log history, fragment HistoryDetailFragment akan diinisialisasi dengan argument history id dan `me-replace isi frame layout`. Replace ini dilakukan menggunakan `fragment transaction`.
 
-<div style="text-align:center"><img src="/uploads/eb51bbc521a708df67adb9d5bafcaf27/ResponsiveLog.png" alt="ResponsiveLog" width="200"/></div>
+<div style="text-align:center"><img src="/uploads/eb51bbc521a708df67adb9d5bafcaf27/ResponsiveLog.png" alt="ResponsiveLog" width="400"/></div>
 
 ### Training Scheduler (***SEMUA TERPENUHI***)
 1. Klik navigasi Schedule di bawah sehingga halaman Schedule akan terbuka. Scheduler akan mengambil semua data schedule yang dijadwalkan untuk nanti (current time < schedule time) melalui DAO dari schedule yang memanfaatkan library `room persistence`. Pengambilan ini dilakukan pada `view model schedule` dengan memanfaatkan `Flow` pada library `Kotlin Coroutine` yang akan di-pass ke `live data` untuk diupdate jika terjadi perubahan pada tabel tersebut. Pada aplikasi kami, kami mendefinisikan 2 tipe schedule, yaitu `single schedule` (satu waktu) dan `routine schedule` (rutin pada hari-hari yang dipilih). Untuk men-schedule setiap hari, Anda dapat memanfaatkan `routine schedule` dengan cara memilih semua hari (senin-minggu). Kedua tipe schedule ini kami wrap menjadi sebuah kelas `Schedule` agar dapat di-pass kepada recycler view seakan-akan sebagai 1 kelas (bukan 2). Data schedule yang diambil kemudian ditampilkan menggunakan `recyclerview` yang diupdate oleh `live data`. Untuk menampilkan tipe latihan, kami menggunakan icon yang cukup jelas membedakan antara cycling dan walking.

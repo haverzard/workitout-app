@@ -80,10 +80,6 @@ class HistoryDetailFragment : Fragment(), OnMapReadyCallback {
         return root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
     override fun onMapReady(map: GoogleMap?) {
         gMap = map
         val points: List<LatLng> = history!!.points
