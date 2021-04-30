@@ -3,10 +3,133 @@
 
 
 ## Deskripsi Aplikasi
-Work It Out adalah aplikasi olahraga yang membantu pengguna dalam menjadwalkan dan mendata kegiatan workout.
+Work It Out adalah aplikasi olahraga yang membantu pengguna dalam menjadwalkan dan mendata kegiatan workout. Pada aplikasi ini, terdapat 4 fungsionalitas utama yaitu:
+
+1. Sport News: pengguna dapat melihat berita olahraga yang diperoleh melalui Indonesia Sports News API. Setiap berita dapat di-klik untuk menampilkan WebView dari konten berita.
+
+2. Training Tracker: pengguna dapat melakukan "mulai" dan "selesai" mengenai pelacakan latihan yang memiliki beberapa jenis Cycling dan Walking. Pelacakan akan disimpan historynya dalam bentuk pencapaian (dan rute cycling) dan ditampilkan pada saat berakhir.
+
+3. Training History: terdapat halaman history yang menyimpan seluruh kegiatan latihan pengguna yang dilacak, ditampilkan dalam bentuk kalender. Setiap hari pada kalender dapat dibuka untuk menampilkan list log latihan dan setiap log dapat dibuka untuk melihat detailnya.
+
+4. Training Scheduler: pengguna dapat menentukan jadwal latihan yang dapat dikustomisasi untuk berjalan secara satu waktu spesifik dan 	rutin (setiap hari atau pada hari tertentu). Scheduler dapat diatur untuk secara otomatis melakukan tracking.
 
 
 ## Cara Kerja
+Aplikasi dapat di-build dengan cara mendefinisikan variable berikut pada file local.properties:
+```
+MAPS_API_KEY=<--REDACTED-->
+NEWS_API_KEY=<--REDACTED-->
+ENABLE_ALERT_WINDOW=<true|false>
+```
+
+ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampilkan history (tidak support pada Android Go sehingga digunakan variable ENV).
+
+### Sport News
+1. Aplikasi WorkItOut kemudian dapat dibuka sehingga menampilkan tampilan awal berupa halaman Sport News.
+
+***GAMBAR***
+
+2. Tampilan list berita ditampilkan secara ***responsive***, yaitu pada landscape, akan ditampilkan menjadi 2 kolom (dengan grid). Data news disimpan pada ViewModel sehingga tidak dilakukan fetching berulang pada perubahan orientasi.
+
+***GAMBAR***
+
+3. Jika suatu berita di-klik, akan menampilkan WebView dari konten beritanya.
+
+***GAMBAR***
+
+### Tracker
+1. Klik navigasi Tracker di bawah sehingga halaman Tracker akan terbuka.
+
+***GAMBAR***
+
+2. ***Kompas*** akan berotasi menyesuaikan arah mata angin
+
+***GAMBAR***
+
+3. Tracking dapat dilakukan dengan memilih tipe latihan (Cycling atau Walking) dan menekan tombol Start Track.
+
+***GAMBAR***
+
+4. Notifikasi yang ditampilkan menunjukkan progress latihan, yang berjalan pada ***foreground service***.
+- Untuk Cycling
+
+***GAMBAR***
+
+- Untuk Walking
+
+***GAMBAR***
+
+5. Tracking dihentikan sehingga menyimpan history dan menampilkannya menggunakan intent pada service. (Pada Android Go, digunakan notifikasi untuk menampilkan history)
+
+***GAMBAR***
+
+### Training History
+1. Klik navigasi History di bawah sehingga halaman History akan terbuka.
+
+***GAMBAR***
+
+2. Klik suatu tanggal pada kalendar untuk menampilkan log list
+- Jika ada log
+
+***GAMBAR***
+
+- Jika tidak ada log
+
+3. Jika terdapat log, klik panah hijau pada log untuk menampilkan detail log tersebut.
+- Untuk Cycling
+
+***GAMBAR***
+
+- Untuk Walking
+
+***GAMBAR***
+
+4. Selain itu, log history dan detailnya juga dapat ditampilkan secara ***responsive menggunakan fragment***.
+
+***GAMBAR***
+
+### Training Scheduler
+1. Klik navigasi Schedule di bawah sehingga halaman Schedule akan terbuka.
+
+***GAMBAR***
+
+2. Anda dapat mengaktifkan auto track dengan menekan tombol switch pada kanan atas.
+
+***GAMBAR***
+
+3. Anda juga dapat menambahkan schedule baru dengan menekan tombol floating button pada kanan bawah sehingga ditampilkan dialog tipe schedule.
+
+***GAMBAR***
+
+4. Anda dapat memilih untuk menambahkan schedule satu waktu atau rutin (setiap hari atau pada hari tertentu).
+- Satu waktu
+
+***GAMBAR***
+
+- Rutin
+
+***GAMBAR***
+
+5. Untuk mengisi date dan time, digunakan dialog fragment.
+
+***GAMBAR***
+
+***GAMBAR***
+
+6. Untuk mengisi schedule rutin, klik tombol hari yang diinginkan (bisa lebih dari satu).
+
+***GAMBAR***
+
+***GAMBAR***
+
+7. Notifikasi akan ditampilkan saat schedule dimulai dan berakhir.
+
+***GAMBAR***
+
+
+8. Auto-track yang dilakukan saat schedule dimulai dan berakhir.
+
+***GAMBAR***
 
 
 ## Library yang Digunakan
