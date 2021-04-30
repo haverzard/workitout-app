@@ -211,21 +211,27 @@ Contoh penggunaan dari library ini pada aplikasi kami adalah:
 - NewsAdapter (pada package ui.news): untuk mengambil gambar headline news dan menampilkannya pada ImageView
 
 
-## Screenshot Aplikasi
-
-![SportsNewsUpright](/uploads/287fd67dfde9c6e2db4fc15f67fdd2bf/Screenshot_1619753044.png)
-
-![SportsNewsLandscape](/uploads/ad9f55fb1e8d56aaa8f74828b4f6db3d/Screenshot_1619754107.png)
-
-![Tracker](/uploads/411f7fb9de353ef2f6893c3a6076f2ec/Screenshot_1619753078.png)
-
-![TrainingHistory](/uploads/503c5ce56bb589724e71e07901d629dd/Screenshot_1619753084.png)
-
-![HistoryLogWalking](/uploads/3e4491ed5c6f2db9646dbdeb25947a7b/Screenshot_1619753101.png)
-
-![ScehduledExercises](/uploads/e5a1f5048e05944aa53be60e6886fb9d/Screenshot_1619753325.png)
-
 ## Pembagian Kerja
 1. Muhammad Ravid Valiandi (13518099)
+- Sport News UI
+- News API
+- Buat README
+
+
 2. Muhammad Firas (13518117)
+- Sensor Compass
+- Buat README
+
+
 3. Yonatan Viody (13518120)
+- Sport News UI
+- Training Tracker UI
+- Training History UI
+- Tracking Service
+- Training Scheduler UI
+- History & Schedule Data
+- Map API
+- Notification API
+- Auto-Track
+- Responsive: News & History
+- Buat README
