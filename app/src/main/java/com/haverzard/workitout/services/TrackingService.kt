@@ -233,6 +233,7 @@ class TrackingService: Service(), SensorEventListener {
         if (enableTarget) {
             notifText += " \nYour target is ${target.toInt()} steps."
         }
+        targetReached = -1.0
         startForeground(
             NotificationHelper.NOTIFICATION_TRACKER_ID,
             generateNotification(notifText))
