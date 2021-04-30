@@ -25,11 +25,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.haverzard.workitout.BuildConfig
 import com.haverzard.workitout.R
 import com.haverzard.workitout.WorkOutApplication
-import com.haverzard.workitout.util.SharedPreferenceUtil
 import com.haverzard.workitout.services.TrackingService
 import com.haverzard.workitout.ui.schedule.ScheduleViewModel
 import com.haverzard.workitout.ui.schedule.ScheduleViewModelFactory
-import kotlin.math.roundToInt
+import com.haverzard.workitout.util.SharedPreferenceUtil
+import kotlin.math.abs
 
 
 private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
@@ -42,10 +42,10 @@ class TrackerFragment : Fragment(), SensorEventListener {
     private lateinit var image: ImageView
     private lateinit var sharedPreferences: SharedPreferences
 
+    private var gravity: FloatArray? = null
+    private var geomagnetic: FloatArray? = null
     private var currentDegree = 0f
     private var exerciseType = ""
-
-    private var azimut = 0f // View to draw a compass
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,9 +55,6 @@ class TrackerFragment : Fragment(), SensorEventListener {
         scheduleViewModel = ViewModelProviders.of(
             this, ScheduleViewModelFactory((activity?.application as WorkOutApplication).repository)
         ).get(ScheduleViewModel::class.java)
-
-        val root = inflater.inflate(R.layout.fragment_tracker, container, false)
-        image = root.findViewById(R.id.compass)
         sensorManager = activity?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) as Sensor
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) as Sensor
@@ -66,6 +63,9 @@ class TrackerFragment : Fragment(), SensorEventListener {
                 getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE
             )
+
+        val root = inflater.inflate(R.layout.fragment_tracker, container, false)
+        image = root.findViewById(R.id.compass)
 
         if (!permissionApproved()) {
             requestForegroundPermissions()
@@ -163,11 +163,6 @@ class TrackerFragment : Fragment(), SensorEventListener {
 
     override fun onResume() {
         super.onResume()
-        sensorManager.registerListener(
-            this,
-            sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-            SensorManager.SENSOR_DELAY_GAME
-        )
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI)
         sensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI)
     }
@@ -214,39 +209,36 @@ class TrackerFragment : Fragment(), SensorEventListener {
         }
     }
 
-    var mGravity: FloatArray? = null
-    var mGeomagnetic: FloatArray? = null
-
     override fun onSensorChanged(event: SensorEvent) {
-//        // get angle
-////        println(event.values[0])
-//        val degree = event.values[0].roundToInt().toFloat()
-//
-//        // create rotate animation
-//        val anim = RotateAnimation(
-//            currentDegree,
-//            -degree,
-//            Animation.RELATIVE_TO_SELF,
-//            0.5f,
-//            Animation.RELATIVE_TO_SELF,
-//            0.5f
-//        )
-//        anim.duration = 180
-//        anim.fillAfter = true
-//        image.startAnimation(anim)
-//
-//        currentDegree = -degree
-
-        if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) mGravity = event.values
-        if (event.sensor.type == Sensor.TYPE_MAGNETIC_FIELD) mGeomagnetic = event.values
-        if (mGravity != null && mGeomagnetic != null) {
-            val R = FloatArray(9)
-            val I = FloatArray(9)
-            val success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic)
+        if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) gravity = event.values
+        if (event.sensor.type == Sensor.TYPE_MAGNETIC_FIELD) geomagnetic = event.values
+        if (gravity != null && geomagnetic != null) {
+            val rMat = FloatArray(9)
+            val iMat = FloatArray(9)
+            val success = SensorManager.getRotationMatrix(rMat, iMat, gravity, geomagnetic)
             if (success) {
                 val orientation = FloatArray(3)
-                SensorManager.getOrientation(R, orientation)
-                azimut = orientation[0] // orientation contains: azimut, pitch and roll
+                SensorManager.getOrientation(rMat, orientation)
+                val azimuth = orientation[0]
+
+                // convert azimuth to degree
+                val degree = (-azimuth*360/(2*Math.PI)).toFloat()
+                // accept 5 degrees changes only
+                if (abs(degree - currentDegree) >= 5) {
+                    val anim = RotateAnimation(
+                        currentDegree,
+                        degree,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f
+                    )
+                    anim.duration = 180
+                    anim.fillAfter = true
+                    image.startAnimation(anim)
+
+                    currentDegree = degree
+                }
             }
         }
 
@@ -254,19 +246,6 @@ class TrackerFragment : Fragment(), SensorEventListener {
 //        println(event.values[0])
 
         // create rotate animation
-        val anim = RotateAnimation(
-            currentDegree,
-            -azimut,
-            Animation.RELATIVE_TO_SELF,
-            0.5f,
-            Animation.RELATIVE_TO_SELF,
-            0.5f
-        )
-        anim.duration = 180
-        anim.fillAfter = true
-        image.startAnimation(anim)
-
-        currentDegree = -azimut
     }
 
     private fun permissionApproved(): Boolean {
