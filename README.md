@@ -81,7 +81,7 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 3. Jika terdapat log, klik panah hijau pada log untuk menampilkan detail log tersebut. Detail log history diambil menggunakan DAO history yang caranya sama seperti pengambilan log memanfaatkan `live data`. Untuk menampilkan peta rute, kami memanfaatkan MapView yang akan meload Google Map melalui Google Map API, serta mendefinisikan poin-poin latitude-longitude sebagai polylines yang terhubung. Untuk menampilkan seluruh polyline ini pada peta, kami mencari titik batas camera dengan memanfaatkan `CameraUpdateFactory` dan mengarahkan kamera ke titik tersebut.
 - Untuk Cycling
 
-<div style="text-align:center"><img src="/uploads/872dc7cb69899831d5378b3438e7026b/CyclingDetail.png" alt="CyclingDetail" width="200"/></div>
+<div style="text-align:center"><img src="./screenshot/Screenshot_1619793232.png" alt="CyclingDetail" width="200"/></div>
 
 - Untuk Walking
 
