@@ -39,7 +39,7 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 
 
 ### Tracker (***SEMUA TERPENUHI***)
-1. Klik navigasi Tracker di bawah sehingga halaman Tracker akan terbuka. Pada halaman Tracker ini, terdapat kompas, tipe latihan yang dapat dipilih (Cycling atau Walking).
+1. Klik navigasi Tracker di bawah sehingga halaman Tracker akan terbuka. Pada halaman Tracker ini, terdapat kompas, tipe latihan yang dapat dipilih (Cycling atau Walking). Untuk mengubah halaman tracker, dari start tracking menjadi stop tracking dan sebaliknya, digunakan shared preference yang menyimpan informasi boolean apakah tracking sedang dilakukan. Informasi tipe latihan juga disimpan pada shared preference untuk diakses service.
 
 <div style="text-align:center"><img src="/uploads/411f7fb9de353ef2f6893c3a6076f2ec/Screenshot_1619753078.png" alt="Tracker" width="200"/></div>
 
@@ -47,11 +47,11 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 
 <div style="text-align:center"><img src="./screenshot/compass.jpg" alt="Compass" width="200"/></div>
 
-3. Tracking dapat dilakukan dengan memilih tipe latihan (Cycling atau Walking) dan menekan tombol Start Track. Setelah tombol Start Track ditekan, aplikasi akan meminta permission dari pengguna untuk mengaktifkan tracker dengan ***foreground service***.
+3. Tracking dapat dilakukan dengan memilih tipe latihan (Cycling atau Walking) dan menekan tombol Start Track. Setelah tombol Start Track ditekan, aplikasi akan meminta permission dari pengguna untuk mengaktifkan tracker dengan ***foreground service***. Untuk tracking cycling, dilakukan tracking lokasi memanfaatkan `Location Service Google` dan menyimpan setiap titik lokasi dalam bentuk `latitude-longtitude` dalam kelas `LatLng`. `LatLng` akan disimpan dalam history untuk menampilkan rute. Kemudian akan dihitung jarak antara titik lokasi sebelumnya dengan titik lokasi yang baru, yang akan dijumlahkan untuk mendapatkan total jarak tempuh. Untuk tracking walking, dilakukan tracking step dengan memanfaatkan sensor motion berupa `step detector`.
 
 <div style="text-align:center"><img src="./screenshot/tracker_inProgress.jpg" alt="TrainingInProgress" width="200"/></div>
 
-4. Notifikasi yang ditampilkan menunjukkan progress latihan, yang berjalan pada ***foreground service***. Kami menggunakan `NotificationManager` untuk menampilkan progress latihan Cycling maupun Walking pada notifikasi saat pengguna tidak berada di dalam aplikasi.
+4. Notifikasi yang ditampilkan menunjukkan progress latihan, yang berjalan pada ***foreground service***. Kami menggunakan `NotificationManager` untuk menampilkan progress latihan Cycling maupun Walking pada notifikasi saat pengguna tidak berada di dalam aplikasi. Notifikasi diupdate setiap kali terjadi perubahan dari sensor listener atau location update.
 - Untuk Cycling
 
 <div style="text-align:center"><img src="./screenshot/foreground_cycling.jpg" alt="notification_cycling" width="200"/></div>
