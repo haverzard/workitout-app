@@ -81,7 +81,15 @@ Contoh penggunaan dari library ini pada aplikasi kami adalah:
 
 
 ## Screenshot Aplikasi
+![Screenshot_1619753044](/uploads/287fd67dfde9c6e2db4fc15f67fdd2bf/Screenshot_1619753044.png)
 
+![Screenshot_1619753078](/uploads/411f7fb9de353ef2f6893c3a6076f2ec/Screenshot_1619753078.png)
+
+![Screenshot_1619753084](/uploads/503c5ce56bb589724e71e07901d629dd/Screenshot_1619753084.png)
+
+![Screenshot_1619753101](/uploads/3e4491ed5c6f2db9646dbdeb25947a7b/Screenshot_1619753101.png)
+
+![Screenshot_1619753325](/uploads/e5a1f5048e05944aa53be60e6886fb9d/Screenshot_1619753325.png)
 
 ## Pembagian Kerja
 1. Muhammad Ravid Valiandi (13518099)
