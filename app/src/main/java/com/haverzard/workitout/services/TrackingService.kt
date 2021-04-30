@@ -300,7 +300,7 @@ class TrackingService: Service(), SensorEventListener {
             .setOngoing(true)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .addAction(
-                R.drawable.ic_launcher_background,
+                R.drawable.ic_launcher_foreground,
                 getString(R.string.launch_activity),
                 activityPendingIntent
             )
