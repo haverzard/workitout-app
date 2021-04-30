@@ -221,7 +221,7 @@ class TrackingService: Service(), SensorEventListener {
         )
 
         if (SharedPreferenceUtil.alertWindowEnabled() || SharedPreferenceUtil.getForegroundPref(this)) {
-            launchActivityIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            launchActivityIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
             this.startActivity(launchActivityIntent)
             stopSelf()
         }
