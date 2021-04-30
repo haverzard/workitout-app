@@ -92,8 +92,7 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 ![ResponsiveLog](/uploads/eb51bbc521a708df67adb9d5bafcaf27/ResponsiveLog.png)
 
 ### Training Scheduler (***SEMUA TERPENUHI***)
-1. Klik navigasi Schedule di bawah sehingga halaman Schedule akan terbuka. Scheduler akan mengambil semua data scheduler melalui DAO dari schedule yang memanfaatkan library `room persistence`. Pengambilan ini dilakukan pada `view model schedule` dengan memanfaatkan `Flow` pada library `Kotlin Coroutine` yang akan di-pass ke `live data` untuk diupdate jika terjadi perubahan pada tabel tersebut. Pada aplikasi kami, kami mendefinisikan 2 tipe schedule, yaitu `single schedule` (satu waktu) dan `routine schedule` (rutin pada hari-hari yang dipilih). Untuk men-schedule setiap hari, Anda dapat memanfaatkan `routine schedule` dengan cara memilih semua hari (senin-minggu). Kedua tipe schedule ini kami wrap menjadi sebuah kelas `Schedule` agar dapat di-pass kepada recycler view seakan-akan sebagai 1 kelas (bukan 2). Data schedule yang diambil kemudian ditampilkan menggunakan `recyclerview` yang diupdate oleh `live data`. Untuk menampilkan tipe latihan, kami menggunakan icon yang cukup jelas membedakan antara cycling dan walking.
-
+1. Klik navigasi Schedule di bawah sehingga halaman Schedule akan terbuka. Scheduler akan mengambil semua data schedule yang dijadwalkan untuk nanti (current time < schedule time) melalui DAO dari schedule yang memanfaatkan library `room persistence`. Pengambilan ini dilakukan pada `view model schedule` dengan memanfaatkan `Flow` pada library `Kotlin Coroutine` yang akan di-pass ke `live data` untuk diupdate jika terjadi perubahan pada tabel tersebut. Pada aplikasi kami, kami mendefinisikan 2 tipe schedule, yaitu `single schedule` (satu waktu) dan `routine schedule` (rutin pada hari-hari yang dipilih). Untuk men-schedule setiap hari, Anda dapat memanfaatkan `routine schedule` dengan cara memilih semua hari (senin-minggu). Kedua tipe schedule ini kami wrap menjadi sebuah kelas `Schedule` agar dapat di-pass kepada recycler view seakan-akan sebagai 1 kelas (bukan 2). Data schedule yang diambil kemudian ditampilkan menggunakan `recyclerview` yang diupdate oleh `live data`. Untuk menampilkan tipe latihan, kami menggunakan icon yang cukup jelas membedakan antara cycling dan walking.
 Pada halaman ini, pengguna juga dapat melakukan delete schedule. Delete schedule dilakukan dengan melakukan passing object `observer` dari UI kepada `adapter recyclerview`. Observer memiliki method untuk memproses delete jika pengguna menekan icon delete. Delete yang dilakukan dengan menghentikan alarm terkait schedule tersebut melalui request code unik yang dibentuk berdasarkan id schedule. Pembentukan request code akan dijelaskan pada penambahan schedule. Kemudian, schedule delete dari SQLite menggunakan DAO schedule.
 
 <div style="text-align:center"><img src="/uploads/1a48df572be06248f43da8ea2e5ce48b/TrackerDefault.png" alt="TrackerDefault" width="200"/></div>
@@ -106,7 +105,7 @@ Pada halaman ini, pengguna juga dapat melakukan delete schedule. Delete schedule
 
 <div style="text-align:center"><img src="/uploads/24a57a456154d4921d4260caac62109a/TrackerChooseType.png" alt="TrackerChooseType" width="200"/></div>
 
-4. Anda dapat memilih untuk menambahkan schedule satu waktu atau rutin (setiap hari atau pada hari tertentu). Untuk membedakan tampilan, kami menggunakan argument yang di-pass sebelumnya dan mengubah nilai parameter visibility pada UI.
+4. Anda dapat memilih untuk menambahkan schedule satu waktu atau rutin (setiap hari atau pada hari tertentu). Untuk membedakan tampilan, kami menggunakan argument yang di-pass sebelumnya dan mengubah nilai parameter visibility pada UI bagian date & days.
 - Satu waktu
 
 <div style="text-align:center"><img src="/uploads/613854eb87aaf6d0e8472e94701d0f9d/TrackerSingleType.png" alt="TrackerSingleType" width="200"/></div>
@@ -115,24 +114,28 @@ Pada halaman ini, pengguna juga dapat melakukan delete schedule. Delete schedule
 
 <div style="text-align:center"><img src="/uploads/7314967b18a27850e82307c6c914a86f/TrackerRoutineType.png" alt="TrackerRoutineType" width="200"/></div>
 
-5. Untuk mengisi date dan time, digunakan dialog fragment.
+5. Untuk mengisi date dan time, digunakan 2 dialog fragment yang berbeda. Setiap dialog fragment akan diberikan observer yang akan menerima input dari user. Input yang diterima tersebut kemudian langsung ditampilkan dapat format yang sesuai (misal tanggal dalam bentuk YYYY-MM-DD). Alasan kami memisahkan date dan time adalah untuk memastikan agar pengguna menjadwalkan latihan yang mulai dan berakhir di hari yang sama.
 
-***GAMBAR***
+<div style="text-align:center"><img src="./screenshot/1172192.jpg" alt="TrackerRoutineType" width="200"/></div>
 
-***GAMBAR***
+<div style="text-align:center"><img src="/uploads/6d274a0b3a1824eae620f1c5a7253463/TrackerTimeDialog.png" alt="TrackerTimeDialog" width="200"/></div>
 
-6. Untuk mengisi schedule rutin, klik tombol hari yang diinginkan (bisa lebih dari satu).
+6. Untuk mengisi schedule rutin, klik tombol hari yang diinginkan (bisa lebih dari satu). Hal ini dapat dilakukan dengan menggunakan Set yang menyimpan informasi tanggal yang terpilih dan kita dapat menggunakan set ini untuk mengecek apakah suatu hari telah dipilih atau belum. Jika telah terpilih, kotak icon hari akan lebih terang warnanya.
 
-![TrackerTimeDialog](/uploads/6d274a0b3a1824eae620f1c5a7253463/TrackerTimeDialog.png)
+<div style="text-align:center"><img src="/uploads/0228a53e87a5f1fc6b462ac5691b1667/TrackerFilled.png" alt="TrackerFilled" width="200"/></div>
 
-![TrackerFilled](/uploads/0228a53e87a5f1fc6b462ac5691b1667/TrackerFilled.png)
+7. Data yang terisi akan divalidasi apakah semuanya sudah terisi. Kemudian dicek apakah waktu mulainya kurang dari waktu berakhir dan apakah waktu latihannya untuk nanti (current time < schedule time, khusus single schedule). Schedule kemudian ditambahkan dengan memanfaatkan `application scope coroutine` (agar tidak membebani main thread), diperoleh id-nya sehingga dapat dibuatkan request code unik untuk pending intent yang digunakan untuk men-trigger notifikasi. Perhitungan id ini dilakukan dengan `id*8` untuk single schedule dan `(id+1)*8 - day - 1` untuk routine schedule. Total indexingnya jika dilihat ada 8, yaitu untuk 7 hari routine schedule + 1 single schedule, sehingga dipastikan unik. Intent akan diberikan `data extra boolean` yang menandakan apakah intent tersebut untuk notifikasi latihan dimulai atau untuk notifikasi latihan berakhir. Untuk menjadwalkan notifikasi, digunakan alarm karena intent-nya dapat diterima walaupun aplikasi dalam keadaan tertutup.
+Lalu kita dapat menjadwalkan alarm berdasarkan waktu mulai yang ditentukan. Flownya kurang lebih adalah pembuatan alarm mulai -> notifikasi mulai ditampilkan & pembuatan alarm berakhir -> notifikasi berakhir ditampilkan & intent diperbaiki untuk notifikasi mulai khusus routine schedule. Tahap penampilan notifikasi hingga penampilan notifikasi berakhir dilakukan oleh `ScheduleReceiver` yang menerima intent alarm tersebut. Auto-tracking dapat dilakukan dengan menyertakan operasi `start dan stop foreground service` pada saat penampilan notifikasi.
 
-7. Notifikasi akan ditampilkan saat schedule dimulai dan berakhir.
-
-***GAMBAR***
+8. Notifikasi akan ditampilkan saat schedule dimulai dan berakhir. Notifikasi ini ditampilkan dengan mengambil data schedule terkait berdasarkan id yang disimpan pada intent (untuk membedakan single dan routine schedule, digunakan perhitungan yang mirip seperti sebelumnya untuk pembentukan request code unik, namun hanya untuk 2 tipe).
 
 
-8. Auto-track yang dilakukan saat schedule dimulai dan berakhir.
+<div style="text-align:center"><img src="./screenshot/1172300.jpg" alt="StartWorkOut" width="200"/></div>
+
+<div style="text-align:center"><img src="./screenshot/1172301.jpg" alt="EndWorkOut" width="200"/></div>
+
+
+9. Auto-track yang dilakukan saat schedule dimulai dan berakhir.
 
 ***GAMBAR***
 
