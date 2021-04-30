@@ -171,6 +171,7 @@ class TrackerFragment : Fragment(), SensorEventListener {
 
     override fun onPause() {
         sensorManager.unregisterListener(this)
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER
         super.onPause()
     }
 
