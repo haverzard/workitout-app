@@ -27,7 +27,7 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 ### Sport News (***SUKSES***)
 1. Aplikasi WorkItOut kemudian dapat dibuka sehingga menampilkan tampilan awal berupa halaman Sport News. Untuk menampilkan halaman Sport News, kami menggunakan `interface client dan service Retrofit` untuk mengambil data dari News API melalui `view model` pada News. Dengan menggunakan view model, kita dapat menghindari fetching ulang akibat perubahan orientasi sehingga lebih efisien dalam penggunaan bandwidth. Data response dari News API akan diproses dan di-passing kepada `live data`. Live data tersebut telah di-observe oleh `NewsFragment` sehingga perubahannya akan diupdate pada sisi UI.
 
-![SportsNewsUpright](/uploads/287fd67dfde9c6e2db4fc15f67fdd2bf/Screenshot_1619753044.png)
+<img src="/uploads/287fd67dfde9c6e2db4fc15f67fdd2bf/Screenshot_1619753044.png" alt="SportsNewsUpright" width="200"/>
 
 2. Tampilan list berita ditampilkan secara ***responsive***, yaitu pada landscape, akan ditampilkan menjadi 2 kolom (dengan grid). Untuk menghandle responsive ini, kami memanfaatkan `grid layout` untuk menampilkan recyclerview dan data `configuration` pada `activity's resource` berupa orientasi yang akan dicek apakah merupakan landscape atau portrait. Jika orientasi dalam landscape, grid layout akan di-set dengan 2 kolom. Untuk portrait, grid layout akan di-set dengan 1 kolom.
 
