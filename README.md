@@ -27,11 +27,11 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 ### Sport News
 1. Aplikasi WorkItOut kemudian dapat dibuka sehingga menampilkan tampilan awal berupa halaman Sport News.
 
-***GAMBAR***
+![SportsNewsUpright](/uploads/287fd67dfde9c6e2db4fc15f67fdd2bf/Screenshot_1619753044.png)
 
 2. Tampilan list berita ditampilkan secara ***responsive***, yaitu pada landscape, akan ditampilkan menjadi 2 kolom (dengan grid). Data news disimpan pada ViewModel sehingga tidak dilakukan fetching berulang pada perubahan orientasi.
 
-***GAMBAR***
+![SportsNewsLandscape](/uploads/ad9f55fb1e8d56aaa8f74828b4f6db3d/Screenshot_1619754107.png)
 
 3. Jika suatu berita di-klik, akan menampilkan WebView dari konten beritanya.
 
@@ -40,7 +40,7 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 ### Tracker
 1. Klik navigasi Tracker di bawah sehingga halaman Tracker akan terbuka.
 
-***GAMBAR***
+![Tracker](/uploads/411f7fb9de353ef2f6893c3a6076f2ec/Screenshot_1619753078.png)
 
 2. ***Kompas*** akan berotasi menyesuaikan arah mata angin
 
@@ -66,7 +66,7 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 ### Training History
 1. Klik navigasi History di bawah sehingga halaman History akan terbuka.
 
-***GAMBAR***
+![TrainingHistory](/uploads/503c5ce56bb589724e71e07901d629dd/Screenshot_1619753084.png)
 
 2. Klik suatu tanggal pada kalendar untuk menampilkan log list
 - Jika ada log
@@ -82,7 +82,7 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 
 - Untuk Walking
 
-***GAMBAR***
+![HistoryLogWalking](/uploads/3e4491ed5c6f2db9646dbdeb25947a7b/Screenshot_1619753101.png)
 
 4. Selain itu, log history dan detailnya juga dapat ditampilkan secara ***responsive menggunakan fragment***.
 
@@ -204,17 +204,18 @@ Contoh penggunaan dari library ini pada aplikasi kami adalah:
 
 
 ## Screenshot Aplikasi
-![Screenshot_1619753044](/uploads/287fd67dfde9c6e2db4fc15f67fdd2bf/Screenshot_1619753044.png)
 
-![Screenshot_1619754107](/uploads/ad9f55fb1e8d56aaa8f74828b4f6db3d/Screenshot_1619754107.png)
+![SportsNewsUpright](/uploads/287fd67dfde9c6e2db4fc15f67fdd2bf/Screenshot_1619753044.png)
 
-![Screenshot_1619753078](/uploads/411f7fb9de353ef2f6893c3a6076f2ec/Screenshot_1619753078.png)
+![SportsNewsLandscape](/uploads/ad9f55fb1e8d56aaa8f74828b4f6db3d/Screenshot_1619754107.png)
 
-![Screenshot_1619753084](/uploads/503c5ce56bb589724e71e07901d629dd/Screenshot_1619753084.png)
+![Tracker](/uploads/411f7fb9de353ef2f6893c3a6076f2ec/Screenshot_1619753078.png)
 
-![Screenshot_1619753101](/uploads/3e4491ed5c6f2db9646dbdeb25947a7b/Screenshot_1619753101.png)
+![TrainingHistory](/uploads/503c5ce56bb589724e71e07901d629dd/Screenshot_1619753084.png)
 
-![Screenshot_1619753325](/uploads/e5a1f5048e05944aa53be60e6886fb9d/Screenshot_1619753325.png)
+![HistoryLogWalking](/uploads/3e4491ed5c6f2db9646dbdeb25947a7b/Screenshot_1619753101.png)
+
+![ScehduledExercises](/uploads/e5a1f5048e05944aa53be60e6886fb9d/Screenshot_1619753325.png)
 
 ## Pembagian Kerja
 1. Muhammad Ravid Valiandi (13518099)
