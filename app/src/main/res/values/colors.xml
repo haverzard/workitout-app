@@ -5,7 +5,7 @@
     <color name="colorPrimaryDark">#3F51B5</color>
     <color name="colorAccent">#03DAC5</color>
 
-    <color name="selected">#B37DFF</color>
-    <color name="saveButton">#55DA03</color>
+    <color name="selected">#68D0FF</color>
+    <color name="saveButton">#FFFFFF</color>
     <color name="darkred">#C31C1C</color>
 </resources>
