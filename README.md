@@ -44,20 +44,20 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 
 2. ***Kompas*** akan berotasi menyesuaikan arah mata angin
 
-***GAMBAR***
+![Compass](./screenshot/compass.jpg)
 
 3. Tracking dapat dilakukan dengan memilih tipe latihan (Cycling atau Walking) dan menekan tombol Start Track.
 
-***GAMBAR***
+![TrainingInProgress](./screenshot/tracker_inProgress.png)
 
 4. Notifikasi yang ditampilkan menunjukkan progress latihan, yang berjalan pada ***foreground service***.
 - Untuk Cycling
 
-***GAMBAR***
+![notification_cycling](./screenshot/foreground_cycling.png)
 
 - Untuk Walking
 
-***GAMBAR***
+![notification_running](./screenshot/foreground_running.png)
 
 5. Tracking dihentikan sehingga menyimpan history dan menampilkannya menggunakan intent pada service. (Pada Android Go, digunakan notifikasi untuk menampilkan history)
 
