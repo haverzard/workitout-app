@@ -41,55 +41,55 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 ### Tracker (***SEMUA TERPENUHI***)
 1. Klik navigasi Tracker di bawah sehingga halaman Tracker akan terbuka. Pada h
 
-![Tracker](/uploads/411f7fb9de353ef2f6893c3a6076f2ec/Screenshot_1619753078.png)
+<div style="text-align:center"><img src="/uploads/411f7fb9de353ef2f6893c3a6076f2ec/Screenshot_1619753078.png" alt="Tracker" width="200"/></div>
 
 2. ***Kompas*** akan berotasi menyesuaikan arah mata angin
 
-![Compass](./screenshot/compass.jpg)
+<div style="text-align:center"><img src="./screenshot/compass.jpg" alt="Compass" width="200"/></div>
 
 3. Tracking dapat dilakukan dengan memilih tipe latihan (Cycling atau Walking) dan menekan tombol Start Track.
 
-![TrainingInProgress](./screenshot/tracker_inProgress.jpg)
+<div style="text-align:center"><img src="./screenshot/tracker_inProgress.jpg" alt="TrainingInProgress" width="200"/></div>
 
 4. Notifikasi yang ditampilkan menunjukkan progress latihan, yang berjalan pada ***foreground service***.
 - Untuk Cycling
 
-![notification_cycling](./screenshot/foreground_cycling.jpg)
+<div style="text-align:center"><img src="./screenshot/foreground_cycling.jpg" alt="notification_cycling" width="200"/></div>
 
 - Untuk Walking
 
-![notification_running](./screenshot/foreground_running.jpg)
+<div style="text-align:center"><img src="./screenshot/foreground_running.jpg" alt="notification_running" width="200"/></div>
 
 5. Tracking dihentikan sehingga menyimpan history dan menampilkannya menggunakan intent pada service. (Pada Android Go, digunakan notifikasi untuk menampilkan history)
 
-![CyclingDetail](/uploads/872dc7cb69899831d5378b3438e7026b/CyclingDetail.png)
+<div style="text-align:center"><img src="/uploads/872dc7cb69899831d5378b3438e7026b/CyclingDetail.png" alt="CyclingDetail" width="200"/></div>
 
 ### Training History (***SEMUA TERPENUHI***)
 1. Klik navigasi History di bawah sehingga halaman History akan terbuka.
 
-![TrainingHistory](/uploads/503c5ce56bb589724e71e07901d629dd/Screenshot_1619753084.png)
+<div style="text-align:center"><img src="/uploads/503c5ce56bb589724e71e07901d629dd/Screenshot_1619753084.png" alt="TrainingHistory" width="200"/></div>
 
 2. Klik suatu tanggal pada kalendar untuk menampilkan log list
 - Jika ada log
 
-![HistoryListFilled](/uploads/ed382ab615d9b7767349718f8992c6a3/HistoryListFilled.png)
+<div style="text-align:center"><img src="/uploads/ed382ab615d9b7767349718f8992c6a3/HistoryListFilled.png" alt="HistoryListFilled" width="200"/></div>
 
 - Jika tidak ada log
 
-![HistoryListEmpty](/uploads/90bb7daebf378f15fe7a78bb2ac49e40/HistoryListEmpty.png)
+<div style="text-align:center"><img src="/uploads/90bb7daebf378f15fe7a78bb2ac49e40/HistoryListEmpty.png" alt="HistoryListEmpty" width="200"/></div>
 
 3. Jika terdapat log, klik panah hijau pada log untuk menampilkan detail log tersebut.
 - Untuk Cycling
 
-![CyclingDetail](/uploads/872dc7cb69899831d5378b3438e7026b/CyclingDetail.png)
+<div style="text-align:center"><img src="/uploads/872dc7cb69899831d5378b3438e7026b/CyclingDetail.png" alt="CyclingDetail" width="200"/></div>
 
 - Untuk Walking
 
-![HistoryDetailSteps](/uploads/bdb708939d00eedf10d29b3db53174ed/HistoryDetailSteps.png)
+<div style="text-align:center"><img src="/uploads/bdb708939d00eedf10d29b3db53174ed/HistoryDetailSteps.png" alt="HistoryDetailSteps" width="200"/></div>
 
 4. Selain itu, log history dan detailnya juga dapat ditampilkan secara ***responsive menggunakan fragment***.
 
-![ResponsiveLog](/uploads/eb51bbc521a708df67adb9d5bafcaf27/ResponsiveLog.png)
+<div style="text-align:center"><img src="/uploads/eb51bbc521a708df67adb9d5bafcaf27/ResponsiveLog.png" alt="ResponsiveLog" width="200"/></div>
 
 ### Training Scheduler (***SEMUA TERPENUHI***)
 1. Klik navigasi Schedule di bawah sehingga halaman Schedule akan terbuka. Scheduler akan mengambil semua data schedule yang dijadwalkan untuk nanti (current time < schedule time) melalui DAO dari schedule yang memanfaatkan library `room persistence`. Pengambilan ini dilakukan pada `view model schedule` dengan memanfaatkan `Flow` pada library `Kotlin Coroutine` yang akan di-pass ke `live data` untuk diupdate jika terjadi perubahan pada tabel tersebut. Pada aplikasi kami, kami mendefinisikan 2 tipe schedule, yaitu `single schedule` (satu waktu) dan `routine schedule` (rutin pada hari-hari yang dipilih). Untuk men-schedule setiap hari, Anda dapat memanfaatkan `routine schedule` dengan cara memilih semua hari (senin-minggu). Kedua tipe schedule ini kami wrap menjadi sebuah kelas `Schedule` agar dapat di-pass kepada recycler view seakan-akan sebagai 1 kelas (bukan 2). Data schedule yang diambil kemudian ditampilkan menggunakan `recyclerview` yang diupdate oleh `live data`. Untuk menampilkan tipe latihan, kami menggunakan icon yang cukup jelas membedakan antara cycling dan walking.
