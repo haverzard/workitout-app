@@ -3,10 +3,135 @@
 
 
 ## Deskripsi Aplikasi
-Work It Out adalah aplikasi olahraga yang membantu pengguna dalam menjadwalkan dan mendata kegiatan workout.
+Work It Out adalah aplikasi olahraga yang membantu pengguna dalam menjadwalkan dan mendata kegiatan workout. Pada aplikasi ini, terdapat 4 fungsionalitas utama yaitu:
+
+1. Sport News: pengguna dapat melihat berita olahraga yang diperoleh melalui Indonesia Sports News API. Setiap berita dapat di-klik untuk menampilkan WebView dari konten berita.
+
+2. Training Tracker: pengguna dapat melakukan "mulai" dan "selesai" mengenai pelacakan latihan yang memiliki beberapa jenis Cycling dan Walking. Pelacakan akan disimpan historynya dalam bentuk pencapaian (dan rute cycling) dan ditampilkan pada saat berakhir.
+
+3. Training History: terdapat halaman history yang menyimpan seluruh kegiatan latihan pengguna yang dilacak, ditampilkan dalam bentuk kalender. Setiap hari pada kalender dapat dibuka untuk menampilkan list log latihan dan setiap log dapat dibuka untuk melihat detailnya.
+
+4. Training Scheduler: pengguna dapat menentukan jadwal latihan yang dapat dikustomisasi untuk berjalan secara satu waktu spesifik dan 	rutin (setiap hari atau pada hari tertentu). Scheduler dapat diatur untuk secara otomatis melakukan tracking.
 
 
 ## Cara Kerja
+Aplikasi dapat di-build dengan cara mendefinisikan variable berikut pada file local.properties:
+```
+MAPS_API_KEY=<--REDACTED-->
+NEWS_API_KEY=<--REDACTED-->
+ENABLE_ALERT_WINDOW=<true|false>
+```
+
+ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampilkan history (tidak support pada Android Go sehingga digunakan variable ENV).
+
+### Sport News
+1. Aplikasi WorkItOut kemudian dapat dibuka sehingga menampilkan tampilan awal berupa halaman Sport News.
+
+![SportsNewsUpright](/uploads/287fd67dfde9c6e2db4fc15f67fdd2bf/Screenshot_1619753044.png)
+
+2. Tampilan list berita ditampilkan secara ***responsive***, yaitu pada landscape, akan ditampilkan menjadi 2 kolom (dengan grid). Data news disimpan pada ViewModel sehingga tidak dilakukan fetching berulang pada perubahan orientasi.
+
+![SportsNewsLandscape](/uploads/ad9f55fb1e8d56aaa8f74828b4f6db3d/Screenshot_1619754107.png)
+
+3. Jika suatu berita di-klik, akan menampilkan WebView dari konten beritanya.
+
+![NewsContent](/uploads/deb975515c9030e46f85fbfa2c624a42/NewsContent.png)
+
+### Tracker
+1. Klik navigasi Tracker di bawah sehingga halaman Tracker akan terbuka.
+
+![Tracker](/uploads/411f7fb9de353ef2f6893c3a6076f2ec/Screenshot_1619753078.png)
+
+2. ***Kompas*** akan berotasi menyesuaikan arah mata angin
+
+***GAMBAR***
+
+3. Tracking dapat dilakukan dengan memilih tipe latihan (Cycling atau Walking) dan menekan tombol Start Track.
+
+***GAMBAR***
+
+4. Notifikasi yang ditampilkan menunjukkan progress latihan, yang berjalan pada ***foreground service***.
+- Untuk Cycling
+
+***GAMBAR***
+
+- Untuk Walking
+
+***GAMBAR***
+
+5. Tracking dihentikan sehingga menyimpan history dan menampilkannya menggunakan intent pada service. (Pada Android Go, digunakan notifikasi untuk menampilkan history)
+
+![CyclingDetail](/uploads/872dc7cb69899831d5378b3438e7026b/CyclingDetail.png)
+
+### Training History
+1. Klik navigasi History di bawah sehingga halaman History akan terbuka.
+
+![TrainingHistory](/uploads/503c5ce56bb589724e71e07901d629dd/Screenshot_1619753084.png)
+
+2. Klik suatu tanggal pada kalendar untuk menampilkan log list
+- Jika ada log
+
+![HistoryListFilled](/uploads/ed382ab615d9b7767349718f8992c6a3/HistoryListFilled.png)
+
+- Jika tidak ada log
+
+![HistoryListEmpty](/uploads/90bb7daebf378f15fe7a78bb2ac49e40/HistoryListEmpty.png)
+
+3. Jika terdapat log, klik panah hijau pada log untuk menampilkan detail log tersebut.
+- Untuk Cycling
+
+![CyclingDetail](/uploads/872dc7cb69899831d5378b3438e7026b/CyclingDetail.png)
+
+- Untuk Walking
+
+![HistoryDetailSteps](/uploads/bdb708939d00eedf10d29b3db53174ed/HistoryDetailSteps.png)
+
+4. Selain itu, log history dan detailnya juga dapat ditampilkan secara ***responsive menggunakan fragment***.
+
+![ResponsiveLog](/uploads/eb51bbc521a708df67adb9d5bafcaf27/ResponsiveLog.png)
+
+### Training Scheduler
+1. Klik navigasi Schedule di bawah sehingga halaman Schedule akan terbuka.
+
+![TrackerDefault](/uploads/1a48df572be06248f43da8ea2e5ce48b/TrackerDefault.png)
+
+2. Anda dapat mengaktifkan auto track dengan menekan tombol switch pada kanan atas.
+
+![TrackerAutoTrackOn](/uploads/336c1b53b0ea6d445e4be6a1c7b260b4/TrackerAutoTrackOn.png)
+
+3. Anda juga dapat menambahkan schedule baru dengan menekan tombol floating button pada kanan bawah sehingga ditampilkan dialog tipe schedule.
+
+![TrackerChooseType](/uploads/24a57a456154d4921d4260caac62109a/TrackerChooseType.png)
+
+4. Anda dapat memilih untuk menambahkan schedule satu waktu atau rutin (setiap hari atau pada hari tertentu).
+- Satu waktu
+
+![TrackerSingleType](/uploads/613854eb87aaf6d0e8472e94701d0f9d/TrackerSingleType.png)
+
+- Rutin
+
+![TrackerRoutineType](/uploads/7314967b18a27850e82307c6c914a86f/TrackerRoutineType.png)
+
+5. Untuk mengisi date dan time, digunakan dialog fragment.
+
+***GAMBAR***
+
+***GAMBAR***
+
+6. Untuk mengisi schedule rutin, klik tombol hari yang diinginkan (bisa lebih dari satu).
+
+![TrackerTimeDialog](/uploads/6d274a0b3a1824eae620f1c5a7253463/TrackerTimeDialog.png)
+
+![TrackerFilled](/uploads/0228a53e87a5f1fc6b462ac5691b1667/TrackerFilled.png)
+
+7. Notifikasi akan ditampilkan saat schedule dimulai dan berakhir.
+
+***GAMBAR***
+
+
+8. Auto-track yang dilakukan saat schedule dimulai dan berakhir.
+
+***GAMBAR***
 
 
 ## Library yang Digunakan
@@ -81,17 +206,18 @@ Contoh penggunaan dari library ini pada aplikasi kami adalah:
 
 
 ## Screenshot Aplikasi
-![Screenshot_1619753044](/uploads/287fd67dfde9c6e2db4fc15f67fdd2bf/Screenshot_1619753044.png)
 
-![Screenshot_1619754107](/uploads/ad9f55fb1e8d56aaa8f74828b4f6db3d/Screenshot_1619754107.png)
+![SportsNewsUpright](/uploads/287fd67dfde9c6e2db4fc15f67fdd2bf/Screenshot_1619753044.png)
 
-![Screenshot_1619753078](/uploads/411f7fb9de353ef2f6893c3a6076f2ec/Screenshot_1619753078.png)
+![SportsNewsLandscape](/uploads/ad9f55fb1e8d56aaa8f74828b4f6db3d/Screenshot_1619754107.png)
 
-![Screenshot_1619753084](/uploads/503c5ce56bb589724e71e07901d629dd/Screenshot_1619753084.png)
+![Tracker](/uploads/411f7fb9de353ef2f6893c3a6076f2ec/Screenshot_1619753078.png)
 
-![Screenshot_1619753101](/uploads/3e4491ed5c6f2db9646dbdeb25947a7b/Screenshot_1619753101.png)
+![TrainingHistory](/uploads/503c5ce56bb589724e71e07901d629dd/Screenshot_1619753084.png)
 
-![Screenshot_1619753325](/uploads/e5a1f5048e05944aa53be60e6886fb9d/Screenshot_1619753325.png)
+![HistoryLogWalking](/uploads/3e4491ed5c6f2db9646dbdeb25947a7b/Screenshot_1619753101.png)
+
+![ScehduledExercises](/uploads/e5a1f5048e05944aa53be60e6886fb9d/Screenshot_1619753325.png)
 
 ## Pembagian Kerja
 1. Muhammad Ravid Valiandi (13518099)
