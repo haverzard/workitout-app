@@ -24,24 +24,24 @@ ENABLE_ALERT_WINDOW=<true|false>
 
 ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampilkan history (tidak support pada Android Go sehingga digunakan variable ENV).
 
-### Sport News (***SEMUA TERPENUHI***)
+### Sport News
 1. Aplikasi WorkItOut kemudian dapat dibuka sehingga menampilkan tampilan awal berupa halaman Sport News. Untuk menampilkan halaman Sport News, kami menggunakan `interface client dan service Retrofit` untuk mengambil data dari News API melalui `view model` pada News. Dengan menggunakan view model, kita dapat menghindari fetching ulang akibat perubahan orientasi sehingga lebih efisien dalam penggunaan bandwidth. Data response dari News API akan diproses dan di-passing kepada `live data`. Live data tersebut telah di-observe oleh `NewsFragment` sehingga perubahannya akan diupdate pada sisi UI.
 
-<p align="center"><img src="/uploads/287fd67dfde9c6e2db4fc15f67fdd2bf/Screenshot_1619753044.png" alt="SportsNewsUpright" width="200"/></p>
+<p align="center"><img src="./screenshot/Screenshot_1619753044.png" alt="SportsNewsUpright" width="200"/></p>
 
 2. Tampilan list berita ditampilkan secara ***responsive***, yaitu pada landscape, akan ditampilkan menjadi 2 kolom (dengan grid). Untuk menghandle responsive ini, kami memanfaatkan `grid layout` untuk menampilkan recyclerview dan data `configuration` pada `activity's resource` berupa orientasi yang akan dicek apakah merupakan landscape atau portrait. Jika orientasi dalam landscape, grid layout akan di-set dengan 2 kolom. Untuk portrait, grid layout akan di-set dengan 1 kolom.
 
-<p align="center"><img src="/uploads/ad9f55fb1e8d56aaa8f74828b4f6db3d/Screenshot_1619754107.png" alt="SportsNewsLandscape" width="400"/></p>
+<p align="center"><img src="./screenshot/Screenshot_1619754107.png" alt="SportsNewsLandscape" width="400"/></p>
 
 3. Jika suatu berita di-klik, akan menampilkan WebView dari konten beritanya. Untuk men-passing data URL dari berita, kami menggunakan argument pada library `Navigation`. Argument dapat di-pass melalui `action` yang dapat di-generate menggunakan kelas `direction` dari hasil build. URL tersebut kemudian akan diberikan kepada WebView untuk ditampilkan.
 
-<p align="center"><img src="/uploads/deb975515c9030e46f85fbfa2c624a42/NewsContent.png" alt="NewsContent" width="200"/></p>
+<p align="center"><img src="./screenshot/NewsContent.png" alt="NewsContent" width="200"/></p>
 
 
-### Tracker (***SEMUA TERPENUHI***)
+### Tracker
 1. Klik navigasi Tracker di bawah sehingga halaman Tracker akan terbuka. Pada halaman Tracker ini, terdapat kompas, tipe latihan yang dapat dipilih (Cycling atau Walking). Untuk mengubah halaman tracker, dari start tracking menjadi stop tracking dan sebaliknya, digunakan shared preference yang menyimpan informasi boolean apakah tracking sedang dilakukan. Informasi tipe latihan juga disimpan pada shared preference untuk diakses service.
 
-<p align="center"><img src="/uploads/411f7fb9de353ef2f6893c3a6076f2ec/Screenshot_1619753078.png" alt="Tracker" width="200"/></p>
+<p align="center"><img src="./screenshot/Screenshot_1619753078.png" alt="Tracker" width="200"/></p>
 
 2. ***Kompas*** akan berotasi menyesuaikan arah mata angin. Cara kerja kompas ini adalah diimplementasikan dengan menggunakan sensor `TYPE_ACCELEROMETER` dan sensor `TYPE_MAGNETIC_FIELD` untuk bekerja dengan mengikuti arah mata angin.
 
@@ -62,21 +62,21 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 
 5. Tracking dihentikan sehingga menyimpan history dan menampilkannya menggunakan intent pada service (Pada Android Go, digunakan notifikasi untuk menampilkan history). Agar hasil Tracking dapat ditampilkan kembali pada history nantinya, dibuat sebuah Calendar yang menyimpan tanggal dan jam latihan berakhir. Hasil dari Tracking ini disimpan dengan menggunakan `repository.insertHistory`.
 
-<p align="center"><img src="/uploads/872dc7cb69899831d5378b3438e7026b/CyclingDetail.png" alt="CyclingDetail" width="200"/></p>
+<p align="center"><img src="./screenshot/CyclingDetail.png" alt="CyclingDetail" width="200"/></p>
 
-### Training History (***SEMUA TERPENUHI***)
+### Training History
 1. Klik navigasi History di bawah sehingga halaman History akan terbuka. Tampilan tanggal didefinisikan menggunakan `calendar view`.
 
-<p align="center"><img src="/uploads/503c5ce56bb589724e71e07901d629dd/Screenshot_1619753084.png" alt="TrainingHistory" width="200"/></p>
+<p align="center"><img src="./screenshot/Screenshot_1619753084.png" alt="TrainingHistory" width="200"/></p>
 
 2. Klik suatu tanggal pada kalendar untuk menampilkan log list. Tanggal yang terpilih dapat diambil datanya melalui `on date change listener` dan akan ditampilkan log history menggunakan action yang berisi argument tanggal. Log history kemudian diambil dari view model history melalui `DAO history` dan ditampilkan menggunakan `live data`.
 - Jika ada log
 
-<p align="center"><img src="/uploads/ed382ab615d9b7767349718f8992c6a3/HistoryListFilled.png" alt="HistoryListFilled" width="200"/></p>
+<p align="center"><img src="./screenshot/HistoryListFilled.png" alt="HistoryListFilled" width="200"/></p>
 
 - Jika tidak ada log
 
-<p align="center"><img src="/uploads/90bb7daebf378f15fe7a78bb2ac49e40/HistoryListEmpty.png" alt="HistoryListEmpty" width="200"/></p>
+<p align="center"><img src="./screenshot/HistoryListEmpty.png" alt="HistoryListEmpty" width="200"/></p>
 
 3. Jika terdapat log, klik panah hijau pada log untuk menampilkan detail log tersebut. Detail log history diambil menggunakan DAO history yang caranya sama seperti pengambilan log memanfaatkan `live data`. Untuk menampilkan peta rute, kami memanfaatkan MapView yang akan meload Google Map melalui Google Map API, serta mendefinisikan poin-poin latitude-longitude sebagai polylines yang terhubung. Untuk menampilkan seluruh polyline ini pada peta, kami mencari titik batas camera dengan memanfaatkan `CameraUpdateFactory` dan mengarahkan kamera ke titik tersebut.
 - Untuk Cycling
@@ -85,44 +85,44 @@ ENABLE_ALERT_WINDOW digunakan untuk melakukan over the top display untuk menampi
 
 - Untuk Walking
 
-<p align="center"><img src="/uploads/bdb708939d00eedf10d29b3db53174ed/HistoryDetailSteps.png" alt="HistoryDetailSteps" width="200"/></p>
+<p align="center"><img src="./screenshot/HistoryDetailSteps.png" alt="HistoryDetailSteps" width="200"/></p>
 
 4. Selain itu, log history dan detailnya juga dapat ditampilkan secara ***responsive menggunakan fragment***. Hal ini dapat dilakukan dengan mendefinisikan sebuah `komponen layout` (misal FrameLayout) pada `landscape layout` dari fragment HistoryListFragment (log history). Akibatnya tampilan menjadi seperti di bawah. Kemudian kita cek apakah frame layout tersebut terdefinisi, dan jika ya maka berarti view dalam keadaan landscape sehingga pada saat pengguna menekan tombol panah hijau pada log history, fragment HistoryDetailFragment akan diinisialisasi dengan argument history id dan `me-replace isi frame layout`. Replace ini dilakukan menggunakan `fragment transaction`.
 
-<p align="center"><img src="/uploads/eb51bbc521a708df67adb9d5bafcaf27/ResponsiveLog.png" alt="ResponsiveLog" width="400"/></p>
+<p align="center"><img src="./screenshot/ResponsiveLog.png" alt="ResponsiveLog" width="400"/></p>
 
-### Training Scheduler (***SEMUA TERPENUHI***)
+### Training Scheduler
 1. Klik navigasi Schedule di bawah sehingga halaman Schedule akan terbuka. Scheduler akan mengambil semua data schedule yang dijadwalkan untuk nanti (current time < schedule time) melalui DAO dari schedule yang memanfaatkan library `room persistence`. Pengambilan ini dilakukan pada `view model schedule` dengan memanfaatkan `Flow` pada library `Kotlin Coroutine` yang akan di-pass ke `live data` untuk diupdate jika terjadi perubahan pada tabel tersebut. Pada aplikasi kami, kami mendefinisikan 2 tipe schedule, yaitu `single schedule` (satu waktu) dan `routine schedule` (rutin pada hari-hari yang dipilih). Untuk men-schedule setiap hari, Anda dapat memanfaatkan `routine schedule` dengan cara memilih semua hari (senin-minggu). Kedua tipe schedule ini kami wrap menjadi sebuah kelas `Schedule` agar dapat di-pass kepada recycler view seakan-akan sebagai 1 kelas (bukan 2). Data schedule yang diambil kemudian ditampilkan menggunakan `recyclerview` yang diupdate oleh `live data`. Untuk menampilkan tipe latihan, kami menggunakan icon yang cukup jelas membedakan antara cycling dan walking.
 Pada halaman ini, pengguna juga dapat melakukan delete schedule. Delete schedule dilakukan dengan melakukan passing object `observer` dari UI kepada `adapter recyclerview`. Observer memiliki method untuk memproses delete jika pengguna menekan icon delete. Delete yang dilakukan dengan menghentikan alarm terkait schedule tersebut melalui request code unik yang dibentuk berdasarkan id schedule. Pembentukan request code akan dijelaskan pada penambahan schedule. Kemudian, schedule delete dari SQLite menggunakan DAO schedule.
 
-<p align="center"><img src="/uploads/1a48df572be06248f43da8ea2e5ce48b/TrackerDefault.png" alt="TrackerDefault" width="200"/></p>
+<p align="center"><img src="./screenshot/TrackerDefault.png" alt="TrackerDefault" width="200"/></p>
 
 2. Anda dapat mengaktifkan auto track dengan menekan tombol switch pada kanan atas (dan juga dapat dinonaktifkan). Nilai auto-track (on/off) disimpan menggunakan shared preferences dengan key yang didefisinikan sebagai data boolean. Untuk melakukan auto-track, pengguna perlu memberikan akses kepada aplikasi untuk melakukan request location, activity recognition (step counter), dan system alert window (untuk menampilkan history bahkan saat aplikasi dalam keadaan tertutup, namun opsional bisa melalui notifikasi). Permission system alert window hanya dapat diatur menggunakan intent menuju settings untuk mengatur permission tersebut.
 
-<p align="center"><img src="/uploads/336c1b53b0ea6d445e4be6a1c7b260b4/TrackerAutoTrackOn.png" alt="TrackerAutoTrackOn" width="200"/></p>
+<p align="center"><img src="./screenshot/TrackerAutoTrackOn.png" alt="TrackerAutoTrackOn" width="200"/></p>
 
 3. Anda juga dapat menambahkan schedule baru dengan menekan tombol floating button pada kanan bawah sehingga ditampilkan dialog tipe schedule. Dialog ini ditampilkan dengan memanfaatkan `DialogFragment`. Tombol-tombol pada dialog fragment diberikan onclick listener yang akan mengarahkan ke `AddScheduleFragment` menggunakan `action` dari navigation untuk men-passing `argument`.
 
-<p align="center"><img src="/uploads/24a57a456154d4921d4260caac62109a/TrackerChooseType.png" alt="TrackerChooseType" width="200"/></p>
+<p align="center"><img src="./screenshot/TrackerChooseType.png" alt="TrackerChooseType" width="200"/></p>
 
 4. Anda dapat memilih untuk menambahkan schedule satu waktu atau rutin (setiap hari atau pada hari tertentu). Untuk membedakan tampilan, kami menggunakan argument yang di-pass sebelumnya dan mengubah nilai parameter visibility pada UI bagian date & days.
 - Satu waktu
 
-<p align="center"><img src="/uploads/613854eb87aaf6d0e8472e94701d0f9d/TrackerSingleType.png" alt="TrackerSingleType" width="200"/></p>
+<p align="center"><img src="./screenshot/TrackerSingleType.png" alt="TrackerSingleType" width="200"/></p>
 
 - Rutin
 
-<p align="center"><img src="/uploads/7314967b18a27850e82307c6c914a86f/TrackerRoutineType.png" alt="TrackerRoutineType" width="200"/></p>
+<p align="center"><img src="./screenshot/TrackerRoutineType.png" alt="TrackerRoutineType" width="200"/></p>
 
 5. Untuk mengisi date dan time, digunakan 2 dialog fragment yang berbeda. Setiap dialog fragment akan diberikan observer yang akan menerima input dari user. Input yang diterima tersebut kemudian langsung ditampilkan dapat format yang sesuai (misal tanggal dalam bentuk YYYY-MM-DD). Alasan kami memisahkan date dan time adalah untuk memastikan agar pengguna menjadwalkan latihan yang mulai dan berakhir di hari yang sama.
 
 <p align="center"><img src="./screenshot/1172192.jpg" alt="TrackerRoutineType" width="200"/></p>
 
-<p align="center"><img src="/uploads/6d274a0b3a1824eae620f1c5a7253463/TrackerTimeDialog.png" alt="TrackerTimeDialog" width="200"/></p>
+<p align="center"><img src="./screenshot/TrackerTimeDialog.png" alt="TrackerTimeDialog" width="200"/></p>
 
 6. Untuk mengisi schedule rutin, klik tombol hari yang diinginkan (bisa lebih dari satu). Hal ini dapat dilakukan dengan menggunakan Set yang menyimpan informasi tanggal yang terpilih dan kita dapat menggunakan set ini untuk mengecek apakah suatu hari telah dipilih atau belum. Jika telah terpilih, kotak icon hari akan lebih terang warnanya.
 
-<p align="center"><img src="/uploads/0228a53e87a5f1fc6b462ac5691b1667/TrackerFilled.png" alt="TrackerFilled" width="200"/></p>
+<p align="center"><img src="./screenshot/TrackerFilled.png" alt="TrackerFilled" width="200"/></p>
 
 7. Data yang terisi akan palidasi apakah semuanya sudah terisi. Kemudian dicek apakah waktu mulainya kurang dari waktu berakhir dan apakah waktu latihannya untuk nanti (current time < schedule time, khusus single schedule). Schedule kemudian ditambahkan dengan memanfaatkan `application scope coroutine` (agar tidak membebani main thread), diperoleh id-nya sehingga dapat dibuatkan request code unik untuk pending intent yang digunakan untuk men-trigger notifikasi. Perhitungan id ini dilakukan dengan `id*8` untuk single schedule dan `(id+1)*8 - day - 1` untuk routine schedule. Total indexingnya jika dilihat ada 8, yaitu untuk 7 hari routine schedule + 1 single schedule, sehingga dipastikan unik. Intent akan diberikan `data extra boolean` yang menandakan apakah intent tersebut untuk notifikasi latihan dimulai atau untuk notifikasi latihan berakhir. Untuk menjadwalkan notifikasi, digunakan alarm karena intent-nya dapat diterima walaupun aplikasi dalam keadaan tertutup.
 Lalu kita dapat menjadwalkan alarm berdasarkan waktu mulai yang ditentukan. Flownya kurang lebih adalah pembuatan alarm mulai -> notifikasi mulai ditampilkan & pembuatan alarm berakhir -> notifikasi berakhir ditampilkan & intent diperbaiki untuk notifikasi mulai khusus routine schedule. Tahap penampilan notifikasi hingga penampilan notifikasi berakhir dilakukan oleh `ScheduleReceiver` yang menerima intent alarm tersebut. Auto-tracking dapat dilakukan dengan menyertakan operasi `start dan stop foreground service` pada saat penampilan notifikasi.
